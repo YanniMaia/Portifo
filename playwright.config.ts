@@ -1,10 +1,9 @@
 // Configuração do Playwright (F-04). O Q-07 estende (6 projetos `-escuro`, fixtures em
 // tests/e2e/support/, tags) e o DS-05 acrescenta o projeto `styleguide`. Não crie outro config.
 import { defineConfig, devices } from '@playwright/test';
-
-// URL base provisória. A F-07 troca este valor pelo `BASE_PATH` importado de `src/site.config.ts`
-// (será '/Portifolio/'), para o `baseURL` do e2e acompanhar a URL base do Vite.
-const BASE_PATH = '/';
+// URL base (F-07, D14): a mesma do vite.config.ts. Extensão obrigatória (`module: nodenext`).
+// Com baseURL em subcaminho, os specs navegam com `page.goto('./')` (nunca `'/'`, que vai à raiz do servidor).
+import { BASE_PATH } from './src/site.config.ts';
 
 const PORTA = 4173;
 const ORIGEM = `http://localhost:${PORTA}`;

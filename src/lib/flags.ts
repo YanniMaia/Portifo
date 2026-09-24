@@ -1,5 +1,6 @@
 // Flags de produto (F-15). Constantes de build: o Vite troca `import.meta.env.DEV`
 // por `true`/`false` e o minificador elimina o ramo morto em produção.
+// Caminhos para `public/` no código: sempre `${import.meta.env.BASE_URL}arquivo` (F-07, base /Portifolio/).
 
 /** Placeholders `[…]` visíveis só em desenvolvimento; em produção o elemento some (D11, doc §1). */
 export const SHOW_PLACEHOLDERS: boolean = import.meta.env.DEV;
