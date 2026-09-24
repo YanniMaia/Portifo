@@ -3,6 +3,43 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <!-- Tema sem "piscada" (F-08, D7, doc §6). Tudo daqui até o script precisa ficar ANTES de
+         qualquer folha de estilo (link rel=stylesheet) e do script módulo. Meta theme-color ÚNICA e sem
+         `media`: o script e o ThemeProvider (F-09) a atualizam; o C-11 não cria outra.
+         Chaves e cores repetem src/theme/constants.ts (conferido por tests/unit/theme/theme-script.test.ts).
+         Sem JS, a página fica no claro. -->
+    <meta name="theme-color" content="#FFF7FA" />
+    <meta name="color-scheme" content="light dark" />
+    <style>
+      html {
+        background: #ffffff;
+      }
+      html[data-theme='dark'] {
+        background: #150a10;
+        color-scheme: dark;
+      }
+    </style>
+    <script>
+      (function () {
+        var d = document.documentElement,
+          s = null,
+          l = null,
+          t = 'light';
+        try {
+          s = localStorage.getItem('ye-theme');
+          l = localStorage.getItem('ye-lang');
+        } catch (e) {}
+        if (s === 'light' || s === 'dark') t = s;
+        else
+          try {
+            t = matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+          } catch (e) {}
+        d.setAttribute('data-theme', t);
+        d.setAttribute('lang', l === 'en' ? 'en' : 'pt-BR');
+        var m = document.querySelector('meta[name="theme-color"]');
+        if (m) m.setAttribute('content', t === 'dark' ? '#150A10' : '#FFF7FA');
+      })();
+    </script>
     <title>Yanni Elyssa | Portfólio</title>
     <!-- Favicon vazio PROVISÓRIO (F-04): evita o 404 de /favicon.ico no console. A C-09 substitui pelo favicon "YE". -->
     <link rel="icon" href="data:," />
