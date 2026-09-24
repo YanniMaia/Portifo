@@ -1,0 +1,8 @@
+dist
+coverage
+plano
+.claude
+*.docx
+package-lock.json
+test-results
+playwright-report
