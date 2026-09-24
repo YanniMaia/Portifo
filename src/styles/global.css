@@ -1,3 +1,4 @@
 /* Folha global única, importada só em src/main.tsx (F-05).
    Ordem: fontes (F-06) → tokens (DS-01..DS-03) → base → tipografia (DS-03). */
+@import './fonts.css';
 @import './base.css';
