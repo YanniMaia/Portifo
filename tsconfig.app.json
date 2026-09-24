@@ -16,6 +16,11 @@
     "noEmit": true,
     "jsx": "react-jsx",
 
+    /* Alias de import (F-05): `@/` → `src/`. Mesmo mapeamento do resolve.alias em vite.config.ts */
+    "paths": {
+      "@/*": ["./src/*"]
+    },
+
     /* Linting */
     "strict": true,
     "noUncheckedIndexedAccess": true,
