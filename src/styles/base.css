@@ -1,0 +1,10 @@
+/* Reset mínimo (F-02). Rolagem: F-13. Ampliado no DS-04. */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+}
