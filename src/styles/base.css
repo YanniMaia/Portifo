@@ -8,3 +8,21 @@
 body {
   margin: 0;
 }
+
+/*
+ * Rolagem por âncora (F-13, D14; doc de design §9). ÚNICO lugar do projeto com
+ * `scroll-padding-top`, `scroll-margin-top` e `scroll-behavior`: a `Section` (DS-10), o
+ * `global.css` (A-08) e as seções (S-17) não repetem estas regras.
+ * Links nativos `<a href="#id">`, teclado e URL com hash param a 80 px do topo sem JS.
+ * `--anchor-offset` (80 px) é token do DS-02; o fallback sai no DS-04.
+ */
+html {
+  scroll-padding-top: var(--anchor-offset, 80px);
+}
+
+/* Rolagem suave só para quem não pediu movimento reduzido (§9); senão fica `auto`. */
+@media (prefers-reduced-motion: no-preference) {
+  html {
+    scroll-behavior: smooth;
+  }
+}
