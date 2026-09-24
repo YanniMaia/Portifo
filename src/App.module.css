@@ -1,0 +1,22 @@
+/*
+ * App shell (F-14). Provisório: o S-17 troca os stubs pelas seções reais (mesmos ids) e apaga `.stub`.
+ */
+
+/*
+ * O foco chega ao <main> pelo "Pular para o conteúdo", mas sem contorno. Não basta
+ * `:focus:not(:focus-visible)`: o Chrome marca o alvo como `:focus-visible` quando o skip link é
+ * ativado pelo teclado e desenharia o contorno em volta do <main> inteiro. O <main> não é um controle
+ * (tabIndex -1, fora da ordem do Tab), então não precisa de indicador de foco (WCAG 2.4.7).
+ */
+.main:focus {
+  outline: none;
+}
+
+/*
+ * Seção-stub: altura mínima de uma tela em QUALQUER modo (dev e produção), sem texto em produção.
+ * Sem ela as seções vazias teriam altura 0 e não daria para medir a rolagem por âncora (F-13) no
+ * build de produção, que é o que o e2e usa.
+ */
+.stub {
+  min-height: 100vh;
+}

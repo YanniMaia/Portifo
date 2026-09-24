@@ -3,8 +3,7 @@
 //
 // Dois blocos:
 // 1. CSS da rolagem: ATIVO desde a F-13 (não depende de seções).
-// 2. Medidas de offset: DESATIVADO até a F-14, porque as seções-stub só existem no App shell dela.
-//    Para ligar, troque `test.describe.skip` por `test.describe` no bloco marcado `// ativado na F-14`.
+// 2. Medidas de offset: ATIVO desde a F-14, que criou as seções-stub no App shell.
 // Ids de seção: tipados pelo registro da F-12 (`SectionId`); nada de lista escrita à mão.
 import { expect, test, type Page } from '@playwright/test';
 import { SECTION_IDS, type SectionId } from '../../src/content/sections.ts';
@@ -79,8 +78,9 @@ async function estaNoFim(page: Page): Promise<boolean> {
   );
 }
 
-// ativado na F-14: trocar `test.describe.skip` por `test.describe` quando o App shell tiver as seções.
-test.describe.skip('offset de 80 px nas âncoras (precisa das seções da F-14)', () => {
+// Ativado na F-14: usa as seções-stub do App shell (min-height 100vh em qualquer modo, sem texto em
+// produção) e o `scrollToInitialHash()` chamado no boot do App.
+test.describe('offset de 80 px nas âncoras (seções-stub da F-14)', () => {
   test.skip(
     ({ viewport }) => !LARGURAS_MEDIDAS.includes(viewport?.width ?? 0),
     'o critério mede 1280 e 390',
