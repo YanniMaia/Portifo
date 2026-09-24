@@ -1,0 +1,42 @@
+# Dependências
+node_modules/
+
+# Build e cache
+dist/
+dist-ssr/
+.vite/
+*.tsbuildinfo
+
+# Testes e relatórios
+coverage/
+test-results/
+playwright-report/
+blob-report/
+playwright/.cache/
+
+# Arquivos locais e segredos
+*.local
+.env*
+!.env.example
+
+# Logs
+*.log
+npm-debug.log*
+
+# Plano, agentes e documento de design (decisão R3 do usuário: fora do git)
+plano/
+.claude/
+*.docx
+
+# Editores
+.vscode/*
+!.vscode/extensions.json
+.idea/
+
+# Sistema operacional
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+desktop.ini
+.DS_Store
+$RECYCLE.BIN/
