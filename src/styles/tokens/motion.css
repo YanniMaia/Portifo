@@ -1,0 +1,42 @@
+/*
+ * Tokens de movimento (DS-02; doc 02 §4.7; doc de design §6, §7, §9).
+ * FONTE ÚNICA (D14): nenhum `--dur-*`, `--ease-*`, `--lift-*` ou `--arrow-shift` é declarado fora
+ * deste arquivo. Única exceção: `--dur-burst` e `--ease-in-out` em `motion-extra.css` (A-01, doc 04
+ * §4.1), importado logo depois deste. Teste: `tests/unit/styles/motion-tokens.test.ts`.
+ */
+
+:root {
+  /* Durações */
+  --dur-fast: 200ms; /* §9 botões, link do menu */
+  --dur-base: 250ms; /* §6, §7.1, §9 cards, IconBox, ícone do tema, menu mobile */
+  --dur-theme: 300ms; /* §6 troca de cores do tema */
+  --dur-enter: 600ms; /* §9 entrada de seções */
+  --dur-chip: 400ms; /* §9 cada chip na cascata */
+  --dur-draw: 800ms; /* §9 linha do tempo e trilhas */
+  --dur-count: 1200ms; /* §9 contagem da faixa */
+  --dur-pulse: 2400ms; /* §7.9 ponto pulsante e anel */
+
+  /* Curva */
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1); /* (D) "ease-out" do §9: entradas, hovers */
+
+  /* Deslocamentos de hover */
+  --lift-card: -6px; /* §7.6 */
+  --lift-panel: -4px; /* §7.8 */
+  --lift-button: -2px; /* §9 */
+  --lift-chip: -2px; /* §7.7 */
+  --arrow-shift: 4px; /* §7.2, §9 */
+}
+
+/*
+ * Movimento reduzido (§9): translações de hover desligadas; mudanças de cor continuam.
+ * Loops (ponto pulsante, --dur-pulse) são pausados no CSS de cada componente/DS-04.
+ */
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --lift-card: 0px;
+    --lift-panel: 0px;
+    --lift-button: 0px;
+    --lift-chip: 0px;
+    --arrow-shift: 0px;
+  }
+}

@@ -1,0 +1,30 @@
+/*
+ * Tokens de forma: raios, bordas, foco e ícones (DS-02; doc 02 §4.6; doc de design §5, §6, §7, §11).
+ * Não dependem do tema nem da largura: ficam só em `:root`.
+ */
+
+:root {
+  /* Raios */
+  --radius-pill: 9999px; /* §5 botões e chips */
+  --radius-card: 24px; /* §5 cards */
+  --radius-panel: 32px; /* §5 painéis grandes; §7.2 cartão de vidro do hero */
+  --radius-media: 20px; /* §7.8 imagem do projeto; §7.2 cartões flutuantes */
+  --radius-icon-box: 16px; /* §5 */
+  --radius-monogram-sm: 12px; /* §7.1 */
+
+  /* Bordas */
+  --border-width: 1px; /* §5 */
+  --border-width-strong: 1.5px; /* §5 botão secundário */
+
+  /* Foco visível (cor em --color-focus, DS-01) */
+  --focus-width: 3px; /* §5, §11 */
+  --focus-offset: 3px; /* §5, §11 */
+
+  /* Ícones (lucide-react, D3) */
+  --icon-stroke: 1.75; /* §5, D3 — valor absoluto */
+  --icon-sm: 20px; /* §6, §7.11 */
+  --icon-md: 24px; /* §5 */
+  --icon-lg: 28px; /* §7.6 */
+  --icon-xl: 32px; /* §7.2 */
+  --icon-box-size: 56px; /* §5 */
+}

@@ -1,5 +1,9 @@
 /* Folha global única, importada só em src/main.tsx (F-05).
-   Ordem: fontes (F-06) → tokens (DS-01..DS-03) → base → tipografia (DS-03). */
+   Ordem: fontes (F-06) → tokens (DS-01..DS-03) → base → tipografia (DS-03).
+   O A-01 importa `./tokens/motion-extra.css` logo depois de `motion.css`. */
 @import './fonts.css';
 @import './tokens/colors.css';
+@import './tokens/spacing.css';
+@import './tokens/shape.css';
+@import './tokens/motion.css';
 @import './base.css';

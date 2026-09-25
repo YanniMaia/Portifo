@@ -1,0 +1,76 @@
+/*
+ * Tokens de espaçamento e de layout (DS-02; doc 02 §4.2 e §4.4; doc de design §5, §7.1, §9, §10, §14).
+ * Não dependem do tema: ficam só em `:root`.
+ * Mobile-first: valor de celular na base, sobrescrito em 640 px (tablet) e 1024 px (desktop).
+ * Media queries usam números literais (CSS não aceita var() nelas); as constantes TS estão em
+ * `src/styles/breakpoints.ts`, e o teste `tests/unit/styles/breakpoints.test.ts` garante 640/1024/1440.
+ */
+
+:root {
+  /* Escala de espaçamento (§5): múltiplos de 4. */
+  --space-1: 4px; /* §5 */
+  --space-2: 8px; /* §5 */
+  --space-3: 12px; /* §5 */
+  --space-4: 16px; /* §5 */
+  --space-6: 24px; /* §5 */
+  --space-8: 32px; /* §5 */
+  --space-12: 48px; /* §5 */
+  --space-16: 64px; /* §5 */
+  --space-24: 96px; /* §5 */
+  --space-32: 128px; /* §5 */
+
+  /* Layout responsivo — celular, até 639 px (§5, §7.1). */
+  --container-max: 100%; /* §5 */
+  --gutter: 20px; /* §5, §7.1 */
+  --grid-columns: 4; /* §5 */
+  --grid-gap: 16px; /* §5 */
+  --section-py: 64px; /* §5 */
+  --section-py-motto: 64px; /* (D) segue o degrau do §5 (R-DS-16) */
+  --section-head-gap: 40px; /* §5 */
+  --card-gap: 16px; /* §5 */
+  --card-padding: 24px; /* §5 */
+  --header-height: 64px; /* §5 */
+  --button-height: 48px; /* §5 */
+  --button-height-compact: 44px; /* §14 */
+  --button-gap: 12px; /* §5 (botões empilhados) */
+  --anchor-offset: 80px; /* §9 — consumido só pelo scroll-padding-top do base.css (F-13) */
+  --touch-min: 44px; /* §10 */
+
+  /* Larguras máximas de leitura (iguais em todas as faixas). */
+  --measure-body: 65ch; /* §4 */
+  --measure-hero-sub: 560px; /* §4 */
+  --measure-narrow: 760px; /* §7.9, §7.10 */
+  --measure-motto: 900px; /* §7.4 */
+  --measure-contact: 1000px; /* §7.11 */
+  --measure-contact-text: 640px; /* §7.11 */
+}
+
+/* Tablet — 640 a 1023 px (§5, §10). */
+@media (min-width: 640px) {
+  :root {
+    --gutter: 32px; /* §5 */
+    --grid-columns: 8; /* §5 */
+    --grid-gap: 24px; /* §5 */
+    --section-py: 88px; /* §5 */
+    --section-py-motto: 88px; /* (D) segue o degrau do §5 (R-DS-16) */
+    --section-head-gap: 48px; /* §5 */
+    --card-gap: 24px; /* §5 */
+    --card-padding: 28px; /* §5 */
+    --header-height: 68px; /* §5 */
+    --button-height: 52px; /* §5 */
+    --button-gap: 16px; /* §5 */
+  }
+}
+
+/* Desktop — 1024 px ou mais (§5, §10). A tela grande (1440+) mantém os valores do desktop. */
+@media (min-width: 1024px) {
+  :root {
+    --container-max: 1200px; /* §5 */
+    --grid-columns: 12; /* §5 */
+    --section-py: 112px; /* §5 */
+    --section-py-motto: 96px; /* §7.4 ("padding 96") */
+    --section-head-gap: 56px; /* §5 */
+    --card-padding: 32px; /* §5 */
+    --header-height: 72px; /* §5 */
+  }
+}
