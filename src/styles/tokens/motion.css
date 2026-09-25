@@ -40,3 +40,15 @@
     --arrow-shift: 0px;
   }
 }
+
+/*
+ * Mesmo efeito, forçado por classe no <html>: checkbox "forçar movimento reduzido" do
+ * /__styleguide (DS-05). Fica aqui porque este arquivo é o único dono destes tokens (D14).
+ */
+:root.movimento-reduzido-forcado {
+  --lift-card: 0px;
+  --lift-panel: 0px;
+  --lift-button: 0px;
+  --lift-chip: 0px;
+  --arrow-shift: 0px;
+}

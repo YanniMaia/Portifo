@@ -46,11 +46,36 @@ function preloadFontes(): Plugin {
   };
 }
 
+// Styleguide (DS-05): no dev, `http://localhost:5173/__styleguide` (sem a base /Portifolio/) redireciona
+// para `<base>__styleguide`, onde o main.tsx monta a página. Só `serve`: não existe no build.
+function atalhoStyleguide(): Plugin {
+  return {
+    name: 'portifolio:atalho-styleguide',
+    apply: 'serve',
+    configureServer(server) {
+      const base = server.config.base;
+      server.middlewares.use((req, res, next) => {
+        const url = req.url ?? '';
+        if (base !== '/' && /^\/__styleguide\/?(?:[?#]|$)/.test(url)) {
+          res.statusCode = 302;
+          res.setHeader(
+            'Location',
+            `${base}${url.slice(1).replace(/^__styleguide\/?/, '__styleguide')}`,
+          );
+          res.end();
+          return;
+        }
+        next();
+      });
+    },
+  };
+}
+
 // https://vite.dev/config/
 export default defineConfig({
   // `vite build --base …` (script build:pages-test) sobrepõe este valor sem variável de ambiente.
   base: BASE_PATH,
-  plugins: [react(), preloadFontes()],
+  plugins: [react(), preloadFontes(), atalhoStyleguide()],
   resolve: {
     // Alias `@/` → `src/` (F-05). Mesmo mapeamento do `paths` em tsconfig.app.json.
     alias: {

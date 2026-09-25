@@ -1,4 +1,4 @@
-import { StrictMode } from 'react';
+import { StrictMode, type ComponentType } from 'react';
 import { createRoot } from 'react-dom/client';
 import './styles/global.css';
 import App from './App.tsx';
@@ -11,12 +11,24 @@ if (!rootElement) {
   throw new Error('Elemento #root não encontrado no index.html');
 }
 
-createRoot(rootElement).render(
-  <StrictMode>
-    <ThemeProvider>
-      <LanguageProvider>
-        <App />
-      </LanguageProvider>
-    </ThemeProvider>
-  </StrictMode>,
-);
+const root = createRoot(rootElement);
+
+function renderizar(Conteudo: ComponentType) {
+  root.render(
+    <StrictMode>
+      <ThemeProvider>
+        <LanguageProvider>
+          <Conteudo />
+        </LanguageProvider>
+      </ThemeProvider>
+    </StrictMode>,
+  );
+}
+
+// DS-05: /__styleguide só em desenvolvimento, nos mesmos providers. Em produção o Vite troca
+// `import.meta.env.DEV` por `false` e o ramo (com o import) sai do bundle.
+if (import.meta.env.DEV && location.pathname.endsWith('/__styleguide')) {
+  void import('@/dev/Styleguide').then(({ Styleguide }) => renderizar(Styleguide));
+} else {
+  renderizar(App);
+}

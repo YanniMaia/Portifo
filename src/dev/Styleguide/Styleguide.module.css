@@ -1,0 +1,557 @@
+/*
+ * /__styleguide (DS-05). Só desenvolvimento. Só tokens (`var(--…)`), nenhum hex (stylelint
+ * `color-no-hex`, DS-04). Mobile-first com as faixas do §4.3 (640 / 1024 px, literais).
+ * Estados: repouso, hover (só com ponteiro, e também por `[data-state='hover']`), foco (global do
+ * base.css, DS-04) e ativo. Alvos de toque ≥ var(--touch-min) (44 px, §10).
+ */
+
+/* ---------- Página ---------- */
+.pagina {
+  min-height: 100vh;
+  background-color: var(--color-bg);
+  color: var(--color-text);
+}
+
+.conteudo {
+  max-width: var(--container-max);
+  margin-inline: auto;
+  padding: var(--space-8) var(--gutter) var(--space-24);
+}
+
+.titulo {
+  font-family: var(--font-display);
+  font-size: var(--fs-h2);
+  font-weight: var(--fw-h2);
+  line-height: var(--lh-h2);
+}
+
+.nota {
+  max-width: var(--measure-body);
+  margin-block: var(--space-2) var(--space-6);
+  font-size: var(--fs-caption);
+  line-height: var(--lh-caption);
+  color: var(--color-text-secondary);
+}
+
+.pagina code,
+.computado {
+  font-family: var(--font-mono);
+  font-size: var(--fs-chip-sm);
+  overflow-wrap: anywhere;
+}
+
+.computado {
+  display: block;
+  color: var(--color-text-secondary);
+}
+
+/* ---------- Barra fixa (passo 2) ---------- */
+
+/*
+ * Celular: uma linha só (marca + controles com rolagem própria), para a barra fixa não cobrir a
+ * página. A rolagem é do bloco de controles, nunca do documento (§10).
+ */
+.barra {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  display: flex;
+  gap: var(--space-2) var(--space-4);
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--space-2) var(--gutter);
+  background-color: var(--header-bg);
+  border-bottom: var(--border-width) solid var(--header-border);
+  backdrop-filter: blur(var(--header-blur));
+}
+
+.marca {
+  flex: none;
+  font-family: var(--font-display);
+  font-size: var(--fs-logo);
+  font-weight: var(--fw-logo);
+  line-height: var(--lh-logo);
+}
+
+.controles {
+  display: flex;
+  gap: var(--space-2);
+  align-items: center;
+  min-width: 0;
+  padding: calc(var(--focus-width) + var(--focus-offset)); /* contorno de foco não é cortado */
+  overflow-x: auto;
+  white-space: nowrap;
+  scrollbar-width: thin;
+}
+
+@media (min-width: 1024px) {
+  .controles {
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    overflow-x: visible;
+  }
+}
+
+.botao {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--touch-min);
+  padding-inline: var(--space-4);
+  font-size: var(--fs-nav);
+  font-weight: var(--fw-nav);
+  line-height: var(--lh-nav);
+  color: var(--color-text);
+  cursor: pointer;
+  background-color: var(--control-bg);
+  border: var(--border-width) solid var(--control-border);
+  border-radius: var(--radius-pill);
+  transition:
+    background-color var(--dur-fast) var(--ease-out),
+    border-color var(--dur-fast) var(--ease-out);
+}
+
+@media (hover: hover) {
+  .botao:hover {
+    background-color: var(--color-fill-soft);
+    border-color: var(--color-border-hover);
+  }
+}
+
+.botao[data-state='hover'] {
+  background-color: var(--color-fill-soft);
+  border-color: var(--color-border-hover);
+}
+
+.botao:active {
+  background-color: var(--color-chip-bg-hover);
+}
+
+.largura {
+  display: inline-flex;
+  gap: var(--space-1);
+  align-items: center;
+  min-height: var(--touch-min);
+  font-size: var(--fs-nav);
+  line-height: var(--lh-nav);
+  color: var(--color-text-secondary);
+}
+
+.rotuloBarra {
+  color: var(--color-text-muted);
+}
+
+.checagem {
+  display: inline-flex;
+  gap: var(--space-2);
+  align-items: center;
+  min-height: var(--touch-min);
+  font-size: var(--fs-nav);
+  line-height: var(--lh-nav);
+  cursor: pointer;
+}
+
+.checagem input {
+  width: var(--icon-sm);
+  height: var(--icon-sm);
+  margin: 0;
+  accent-color: var(--color-link);
+  cursor: pointer;
+}
+
+/* ---------- Índice ---------- */
+.indice ul {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-1) var(--space-2);
+  padding: 0;
+  margin: 0 0 var(--space-8);
+  list-style: none;
+}
+
+.indice a {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--touch-min);
+  padding-inline: var(--space-3);
+  font-size: var(--fs-nav);
+  border-radius: var(--radius-pill);
+  transition: background-color var(--dur-fast) var(--ease-out);
+}
+
+@media (hover: hover) {
+  .indice a:hover {
+    background-color: var(--color-fill-soft);
+  }
+}
+
+/* ---------- Seções ---------- */
+.secao {
+  padding-block: var(--space-12);
+  border-top: var(--border-width) solid var(--color-border);
+}
+
+.tituloSecao {
+  font-family: var(--font-display);
+  font-size: var(--fs-h3);
+  font-weight: var(--fw-h3);
+  line-height: var(--lh-h3);
+}
+
+/* ---------- Tabela de tokens (TokenTable) ---------- */
+
+/* Celular: cada linha vira um bloco com rótulos (data-rotulo). */
+.tabela {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.tabela thead {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+}
+
+.tabela tr {
+  display: grid;
+  grid-template-columns: var(--space-12) minmax(0, 1fr);
+  gap: var(--space-1) var(--space-3);
+  padding-block: var(--space-3);
+  border-bottom: var(--border-width) solid var(--color-border);
+}
+
+.tabela[data-modo='simples'] tr {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.tabela th,
+.tabela td {
+  min-width: 0;
+  padding: 0;
+  font-size: var(--fs-chip-sm);
+  font-weight: var(--fw-body);
+  line-height: var(--lh-caption);
+  text-align: left;
+  vertical-align: top;
+}
+
+.tabela tbody th,
+.tabela tbody td:not(.celulaAmostra) {
+  grid-column: 2;
+}
+
+.tabela[data-modo='simples'] tbody th,
+.tabela[data-modo='simples'] tbody td {
+  grid-column: 1;
+}
+
+.tabela tbody [data-rotulo]::before {
+  display: block;
+  font-size: var(--fs-badge);
+  line-height: var(--lh-caption);
+  color: var(--color-text-muted);
+  content: attr(data-rotulo);
+}
+
+.celulaAmostra {
+  grid-row: 1 / span 4;
+}
+
+.tabela td[data-ativo] code {
+  font-weight: var(--fw-chip);
+  color: var(--color-link);
+}
+
+/* Fundo quadriculado: deixa visível a transparência dos tokens rgba. */
+.xadrez {
+  display: block;
+  width: var(--space-12);
+  height: var(--space-12);
+  overflow: hidden;
+  background: conic-gradient(
+      var(--color-border) 25%,
+      var(--color-bg) 0 50%,
+      var(--color-border) 0 75%,
+      var(--color-bg) 0
+    )
+    0 0 / var(--space-4) var(--space-4);
+  border: var(--border-width) solid var(--color-border);
+  border-radius: var(--radius-monogram-sm);
+}
+
+.amostra {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+/* Tablet em diante: tabela de verdade. */
+@media (min-width: 640px) {
+  .tabela {
+    table-layout: fixed;
+  }
+
+  .tabela thead {
+    position: static;
+    width: auto;
+    height: auto;
+    overflow: visible;
+    clip-path: none;
+  }
+
+  .tabela tr,
+  .tabela[data-modo='simples'] tr {
+    display: table-row;
+    padding: 0;
+  }
+
+  .tabela th,
+  .tabela td {
+    padding: var(--space-3) var(--space-2);
+    border-bottom: var(--border-width) solid var(--color-border);
+  }
+
+  .tabela thead th {
+    font-size: var(--fs-badge);
+    font-weight: var(--fw-badge);
+    color: var(--color-text-muted);
+  }
+
+  .tabela thead th:first-child {
+    width: calc(var(--space-12) + var(--space-4));
+  }
+
+  .tabela[data-modo='simples'] thead th:first-child {
+    width: auto;
+  }
+
+  .tabela tbody [data-rotulo]::before {
+    display: none;
+  }
+}
+
+/* ---------- Cartões de efeito: 160 × 100 px (passo 3) ---------- */
+.cartoes {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(calc(160px + var(--space-6)), 1fr));
+  gap: var(--space-8) var(--space-6);
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+
+.cartaoItem {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  min-width: 0;
+}
+
+.cartao {
+  display: block;
+  flex: none;
+  width: 160px;
+  height: 100px;
+  margin-bottom: var(--space-2);
+  border-radius: var(--radius-media);
+}
+
+.cartaoSombra {
+  background-color: var(--color-surface);
+  border: var(--border-width) solid var(--color-border);
+}
+
+/* Fundo em degradê atrás do vidro, para o desfoque e a translucidez aparecerem. */
+.cartaoFundoVidro {
+  display: block;
+  width: calc(160px + var(--space-6));
+  padding: var(--space-3);
+  margin-bottom: var(--space-2);
+  background-image: var(--gradient-brand);
+  border-radius: calc(var(--radius-media) + var(--space-3));
+}
+
+.cartaoVidro {
+  margin-bottom: 0;
+  border: var(--border-width) solid transparent;
+}
+
+/* ---------- Tipografia ---------- */
+.listaTipo {
+  display: grid;
+  gap: var(--space-8);
+  padding: 0;
+  margin: 0 0 var(--space-12);
+  list-style: none;
+}
+
+.itemTipo {
+  display: grid;
+  gap: var(--space-2);
+  min-width: 0;
+  overflow-wrap: break-word;
+}
+
+/* ---------- Espaçamento ---------- */
+.listaReguas {
+  display: grid;
+  gap: var(--space-3);
+  padding: 0;
+  margin: 0 0 var(--space-12);
+  list-style: none;
+}
+
+.itemRegua {
+  display: grid;
+  grid-template-columns: var(--space-24) var(--space-12) minmax(0, 1fr);
+  gap: var(--space-2) var(--space-3);
+  align-items: center;
+}
+
+.itemRegua .computado {
+  grid-column: 3;
+}
+
+.regua {
+  display: block;
+  height: var(--space-3);
+  background-color: var(--color-accent);
+}
+
+@media (min-width: 640px) {
+  .itemRegua {
+    grid-template-columns: var(--space-24) var(--space-12) var(--space-32) minmax(0, 1fr);
+  }
+
+  .itemRegua .computado {
+    grid-column: auto;
+  }
+}
+
+/* ---------- Raios, bordas e foco ---------- */
+.listaFormas {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: var(--space-6);
+  padding: 0;
+  margin: 0 0 var(--space-12);
+  list-style: none;
+}
+
+.formaAmostra {
+  display: grid;
+  gap: var(--space-1);
+  place-content: center;
+  width: 100%;
+  min-height: var(--space-24);
+  padding: var(--space-3);
+  color: var(--color-text);
+  cursor: pointer;
+  background-color: var(--color-surface);
+  border: var(--border-width) solid var(--color-border-hover);
+  transition: background-color var(--dur-fast) var(--ease-out);
+}
+
+@media (hover: hover) {
+  .formaAmostra:hover {
+    background-color: var(--color-fill-soft);
+  }
+}
+
+.formaAmostra[data-state='hover'] {
+  background-color: var(--color-fill-soft);
+}
+
+.formaAmostra:active {
+  background-color: var(--color-chip-bg-hover);
+}
+
+/* ---------- Movimento ---------- */
+.amostrasMovimento {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-6);
+  align-items: center;
+  margin-bottom: var(--space-8);
+}
+
+.liftDemo {
+  max-width: 100%;
+  padding: var(--card-padding);
+  font-size: var(--fs-caption);
+  background-color: var(--color-surface);
+  border: var(--border-width) solid var(--color-border);
+  border-radius: var(--radius-card);
+  box-shadow: var(--shadow-card);
+  transition:
+    transform var(--dur-base) var(--ease-out),
+    border-color var(--dur-base) var(--ease-out);
+}
+
+@media (hover: hover) {
+  .liftDemo:hover {
+    border-color: var(--color-border-hover);
+    transform: translateY(var(--lift-card));
+  }
+}
+
+.liftDemo[data-state='hover'] {
+  border-color: var(--color-border-hover);
+  transform: translateY(var(--lift-card));
+}
+
+.animacaoDemo {
+  display: block;
+  width: var(--space-4);
+  height: var(--space-4);
+  background-color: var(--color-accent);
+  border-radius: var(--radius-pill);
+  animation: sg-pulso var(--dur-pulse) var(--ease-out) infinite;
+}
+
+@keyframes sg-pulso {
+  50% {
+    opacity: 0.3;
+  }
+}
+
+/*
+ * "Forçar movimento reduzido" (passo 2): o checkbox põe no <html> esta classe e a global
+ * `movimento-reduzido-forcado`. Juntas reproduzem o `prefers-reduced-motion: reduce`:
+ * - a global zera --lift-* e --arrow-shift no motion.css (dono único desses tokens, D14);
+ * - esta para as animações no primeiro quadro, como o base.css (DS-04).
+ * Transições de cor continuam (§9).
+ */
+.movimentoReduzido {
+  scroll-behavior: auto;
+}
+
+.movimentoReduzido *,
+.movimentoReduzido *::before,
+.movimentoReduzido *::after {
+  animation-duration: 0.01ms !important;
+  animation-iteration-count: 1 !important;
+  scroll-behavior: auto !important;
+}
+
+/* ---------- Demos (passo 4) ---------- */
+.demo {
+  padding-block: var(--space-8);
+  margin-top: var(--space-6);
+  border-top: var(--border-width) dashed var(--color-border);
+}
+
+.tituloDemo {
+  font-family: var(--font-display);
+  font-size: var(--fs-h3);
+  font-weight: var(--fw-h3);
+  line-height: var(--lh-h3);
+}
+
+.palcoDemo {
+  min-width: 0;
+  padding: var(--space-6);
+  border: var(--border-width) solid var(--color-border);
+  border-radius: var(--radius-card);
+}
