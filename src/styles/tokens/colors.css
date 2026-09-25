@@ -1,0 +1,177 @@
+/*
+ * Tokens de cor, vidro, gradiente, sombra e decoração (DS-01; doc 02 §4.1).
+ * Fonte única destes nomes (D14). O doc 04 (A-01) só acrescenta aliases `var()` no prefixo
+ * `--deco-*` em `deco-extra.css`, sem hex novo. Não existe prefixo `--decor-*`.
+ * Legenda dos comentários: `§x.y` = doc de design v1.1; `(D)` = valor derivado pelo plano
+ * (doc 02 §6); `canvas` = lido do canvas de `plano/referencia/DESIGN.md`; `DV-x`/`Dxx` = decisões.
+ * Paleta só rosa, branco e ameixa (§3.1, §17). O teste `tests/unit/styles/colors.test.ts` garante
+ * a paridade claro × escuro e a ausência de azul/roxo.
+ */
+
+/* ============================== Modo claro ============================== */
+:root,
+[data-theme='light'] {
+  color-scheme: light; /* §6 */
+
+  /* ---------- Superfícies e texto ---------- */
+  --color-bg: #ffffff; /* §3.2 Branco */
+  --color-bg-alt: #fff7fa; /* §3.2 Rosa névoa */
+  --color-bg-tint: #ffeef4; /* §3.2 Rosa clarinho; §7.4 Frase de destaque */
+  --color-surface: #ffffff; /* §3.2 */
+  --color-fill-soft: #ffeef4; /* §3.2 Rosa clarinho: selos, etiquetas, caixa de ícone */
+  --color-chip-bg: #fff7fa; /* §7.7 · D17 */
+  --color-chip-bg-hover: #ffeef4; /* §7.7 · D17 */
+  --color-border: #f9d5e3; /* §3.2 Rosa bebê */
+  --color-border-hover: #f286b0; /* §3.4 · §7.6 · §7.7 */
+  --color-text: #2b1620; /* §3.2 Ameixa quase preta */
+  --color-text-secondary: #6e4b5c; /* §3.2 Ameixa média */
+  --color-text-muted: #8c6a7a; /* §3.2 Ameixa suave · D13 · DV-17 (≥ 14 px, só sobre branco) */
+
+  /* ---------- Rosas de identidade ---------- */
+  --color-accent: #e0518a; /* §3.2 Rosa vibrante (texto só ≥ 40 px, §3.5) */
+  --color-link: #c93a77; /* §3.2 Rosa intenso · D14 (item ativo do menu) */
+  --color-text-pink-on-tint: #a82560; /* §3.5 Rosa profundo sobre rosa clarinho */
+  --color-eyebrow: #c93a77; /* §4 */
+  --color-eyebrow-on-tint: #a82560; /* §3.5 · D13 · DV-16 */
+  --color-primary: #c93a77; /* §3.2 */
+  --color-primary-hover: #a82560; /* §9 */
+  --color-on-primary: #ffffff; /* §3.4 */
+  --color-secondary-border: #f286b0; /* §7.2 · DV-1 · D13 (2,4:1 aceito: o texto identifica) */
+  --color-secondary-text: #a82560; /* §7.2 */
+  --color-focus: #e0518a; /* §5 · §11 */
+  --color-skip-bg: #c93a77; /* §11 */
+  --color-skip-text: #ffffff; /* §11 */
+  --color-theme-icon: #c93a77; /* §6 */
+
+  /* ---------- Vidro, cabeçalho e controles ---------- */
+  --glass-bg: rgba(255, 255, 255, 0.65); /* §3.4 */
+  --glass-border: #f9d5e3; /* §3.4 */
+  --glass-blur: 16px; /* §3.4 */
+  --glass-bg-fallback: rgba(255, 255, 255, 0.92); /* (D) sem backdrop-filter */
+  --header-bg: rgba(255, 255, 255, 0.8); /* §7.1 */
+  --header-blur: 14px; /* §7.1 */
+  --header-border: #f9d5e3; /* §7.1 */
+  --mobile-menu-bg: rgba(255, 255, 255, 0.96); /* §7.1 */
+  --control-bg: rgba(255, 255, 255, 0.6); /* §6 */
+  --control-border: #f9d5e3; /* §6 */
+
+  /* ---------- Gradientes, brilhos e sombras ---------- */
+  --gradient-text: linear-gradient(135deg, #e0518a, #a82560); /* §3.4 */
+  --gradient-primary: linear-gradient(135deg, #c93a77, #a82560); /* §3.4 · D13 · filete: canvas */
+  --gradient-brand: linear-gradient(135deg, #e0518a, #a82560); /* §7.1 · §7.6 */
+  --hero-glow-1: radial-gradient(
+    circle 320px at 100% 0%,
+    rgba(255, 220, 233, 0.7),
+    transparent
+  ); /* §3.4 #FFDCE9 a 70% */
+  --hero-glow-2: radial-gradient(circle 240px at 0% 100%, #ffeef4, transparent); /* §3.4 */
+  --gradient-contact: linear-gradient(160deg, #ffeef4, #ffffff); /* §3.4 */
+  --gradient-timeline: linear-gradient(180deg, #f286b0, #f7b7d0, transparent); /* §3.4 */
+  --shadow-card: 0 8px 28px rgba(201, 58, 119, 0.08); /* §3.4 */
+  --shadow-card-hover: 0 16px 40px rgba(201, 58, 119, 0.16); /* §3.4 */
+  --shadow-header: 0 4px 20px rgba(201, 58, 119, 0.08); /* §7.1 */
+  --glow-deco: rgba(242, 134, 176, 0.25); /* §3.4 #F286B0 a 25% */
+
+  /* ---------- Rosas decorativos (nunca texto) ---------- */
+  --color-deco-soft: #f7b7d0; /* §3.2 Rosa suave */
+  --color-deco: #f286b0; /* §3.2 Rosa médio · DV-4 */
+
+  /* ---------- Elementos de fundo (--deco-*; doc 04 §5) ---------- */
+  --deco-grid-line: rgba(249, 213, 227, 0.35); /* §8 grade */
+  --deco-particle: #f7b7d0; /* §8 partículas (opacidade 0,4–0,6 no elemento) */
+  --deco-network-line: rgba(247, 183, 208, 0.6); /* §8 · §7.2 */
+  --deco-code: rgba(224, 81, 138, 0.12); /* §8 */
+  --deco-bits: rgba(242, 134, 176, 0.2); /* §8 */
+  --deco-watermark: rgba(249, 213, 227, 0.5); /* §8 */
+  --deco-shape-stroke: #f7b7d0; /* §8 */
+}
+
+/* ============================== Modo escuro ============================== */
+[data-theme='dark'] {
+  color-scheme: dark; /* §6 */
+
+  /* ---------- Superfícies e texto ---------- */
+  --color-bg: #150a10; /* §3.3 Ameixa noite */
+  --color-bg-alt: #1c0e16; /* §3.3 Ameixa profunda */
+  --color-bg-tint: #1c0e16; /* DV-10 */
+  --color-surface: #251320; /* §3.3 Ameixa card */
+  --color-fill-soft: rgba(245, 143, 184, 0.12); /* (D) Rosa luminoso a 12% */
+  --color-chip-bg: #1c0e16; /* D17 */
+  --color-chip-bg-hover: rgba(245, 143, 184, 0.12); /* (D) · D17 */
+  --color-border: #3b2030; /* §3.3 Borda escura */
+  --color-border-hover: rgba(245, 143, 184, 0.6); /* §3.4 #F58FB8 a 60% */
+  --color-text: #fdf0f5; /* §3.3 Branco rosado */
+  --color-text-secondary: #d8b4c4; /* §3.3 Rosa acinzentado */
+  --color-text-muted: #a98496; /* §3.3 Malva */
+
+  /* ---------- Rosas de identidade ---------- */
+  --color-accent: #f58fb8; /* §3.3 Rosa luminoso */
+  --color-link: #ffb3d1; /* §3.3 Rosa claro · D14 */
+  --color-text-pink-on-tint: #ffb3d1; /* §3.3 */
+  --color-eyebrow: #ffb3d1; /* (D) §3.3 */
+  --color-eyebrow-on-tint: #ffb3d1; /* §3.3 · D13 · DV-16 */
+  --color-primary: #f58fb8; /* §3.3 */
+  --color-primary-hover: #f06ca3; /* (D) fim do degradê escuro */
+  --color-on-primary: #2a0a1a; /* §3.3 · §3.4 */
+  --color-secondary-border: rgba(245, 143, 184, 0.6); /* DV-1 #F58FB8 a 60% */
+  --color-secondary-text: #ffb3d1; /* (D) */
+  --color-focus: #f58fb8; /* §11 */
+  --color-skip-bg: #c93a77; /* §11 */
+  --color-skip-text: #ffffff; /* §11 */
+  --color-theme-icon: #f58fb8; /* §6 */
+
+  /* ---------- Vidro, cabeçalho e controles ---------- */
+  --glass-bg: rgba(255, 255, 255, 0.05); /* §3.4 */
+  --glass-border: rgba(255, 179, 209, 0.16); /* §3.4 #FFB3D1 a 16% */
+  --glass-blur: 16px; /* §3.4 */
+  --glass-bg-fallback: rgba(37, 19, 32, 0.92); /* (D) #251320 a 92% */
+  --header-bg: rgba(21, 10, 16, 0.75); /* §7.1 #150A10 a 75% */
+  --header-blur: 14px; /* §7.1 */
+  --header-border: #3b2030; /* §7.1 */
+  --mobile-menu-bg: rgba(21, 10, 16, 0.96); /* (D) */
+  --control-bg: rgba(255, 255, 255, 0.05); /* §6 */
+  --control-border: rgba(255, 179, 209, 0.16); /* §6 */
+
+  /* ---------- Gradientes, brilhos e sombras ---------- */
+  --gradient-text: linear-gradient(135deg, #ffb3d1, #f06ca3); /* §3.4 */
+  --gradient-primary: linear-gradient(135deg, #f58fb8, #f06ca3); /* §3.4 · D13 */
+  --gradient-brand: linear-gradient(135deg, #e0518a, #a82560); /* (D) igual ao claro (R-DS-4) */
+  --hero-glow-1: radial-gradient(
+    circle 320px at 100% 0%,
+    rgba(74, 26, 51, 0.55),
+    transparent
+  ); /* §3.4 #4A1A33 a 55% */
+  --hero-glow-2: radial-gradient(
+    circle 240px at 0% 100%,
+    rgba(42, 16, 32, 0.4),
+    transparent
+  ); /* §3.4 #2A1020 a 40% */
+  --gradient-contact: linear-gradient(160deg, #2a1422, #1c0e16); /* §3.4 */
+  --gradient-timeline: linear-gradient(180deg, #f58fb8, #3b2030); /* §3.4 */
+  --shadow-card: 0 8px 28px rgba(0, 0, 0, 0.35); /* §3.4 */
+  --shadow-card-hover: 0 16px 40px rgba(245, 143, 184, 0.14); /* §3.4 */
+  --shadow-header: 0 4px 20px rgba(0, 0, 0, 0.35); /* (D) */
+  --glow-deco: rgba(240, 108, 163, 0.18); /* §3.4 #F06CA3 a 18% */
+
+  /* ---------- Rosas decorativos (nunca texto) ---------- */
+  --color-deco-soft: rgba(240, 108, 163, 0.4); /* (D) §8 */
+  --color-deco: #f06ca3; /* §3.3 Rosa médio */
+
+  /* ---------- Elementos de fundo (--deco-*; doc 04 §5; D20) ---------- */
+  --deco-grid-line: rgba(255, 255, 255, 0.05); /* §8 */
+  --deco-particle: #f06ca3; /* §8 (opacidade 0,3–0,5 no elemento, A-13) */
+  --deco-network-line: rgba(240, 108, 163, 0.4); /* (D) */
+  --deco-code: rgba(245, 143, 184, 0.12); /* (D) */
+  --deco-bits: rgba(240, 108, 163, 0.2); /* (D) */
+  --deco-watermark: rgba(59, 32, 48, 0.5); /* (D) */
+  --deco-shape-stroke: #3b2030; /* (D) */
+}
+
+/*
+ * Fundo da página pelo token (critério da DS-01: trocar `data-theme` muda o fundo do `body`).
+ * Provisório: o DS-04 leva esta regra para o `base.css` (junto de `color` e da transição de tema)
+ * e a remove daqui.
+ */
+body {
+  background-color: var(--color-bg);
+}
