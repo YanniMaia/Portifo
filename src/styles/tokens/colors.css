@@ -167,11 +167,4 @@
   --deco-shape-stroke: #3b2030; /* (D) */
 }
 
-/*
- * Fundo da página pelo token (critério da DS-01: trocar `data-theme` muda o fundo do `body`).
- * Provisório: o DS-04 leva esta regra para o `base.css` (junto de `color` e da transição de tema)
- * e a remove daqui.
- */
-body {
-  background-color: var(--color-bg);
-}
+/* O `body { background-color: var(--color-bg) }` provisório daqui foi para o base.css (DS-04). */

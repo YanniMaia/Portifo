@@ -1,0 +1,41 @@
+{
+  "extends": ["stylelint-config-standard"],
+  "ignoreFiles": ["dist/**", "coverage/**", "test-results/**", "playwright-report/**"],
+  "rules": {
+    "color-no-hex": [
+      true,
+      {
+        "message": "Hex só em src/styles/tokens/ (DS-04): use var(--token)."
+      }
+    ],
+    "selector-class-pattern": [
+      "^[a-z][a-zA-Z0-9]*(-[a-zA-Z0-9]+)*$",
+      {
+        "message": "Classes em camelCase (CSS Modules) ou kebab-case (globais .t-*, .theme-transition, .visually-hidden)."
+      }
+    ],
+    "import-notation": "string",
+    "media-feature-range-notation": "prefix",
+    "value-keyword-case": [
+      "lower",
+      {
+        "ignoreProperties": ["/^--font-/", "font-family", "text-rendering"]
+      }
+    ],
+    "alpha-value-notation": null,
+    "color-function-notation": null,
+    "color-function-alias-notation": null,
+    "color-hex-length": null,
+    "font-family-name-quotes": null,
+    "at-rule-empty-line-before": null,
+    "custom-property-empty-line-before": null
+  },
+  "overrides": [
+    {
+      "files": ["src/styles/tokens/**/*.css"],
+      "rules": {
+        "color-no-hex": null
+      }
+    }
+  ]
+}

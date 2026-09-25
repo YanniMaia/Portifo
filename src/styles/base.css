@@ -1,23 +1,99 @@
-/* Reset mínimo (F-02). Rolagem: F-13. Ampliado no DS-04. */
+/*
+ * Estilos globais (F-02 → F-13 → DS-04; doc 02 DS-04; doc de design §5, §6, §9, §10, §11).
+ * Só consome tokens (`var(--…)`); nenhum hex aqui (stylelint `color-no-hex`).
+ * Ordem: reset → página → foco → rolagem (F-13) → transição de tema → movimento reduzido →
+ * utilitárias. A fonte-base do `body` e os títulos ficam no typography.css (DS-03), importado depois.
+ */
+
+/* ---------- Reset moderno curto (passo 1) ---------- */
 *,
 *::before,
 *::after {
   box-sizing: border-box;
 }
 
-body {
+body,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p,
+figure,
+blockquote,
+dl,
+dd {
   margin: 0;
 }
 
+img,
+picture,
+video {
+  display: block;
+  max-width: 100%;
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+}
+
+/* ---------- Página (passo 1; §3, §10) ---------- */
+
 /*
- * Rolagem por âncora (F-13, D14; doc de design §9). ÚNICO lugar do projeto com
- * `scroll-padding-top`, `scroll-margin-top` e `scroll-behavior`: a `Section` (DS-10), o
- * `global.css` (A-08) e as seções (S-17) não repetem estas regras.
- * Links nativos `<a href="#id">`, teclado e URL com hash param a 80 px do topo sem JS.
- * `--anchor-offset` (80 px) é token do DS-02; o fallback sai no DS-04.
+ * Fundo e texto pelos tokens: trocar `data-theme` troca as cores (DS-01). Veio do bloco
+ * provisório do colors.css (pendência DS-01 V-03 #2). `overflow-x: clip` garante que nada
+ * cause rolagem horizontal (§10), sem criar contêiner de rolagem (não quebra `position: sticky`).
+ */
+body {
+  overflow-x: clip;
+  background-color: var(--color-bg);
+  color: var(--color-text);
+}
+
+/*
+ * Link sem classe: rosa intenso do tema (§3.2/§3.3, `--color-link`), nunca o azul/roxo padrão do
+ * navegador (§3; Portão F, V-03 #4). Componentes (ButtonLink, menu, rodapé) definem a própria cor.
+ */
+a {
+  color: var(--color-link);
+}
+
+::selection {
+  background-color: var(--color-fill-soft);
+  color: var(--color-text);
+}
+
+/* ---------- Foco visível (passo 2; §5, §11) ---------- */
+
+/*
+ * 3 px, #E0518A no claro e #F58FB8 no escuro (`--color-focus`), a 3 px do elemento. `outline`
+ * acompanha o `border-radius`: pílulas ficam com contorno em pílula. Clique com mouse não mostra
+ * contorno (`:focus:not(:focus-visible)`). O <main> alvo do skip link tira o próprio contorno
+ * (App.module.css, F-14).
+ */
+:focus-visible {
+  outline: var(--focus-width) solid var(--color-focus);
+  outline-offset: var(--focus-offset);
+}
+
+:focus:not(:focus-visible) {
+  outline: none;
+}
+
+/* ---------- Rolagem por âncora (F-13) ---------- */
+
+/*
+ * ÚNICO lugar do projeto com `scroll-padding-top`, `scroll-margin-top` e `scroll-behavior`
+ * (F-13, D14; doc de design §9): a `Section` (DS-10), o `global.css` (A-08) e as seções (S-17)
+ * não repetem estas regras. Links nativos `<a href="#id">`, teclado e URL com hash param a 80 px
+ * do topo sem JS. `--anchor-offset` é token do DS-02 (o fallback saiu no DS-04).
  */
 html {
-  scroll-padding-top: var(--anchor-offset, 80px);
+  scroll-padding-top: var(--anchor-offset);
 }
 
 /* Rolagem suave só para quem não pediu movimento reduzido (§9); senão fica `auto`. */
@@ -25,4 +101,59 @@ html {
   html {
     scroll-behavior: smooth;
   }
+}
+
+/* ---------- Transição de tema (passo 3; §6; D14) ---------- */
+
+/*
+ * ÚNICO CSS de transição de tema do projeto. A classe `theme-transition` é posta no <html> pelo
+ * ThemeProvider (F-09) por 300 ms e nunca com movimento reduzido. Só cores mudam entre os temas
+ * (§6: "layout, medidas e textos não mudam"). Sem `box-shadow`: sombras de hover são camadas com
+ * `opacity` (DS-15) e a regra R1 do doc 04 proíbe animar `box-shadow`. Fora dos 300 ms, cada
+ * componente volta às próprias transições.
+ */
+.theme-transition,
+.theme-transition *,
+.theme-transition *::before,
+.theme-transition *::after {
+  transition:
+    background-color var(--dur-theme) ease,
+    color var(--dur-theme) ease,
+    border-color var(--dur-theme) ease,
+    fill var(--dur-theme) ease,
+    stroke var(--dur-theme) ease !important;
+}
+
+/* ---------- Movimento reduzido global (passo 4; §9) ---------- */
+
+/*
+ * Animações param no primeiro quadro e rolagem fica instantânea. Transições de cor seguem
+ * (§9); as translações de hover já zeram pelos `--lift-*` do motion.css (DS-02).
+ */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* ---------- Utilitárias (passo 5; §11) ---------- */
+
+/*
+ * Oculta na tela e continua lida pelo leitor de tela (ex.: "abre em nova aba", §11).
+ * Nada de `display: none` nem `visibility: hidden`.
+ */
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
 }
