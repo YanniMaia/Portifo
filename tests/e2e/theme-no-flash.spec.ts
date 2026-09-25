@@ -112,6 +112,64 @@ test.describe('aparelho no claro', () => {
   });
 });
 
+// Correção pós-Portão F (V-04 #1): a escolha salva vence o aparelho também no `color-scheme`
+// efetivo. Sem isso, "claro" com sistema escuro deixava o texto padrão branco no fundo branco.
+interface EsquemaEfetivo {
+  tema: string | undefined;
+  esquema: string;
+  corTexto: string;
+  luminancia: number;
+}
+
+async function esquemaEfetivo(page: Page): Promise<EsquemaEfetivo> {
+  await page.goto('./');
+  // Espera o React montar (o ThemeProvider grava style.colorScheme na montagem).
+  await page.locator('main#conteudo').waitFor({ state: 'attached' });
+  return page.evaluate(() => {
+    const html = document.documentElement;
+    const p = document.createElement('p');
+    p.textContent = 'Texto de prova sem cor explícita';
+    document.body.append(p);
+    const corTexto = getComputedStyle(p).color;
+    p.remove();
+    const [r = 0, g = 0, b = 0] = (corTexto.match(/\d+(\.\d+)?/g) ?? []).map(Number);
+    return {
+      tema: html.dataset.theme,
+      esquema: getComputedStyle(html).colorScheme,
+      corTexto,
+      luminancia: (0.2126 * r + 0.7152 * g + 0.0722 * b) / 255,
+    };
+  });
+}
+
+test.describe('color-scheme: aparelho escuro + escolha "light"', () => {
+  test.use({ colorScheme: 'dark' });
+
+  test('esquema efetivo claro e texto padrão escuro (não branco no branco)', async ({ page }) => {
+    await prepararPagina(page, { 'ye-theme': 'light' });
+    const r = await esquemaEfetivo(page);
+    expect(r.tema).toBe('light');
+    expect(r.esquema).toBe('light');
+    expect(r.corTexto).not.toBe('rgb(255, 255, 255)');
+    expect(r.luminancia).toBeLessThan(0.5);
+    await expect(page.locator('html')).toHaveCSS('background-color', CLARO.fundo);
+  });
+});
+
+test.describe('color-scheme: aparelho claro + escolha "dark"', () => {
+  test.use({ colorScheme: 'light' });
+
+  test('esquema efetivo escuro e texto padrão claro', async ({ page }) => {
+    await prepararPagina(page, { 'ye-theme': 'dark' });
+    const r = await esquemaEfetivo(page);
+    expect(r.tema).toBe('dark');
+    expect(r.esquema).toBe('dark');
+    expect(r.corTexto).not.toBe('rgb(0, 0, 0)');
+    expect(r.luminancia).toBeGreaterThan(0.5);
+    await expect(page.locator('html')).toHaveCSS('background-color', ESCURO.fundo);
+  });
+});
+
 test('no HTML servido, o script vem antes do CSS e do módulo, com 1 theme-color', async ({
   request,
 }, testInfo) => {

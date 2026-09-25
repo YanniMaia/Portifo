@@ -129,6 +129,17 @@ describe('validarFichas — os 6 erros', () => {
     }
   });
 
+  it('erro 4: linkGithub "" é erro, embora isPlaceholder("") seja true (V-01 M-01)', () => {
+    // Link ausente se representa omitindo o campo; string vazia não é pendência aceitável.
+    expect(validarFichas([ficha({ id: 'vazio', linkGithub: '' })])).toEqual([
+      '[vazio] linkGithub fora de https://github.com/YanniMaia/: ""',
+    ]);
+    // Só colchete de um lado não é placeholder (D23): continua sendo erro.
+    expect(validarFichas([ficha({ id: 'meio', linkGithub: '[repositório' })])).toEqual([
+      '[meio] linkGithub fora de https://github.com/YanniMaia/: "[repositório"',
+    ]);
+  });
+
   it('erro 5: id duplicado', () => {
     expect(validarFichas([ficha({ id: 'repetido' }), fichaMinima('repetido')])).toEqual([
       'id duplicado: "repetido"',

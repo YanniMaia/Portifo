@@ -2,6 +2,8 @@
 // Confere se os DADOS respeitam o contrato. Não é regra de exibição: destaque, grade,
 // botões e contagem são do C-06 (`src/content/selectors.ts`, D14).
 // O teste da C-05 roda `validarFichas(PROJECTS)` e espera `[]`.
+// A regra D23 de placeholder vem da API única `isPlaceholder` (F-15), sem cópia local (V-01 M-01).
+import { isPlaceholder } from '@/lib/placeholder';
 import type { Locale, Project } from './types';
 
 /** Prefixo obrigatório de todo `linkGithub` que não é placeholder (§12.5). */
@@ -10,12 +12,12 @@ const PREFIXO_GITHUB = 'https://github.com/YanniMaia/';
 const LOCALES: readonly Locale[] = ['pt', 'en'];
 
 /**
- * Checagem local mínima da regra D23 (placeholder = string que contém `[` e `]`).
- * A API única de placeholder é `isPlaceholder`, de `src/lib/placeholder.ts` (F-15/C-06);
- * esta cópia existe só para a F-11 não depender da F-15. Quem consome fichas usa a F-15.
+ * `linkGithub` pendente no sentido do D23 (`[…]`). Atenção: `isPlaceholder('')` é `true`, mas
+ * aqui uma string VAZIA não é pendência aceitável, é erro (link ausente se representa omitindo o
+ * campo). Por isso `''` é tratado antes de chamar a F-15.
  */
-function temPlaceholder(valor: string): boolean {
-  return valor.includes('[') && valor.includes(']');
+function linkGithubPendente(valor: string): boolean {
+  return valor !== '' && isPlaceholder(valor);
 }
 
 /**
@@ -76,7 +78,7 @@ export function validarFichas(lista: readonly Project[]): string[] {
     // 4. Link do GitHub no perfil oficial (§12.5) ou placeholder pendente (D11, D23).
     if (
       p.linkGithub !== undefined &&
-      !temPlaceholder(p.linkGithub) &&
+      !linkGithubPendente(p.linkGithub) &&
       !(p.linkGithub.startsWith(PREFIXO_GITHUB) && p.linkGithub.length > PREFIXO_GITHUB.length)
     ) {
       erros.push(`[${p.id}] linkGithub fora de ${PREFIXO_GITHUB}: "${p.linkGithub}"`);

@@ -7,12 +7,15 @@
          qualquer folha de estilo (link rel=stylesheet) e do script módulo. Meta theme-color ÚNICA e sem
          `media`: o script e o ThemeProvider (F-09) a atualizam; o C-11 não cria outra.
          Chaves e cores repetem src/theme/constants.ts (conferido por tests/unit/theme/theme-script.test.ts).
-         Sem JS, a página fica no claro. -->
+         Sem JS, a página fica no claro. O `color-scheme` é declarado nos DOIS temas: sem o `light`
+         explícito, a meta "light dark" deixaria o esquema do sistema (escuro) valer sobre o claro
+         escolhido (correção pós-Portão F, achado V-04 #1). -->
     <meta name="theme-color" content="#FFF7FA" />
     <meta name="color-scheme" content="light dark" />
     <style>
       html {
         background: #ffffff;
+        color-scheme: light;
       }
       html[data-theme='dark'] {
         background: #150a10;

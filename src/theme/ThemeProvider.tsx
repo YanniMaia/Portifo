@@ -1,11 +1,20 @@
 // Provedor do tema (F-09, D7, doc de design §6).
 // - Estado inicial: o `data-theme` que o script inline do `index.html` (F-08) já aplicou. É a fonte
 //   única; o provedor não recalcula o tema de outro jeito, então o primeiro render já sai certo.
+// - Montagem: grava `style.colorScheme` do tema inicial (o script da F-08 não mexe nele).
 // - Troca: `data-theme`, `style.colorScheme`, meta `theme-color` e `ye-theme` (via `writeStorage`).
 // - Transição: classe `theme-transition` no `<html>` por 300 ms, nunca com movimento reduzido.
 //   É o único mecanismo de transição de tema (D14); o CSS dela é do DS-04.
 // - Sem escolha manual, segue `prefers-color-scheme`; depois de uma escolha manual, para de seguir.
-import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
+import {
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useMemo,
+  useRef,
+  useState,
+  type ReactNode,
+} from 'react';
 import { readStorage, writeStorage } from '@/lib/storage';
 import { THEME_COLOR, THEME_STORAGE_KEY, type Theme } from './constants';
 import {
@@ -88,6 +97,13 @@ export function ThemeProvider({ children }: ThemeProviderProps) {
   const toggleTheme = useCallback(() => {
     setTheme(temaAtual.current === 'dark' ? 'light' : 'dark');
   }, [setTheme]);
+
+  // Na montagem, grava `style.colorScheme` do tema inicial (não só na troca). Assim o esquema
+  // efetivo acompanha a escolha salva mesmo com o sistema no modo oposto, independentemente do
+  // CSS (correção pós-Portão F, V-04 #1). Layout effect: aplica antes da primeira pintura do React.
+  useLayoutEffect(() => {
+    document.documentElement.style.colorScheme = temaAtual.current;
+  }, []);
 
   // Segue o sistema só enquanto não houver escolha manual (doc §6 "Memória").
   useEffect(() => {

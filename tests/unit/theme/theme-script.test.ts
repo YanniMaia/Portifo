@@ -39,9 +39,13 @@ describe('index.html: marcação do tema', () => {
     expect(codigo).toContain(`'${THEME_COLOR.dark}'`);
   });
 
-  it('o <style> crítico usa os fundos de PAGE_BG', () => {
+  it('o <style> crítico usa os fundos de PAGE_BG e declara color-scheme nos dois temas', () => {
     const normalizado = css.replace(/\s+/g, '').toLowerCase();
-    expect(normalizado).toContain(`html{background:${PAGE_BG.light.toLowerCase()};}`);
+    // `color-scheme: light` na base: com sistema escuro e "claro" escolhido, o esquema efetivo
+    // tem de ser claro (correção pós-Portão F, V-04 #1). O escuro sobrepõe logo abaixo.
+    expect(normalizado).toContain(
+      `html{background:${PAGE_BG.light.toLowerCase()};color-scheme:light;}`,
+    );
     expect(normalizado).toContain(
       `html[data-theme='dark']{background:${PAGE_BG.dark.toLowerCase()};color-scheme:dark;}`,
     );

@@ -133,6 +133,22 @@ describe('ThemeProvider / useTheme: estado inicial', () => {
     },
   );
 
+  it.each<Theme>(['light', 'dark'])(
+    'aplica style.colorScheme na montagem, sem troca, mesmo com o sistema no oposto (%s)',
+    (tema) => {
+      // Cenário do achado V-04 #1: escolha salva vence o aparelho no modo contrário.
+      window.localStorage.setItem(THEME_STORAGE_KEY, tema);
+      midia.escuro = tema === 'light';
+      prepararDocumento(tema);
+      expect(html.style.colorScheme).toBe('');
+
+      const { result } = montar();
+      expect(result.current.theme).toBe(tema);
+      expect(html.style.colorScheme).toBe(tema);
+      expect(html.classList.contains(THEME_TRANSITION_CLASS)).toBe(false);
+    },
+  );
+
   it('sem escolha salva, isUserChoice é false; com escolha salva, é true', () => {
     prepararDocumento('light');
     expect(montar().result.current.isUserChoice).toBe(false);
