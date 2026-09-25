@@ -1,0 +1,103 @@
+/*
+ * Tipografia aplicada (DS-03; doc 02 §4.5; doc de design §4).
+ * Só consome tokens de src/styles/tokens/typography.css, spacing.css (larguras de leitura) e
+ * colors.css. Importado por último no global.css, depois do base.css.
+ */
+
+/* Fonte-base (passo 3). O skip link e todo texto sem classe herdam Inter 400 daqui. */
+body {
+  font-family: var(--font-body);
+  font-size: var(--fs-body);
+  font-weight: var(--fw-body);
+  line-height: var(--lh-body);
+  color: var(--color-text);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+/* Títulos (passo 4). Tamanho, peso e entrelinha vêm das classes .t-h1/.t-h2/.t-h3. */
+h1,
+h2,
+h3 {
+  font-family: var(--font-display);
+  color: var(--color-text);
+  text-wrap: balance;
+}
+
+/* Botões sem caixa alta (passo 5; §4 "sem caixa alta"). */
+button {
+  text-transform: none;
+}
+
+/* ---------- Classes utilitárias (§4.5) ---------- */
+
+.t-h1 {
+  font-family: var(--font-display);
+  font-size: var(--fs-h1);
+  font-weight: var(--fw-h1);
+  line-height: var(--lh-h1);
+  letter-spacing: var(--ls-h1);
+}
+
+.t-h2 {
+  font-family: var(--font-display);
+  font-size: var(--fs-h2);
+  font-weight: var(--fw-h2);
+  line-height: var(--lh-h2);
+}
+
+.t-h3 {
+  font-family: var(--font-display);
+  font-size: var(--fs-h3);
+  font-weight: var(--fw-h3);
+  line-height: var(--lh-h3);
+}
+
+.t-hero-sub {
+  max-width: var(--measure-hero-sub);
+  font-family: var(--font-body);
+  font-size: var(--fs-hero-sub);
+  font-weight: var(--fw-hero-sub);
+  line-height: var(--lh-hero-sub);
+}
+
+.t-body {
+  max-width: var(--measure-body);
+  font-family: var(--font-body);
+  font-size: var(--fs-body);
+  font-weight: var(--fw-body);
+  line-height: var(--lh-body);
+}
+
+.t-lead {
+  font-family: var(--font-body);
+  font-size: var(--fs-lead);
+  font-weight: var(--fw-lead);
+  line-height: var(--lh-lead);
+}
+
+.t-caption {
+  font-family: var(--font-body);
+  font-size: var(--fs-caption);
+  font-weight: var(--fw-caption);
+  line-height: var(--lh-caption);
+}
+
+/* Eyebrow: cor padrão sobre branco/#FFF7FA. Sobre #FFEEF4, o Eyebrow (DS-09, variante `tint`)
+   troca para var(--color-eyebrow-on-tint) (D13, DV-16). */
+.t-eyebrow {
+  font-family: var(--font-display);
+  font-size: var(--fs-eyebrow);
+  font-weight: var(--fw-eyebrow);
+  line-height: var(--lh-eyebrow);
+  letter-spacing: var(--ls-eyebrow);
+  text-transform: uppercase;
+  color: var(--color-eyebrow);
+}
+
+/* Só troca a família: chips de tecnologia, pílula do hero e código decorativo têm tamanhos e
+   pesos próprios (--fs-chip*, --fs-pill-hero, --fs-deco-code), sempre 400 ou 500. */
+.t-mono {
+  font-family: var(--font-mono);
+}

@@ -1,0 +1,126 @@
+/*
+ * Tokens de tipografia (DS-03; doc 02 §4.5; doc de design §4, §3.5 e medidas do §7).
+ * Não dependem do tema: ficam só em `:root`. Mobile-first: valor de celular na base, sobrescrito
+ * em 640 px (tablet) e 1024 px (desktop). A tela grande (1440+) mantém os valores do desktop.
+ * Para cada papel `X` da tabela §4.5 existem `--fs-X` (tamanho), `--fw-X` (peso) e `--lh-X`
+ * (entrelinha, sem unidade). `--ls-*` só onde o doc pede espaçamento entre letras.
+ * Pesos permitidos (D4, R13): Plus Jakarta Sans 700/800; Inter 400/500/600 (+ 400 itálico);
+ * JetBrains Mono 400/500. Peso 700/800 só com `--font-display` (teste typography.test.ts).
+ * As famílias saíram do fonts.css (F-06) para cá; os @font-face continuam no fonts.css.
+ */
+
+:root {
+  /* Famílias (§4; D4). Pilhas de fallback da F-06 (doc 01 passo 5). */
+  --font-display: 'Plus Jakarta Sans', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --font-body: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, 'Cascadia Code', Consolas, monospace;
+
+  /* Tamanhos — celular, até 639 px. */
+  --fs-h1: 40px; /* §4 */
+  --fs-h2: 30px; /* §4 */
+  --fs-h3: 20px; /* §4 */
+  --fs-hero-sub: 17px; /* §4 */
+  --fs-body: 16px; /* §4 */
+  --fs-button: 16px; /* §4 */
+  --fs-chip: 14px; /* §4 */
+  --fs-eyebrow: 12px; /* §4 */
+  --fs-motto: 30px; /* §7.4 */
+  --fs-featured-title: 24px; /* (D) DV-7 */
+  --fs-stat: 36px; /* §7.3 */
+  --fs-lead: 18px; /* §7.4, §7.10 */
+  --fs-nav: 15px; /* §7.1 */
+  --fs-nav-mobile: 20px; /* §7.1 (painel do menu; sem uso no desktop) */
+  --fs-logo: 18px; /* §7.1 */
+  --fs-chip-lg: 15px; /* §7.7 */
+  --fs-chip-sm: 13px; /* §7.6 */
+  --fs-pill-hero: 13px; /* §7.2 */
+  --fs-badge: 12px; /* §7.6, §7.8 */
+  --fs-caption: 14px; /* §7.3 */
+  --fs-hint: 14px; /* §3.2 · D13 · DV-17 (o "13 px" do §7.2 cede ao §3.2) */
+  --fs-signature: 16px; /* §7.2 (itálico: font-style no componente) */
+  --fs-footer-text: 15px; /* §7.12 */
+  --fs-deco-code: 12px; /* §8 */
+
+  /* Pesos (iguais em todas as faixas). */
+  --fw-h1: 800; /* §4 */
+  --fw-h2: 800; /* §4 */
+  --fw-h3: 700; /* §4 */
+  --fw-hero-sub: 400; /* §4 */
+  --fw-body: 400; /* §4 */
+  --fw-button: 600; /* §4 */
+  --fw-chip: 500; /* §4 */
+  --fw-eyebrow: 700; /* §4 (display, R-DS-3 / R13) */
+  --fw-motto: 800; /* §7.4 */
+  --fw-featured-title: 800; /* DV-7 */
+  --fw-stat: 800; /* §7.3 */
+  --fw-lead: 400; /* §7.4, §7.10 */
+  --fw-nav: 500; /* §7.1 */
+  --fw-nav-active: 600; /* §7.1 (item ativo) */
+  --fw-nav-mobile: 500; /* §7.1 */
+  --fw-logo: 700; /* §7.1 (display, R13) */
+  --fw-chip-lg: 500; /* §7.7 */
+  --fw-chip-sm: 500; /* §7.6 */
+  --fw-pill-hero: 500; /* §7.2 */
+  --fw-badge: 600; /* (D) §7.6, §7.8 */
+  --fw-caption: 400; /* §7.3 */
+  --fw-hint: 400; /* §7.2 */
+  --fw-signature: 400; /* §7.2 (Inter 400 itálico, R13) */
+  --fw-footer-text: 400; /* §7.12 */
+  --fw-deco-code: 400; /* §8 */
+
+  /* Entrelinhas (sem unidade: o computado é tamanho × fator). */
+  --lh-h1: 1.05; /* §4 */
+  --lh-h2: 1.15; /* §4 */
+  --lh-h3: 1.3; /* §4 */
+  --lh-hero-sub: 1.6; /* §4 */
+  --lh-body: 1.7; /* §4 */
+  --lh-button: 1; /* §4 */
+  --lh-chip: 1; /* §4 */
+  --lh-eyebrow: 1.2; /* §4 */
+  --lh-motto: 1.2; /* §7.4 */
+  --lh-featured-title: 1.2; /* (D) DV-7 */
+  --lh-stat: 1; /* §7.3 */
+  --lh-lead: 1.7; /* §7.4, §7.10 */
+  --lh-nav: 1; /* §7.1 */
+  --lh-nav-mobile: 1; /* §7.1 */
+  --lh-logo: 1; /* §7.1 */
+  --lh-chip-lg: 1; /* §7.7 */
+  --lh-chip-sm: 1; /* §7.6 */
+  --lh-pill-hero: 1; /* §7.2 */
+  --lh-badge: 1; /* §7.6, §7.8 */
+  --lh-caption: 1.5; /* §7.3 */
+  --lh-hint: 1.5; /* §7.2 */
+  --lh-signature: 1.6; /* §7.2 */
+  --lh-footer-text: 1.6; /* §7.12 */
+  --lh-deco-code: 1.4; /* §8 */
+
+  /* Espaçamento entre letras. */
+  --ls-h1: -0.02em; /* §4 (−2%) */
+  --ls-eyebrow: 0.12em; /* §4 (+12%) */
+}
+
+/* Tablet — 640 a 1023 px (§4, §10). */
+@media (min-width: 640px) {
+  :root {
+    --fs-h1: 52px; /* §4 */
+    --fs-h2: 38px; /* §4 */
+    --fs-h3: 22px; /* §4 */
+    --fs-hero-sub: 19px; /* §4 */
+    --fs-eyebrow: 13px; /* §4 */
+    --fs-motto: 38px; /* (D) §7.4 */
+    --fs-featured-title: 28px; /* (D) DV-7 */
+  }
+}
+
+/* Desktop — 1024 px ou mais (§4, §10). */
+@media (min-width: 1024px) {
+  :root {
+    --fs-h1: 68px; /* §4 */
+    --fs-h2: 44px; /* §4 */
+    --fs-h3: 24px; /* §4 */
+    --fs-hero-sub: 20px; /* §4 */
+    --fs-body: 17px; /* §4 */
+    --fs-motto: 48px; /* §7.4 */
+    --fs-featured-title: 32px; /* DV-7 */
+  }
+}
