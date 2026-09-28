@@ -1,0 +1,93 @@
+/*
+ * GlassPanel (DS-17; doc de design §3.4, §7.1, §7.2; RS-4).
+ *
+ * - Fundo translúcido + `backdrop-filter` (com o prefixo -webkit- do Safari), tudo por token.
+ * - Cabeçalho: a sombra (`--shadow-header`) fica num `::after` que vai de `opacity` 0 a 1 com
+ *   `data-scrolled="true"`. Nada anima `box-shadow` (regra R1 do doc 04). A camada fica atrás do
+ *   conteúdo (`z-index: -1` dentro do contexto de empilhamento criado pelo próprio painel).
+ * - Sem suporte a `backdrop-filter`: o vidro usa `--glass-bg-fallback` (92%), para o texto não
+ *   ficar sobre um fundo quase transparente. Cabeçalho (80%) e menu (96%) já são quase opacos e
+ *   mantêm a própria cor.
+ * - Movimento reduzido: só a opacidade da sombra muda (sem deslocamento); nada a desligar.
+ */
+
+/* Especificidade zero: o consumidor (ex.: cabeçalho fixo do S-01) troca `position` sem disputa. */
+:where(.panel) {
+  position: relative;
+  isolation: isolate;
+  box-sizing: border-box;
+}
+
+.glass {
+  border: var(--border-width) solid var(--glass-border);
+  background-color: var(--glass-bg);
+  /* stylelint-disable-next-line property-no-vendor-prefix -- Safari ainda exige o prefixo */
+  -webkit-backdrop-filter: blur(var(--glass-blur));
+  backdrop-filter: blur(var(--glass-blur));
+}
+
+.header {
+  border-bottom: var(--border-width) solid var(--header-border);
+  background-color: var(--header-bg);
+  /* stylelint-disable-next-line property-no-vendor-prefix -- Safari ainda exige o prefixo */
+  -webkit-backdrop-filter: blur(var(--header-blur));
+  backdrop-filter: blur(var(--header-blur));
+}
+
+/* Sombra do cabeçalho após a rolagem (§7.1), acesa por opacidade. */
+.header::after {
+  position: absolute;
+  z-index: -1;
+  inset: 0;
+  box-shadow: var(--shadow-header);
+  content: '';
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--dur-base) var(--ease-out);
+}
+
+.header[data-scrolled='true']::after {
+  opacity: 1;
+}
+
+/* Painel do menu mobile: desfoque de 14 px como o cabeçalho (D). */
+.menu {
+  background-color: var(--mobile-menu-bg);
+  /* stylelint-disable-next-line property-no-vendor-prefix -- Safari ainda exige o prefixo */
+  -webkit-backdrop-filter: blur(var(--header-blur));
+  backdrop-filter: blur(var(--header-blur));
+}
+
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  .glass {
+    background-color: var(--glass-bg-fallback);
+  }
+}
+
+/* ---------- Raios ---------- */
+
+.radiusMedia {
+  border-radius: var(--radius-media);
+}
+
+.radiusCard {
+  border-radius: var(--radius-card);
+}
+
+.radiusPanel {
+  border-radius: var(--radius-panel);
+}
+
+/* ---------- Espaço interno ---------- */
+
+.paddingSm {
+  padding: var(--space-4);
+}
+
+.paddingMd {
+  padding: var(--space-6);
+}
+
+.paddingLg {
+  padding: var(--space-8);
+}
