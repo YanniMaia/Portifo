@@ -1,0 +1,28 @@
+/*
+ * Ligações do hero (A-14; doc de design §7.2; doc 04 §5).
+ * - Camada que cobre a área do `HeroVisual` (520 × 520 no desktop, escala por igual no tablet e
+ *   no celular). O S-04 decide a ordem das camadas.
+ * - Linhas de 1 px em qualquer escala (`vector-effect: non-scaling-stroke`), cor
+ *   `--deco-network-line` (#F7B7D0 a 60% claro; #F06CA3 a 40% escuro, DS-01; D20).
+ * - Nós de 8 px (raio 4 no sistema de 520) em `--deco-node`.
+ * - Estático: sem animação. A flutuação é dos cartões (A-11a); o A-11b mede o desalinhamento.
+ */
+.links {
+  position: absolute;
+  inset: 0;
+  inline-size: 100%;
+  block-size: 100%;
+  overflow: visible;
+  pointer-events: none;
+}
+
+.linha {
+  fill: none;
+  stroke: var(--deco-network-line);
+  stroke-width: 1px;
+  vector-effect: non-scaling-stroke;
+}
+
+.no {
+  fill: var(--deco-node);
+}

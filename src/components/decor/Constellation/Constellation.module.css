@@ -1,0 +1,49 @@
+/*
+ * Constelações (A-14; doc de design §8 "Nós de rede"; doc 04 §5 e §7 "Cintilar dos nós").
+ * - Linhas de 1 px em `--deco-network-line` (#F7B7D0 a 60% claro; #F06CA3 a 40% escuro, DS-01).
+ * - Nós em `--deco-node` (#F7B7D0 claro; #F06CA3 a 40% escuro, alias do A-01).
+ * - Cintilar: só `opacity`, 1 → 0,5 → 1, `--ease-in-out`, período por nó de 6 a 10 s
+ *   (`--twinkle-dur`, escrito inline pelo componente) e atraso próprio (`--twinkle-delay`).
+ *   Longhands com fallback em `var(--twinkle-dur, 8s)`: o teste anti-piscada do A-01 resolve o
+ *   fallback (achado M3 da V-02). Período ≥ 1 s: nada pisca (R5).
+ * - Pausa fora da tela e com a aba oculta: `data-loop` em cada nó (A-01).
+ * - Movimento reduzido: sem animação; nós parados em opacidade 1 (A-01 + regra abaixo).
+ */
+.constelacao {
+  display: block;
+  overflow: visible;
+  pointer-events: none;
+}
+
+.ligacoes line {
+  fill: none;
+  stroke: var(--deco-network-line);
+  stroke-width: 1px;
+  vector-effect: non-scaling-stroke;
+}
+
+.no {
+  fill: var(--deco-node);
+  animation-name: cintilar-no;
+  animation-duration: var(--twinkle-dur, 8s);
+  animation-timing-function: var(--ease-in-out);
+  animation-delay: var(--twinkle-delay, 0s);
+  animation-iteration-count: infinite;
+}
+
+@keyframes cintilar-no {
+  0%,
+  100% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0.5;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .no {
+    animation: none;
+  }
+}
