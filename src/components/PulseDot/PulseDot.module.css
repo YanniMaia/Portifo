@@ -1,0 +1,75 @@
+/*
+ * PulseDot (DS-08; doc de design §7.2, §7.9, §7.11, §8, §9, §11; canvas: anel scale 1→1,8 e
+ * opacidade 0,7→0). Único ponto pulsante do projeto (D14).
+ *
+ * - Núcleo: círculo `size` × `size` em `--color-accent` (#E0518A claro, #F58FB8 escuro). Estático:
+ *   nunca pisca (R5 do doc 04).
+ * - Anel: `::after` da mesma cor, `scale(1)`+`opacity: 0.7` → `scale(1.8)`+`opacity: 0`, em
+ *   `--dur-pulse` (2,4 s = 0,42 Hz, abaixo de 3 Hz), `infinite`, `--ease-out`. Só `transform` e
+ *   `opacity` (§11). Escala única 1,8 nos dois tamanhos: 20 → 36 px (§7.9) e 8 → 14,4 px.
+ * - Fora de animação o anel fica com `opacity: 0` (invisível). Assim, qualquer mecanismo que
+ *   encurte a animação a um quadro (DS-04 `base.css`, checkbox do /__styleguide) deixa só o núcleo.
+ * - Movimento reduzido: sem anel, núcleo estático (passo 4).
+ * - Não é interativo: sem hover, foco, ativo nem alvo de toque; `pointer-events: none`.
+ * - Tamanhos 8 e 20 px em literal: são as medidas do próprio doc (§7.2, §7.9), sem token.
+ */
+.dot {
+  position: relative;
+  display: inline-block;
+  flex: none;
+  vertical-align: middle;
+  border-radius: 50%;
+  background-color: var(--color-accent);
+  pointer-events: none;
+}
+
+.size8 {
+  inline-size: 8px;
+  block-size: 8px;
+}
+
+.size20 {
+  inline-size: 20px;
+  block-size: 20px;
+}
+
+.dot::after {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background-color: var(--color-accent);
+  content: '';
+  opacity: 0;
+  transform: scale(1);
+  transform-origin: center;
+  animation: pulse-ring var(--dur-pulse) var(--ease-out) infinite;
+}
+
+@keyframes pulse-ring {
+  from {
+    opacity: 0.7;
+    transform: scale(1);
+  }
+
+  to {
+    opacity: 0;
+    transform: scale(1.8);
+  }
+}
+
+/* §9 / passo 4: sem anel, núcleo estático. A cor continua trocando com o tema. */
+@media (prefers-reduced-motion: reduce) {
+  .dot::after {
+    display: none;
+    animation: none;
+  }
+}
+
+/* Alto contraste do sistema: o ponto continua visível na cor de texto do sistema. */
+@media (forced-colors: active) {
+  .dot,
+  .dot::after {
+    background-color: canvastext;
+    forced-color-adjust: none;
+  }
+}
