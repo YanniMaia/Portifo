@@ -4,9 +4,9 @@
 // Estrutura: um único <span> decorativo. O núcleo é o próprio span; o anel é o `::after` dele
 // (CSS Module). Por isso o span é "o elemento do anel" citado no A-10 (doc 04, passo 1):
 // - `data-decor="pulse"` já vem daqui (gancho R2 do doc 04);
-// - para pausar fora da tela, o A-10 só acrescenta `data-loop` NESTE span. O `reduced-motion.css`
-//   do A-01 já pausa `[data-loop][data-offscreen='true']::after` e `html[data-page-hidden]
-//   [data-loop]::after`, então o anel para sem nenhum CSS novo.
+// - `data-loop` foi acrescentado pelo A-10 NESTE span: o observador do A-01 (`loopPause.ts`)
+//   escreve `data-offscreen` nele, e o `reduced-motion.css` pausa o `::after` (anel) fora da tela
+//   e com a aba oculta (`html[data-page-hidden]`), sem nenhum CSS novo.
 //
 // Sem texto (D5): é decorativo, sempre `aria-hidden="true"` (§8, §11).
 import styles from './PulseDot.module.css';
@@ -26,5 +26,7 @@ export function PulseDot({ size = 8, className }: PulseDotProps) {
     .filter(Boolean)
     .join(' ');
 
-  return <span className={classes} aria-hidden="true" data-decor="pulse" data-size={size} />;
+  return (
+    <span className={classes} aria-hidden="true" data-decor="pulse" data-loop="" data-size={size} />
+  );
 }
