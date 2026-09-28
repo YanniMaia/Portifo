@@ -1,0 +1,55 @@
+/*
+ * Flutuação dos cartões do hero (A-11a; doc 04 §7; doc de design §7.2 e §9 "Elementos
+ * flutuantes"; DESIGN.md DV-8, DV-9). CSS global, importado por `src/styles/global.css`.
+ * Regras dormentes até o S-04 pôr `data-float="lock|database|chart|code"` nos cartões (§4.4).
+ *
+ * - Só `transform` (translateY) é animado, com `--ease-in-out` (A-01) em loop.
+ * - Amplitude, período e atraso por cartão: fonte única aqui e em `presets.ts` (o teste
+ *   `float.test.ts` garante que batem). O S-04 não passa valores próprios (N27).
+ * - Pausa fora da tela e com a aba oculta: o observador do A-01 (`loopPause.ts`) já cobre
+ *   `[data-float]` sem precisar de `data-loop`.
+ * - Movimento reduzido: o `reduced-motion.css` do A-01 zera a animação de `[data-float]`, e o
+ *   cartão fica na posição de repouso (translateY 0).
+ * - `will-change: transform` só aqui (orçamento §4.3: ≤ 8 elementos permanentes).
+ * - Não use `transform` para posicionar o cartão com `data-float`: use um invólucro ou `inset`.
+ */
+@keyframes deco-float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(calc(-1 * var(--float-amp)));
+  }
+}
+
+[data-float] {
+  animation: deco-float var(--float-dur) var(--ease-in-out) var(--float-delay) infinite;
+  will-change: transform;
+}
+
+[data-float='lock'] {
+  --float-amp: 8px;
+  --float-dur: 6s;
+  --float-delay: -1.2s;
+}
+
+[data-float='database'] {
+  --float-amp: 10px;
+  --float-dur: 7.5s;
+  --float-delay: -3.1s;
+}
+
+[data-float='chart'] {
+  --float-amp: 12px;
+  --float-dur: 9s;
+  --float-delay: -4.4s;
+}
+
+/* DV-8: cartão de código, 212 × 60 px. Some no celular (DV-9, S-04). */
+[data-float='code'] {
+  --float-amp: 9px;
+  --float-dur: 6.8s;
+  --float-delay: -2s;
+}

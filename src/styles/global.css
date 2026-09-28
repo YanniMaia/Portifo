@@ -1,8 +1,9 @@
 /* Folha global única, importada só em src/main.tsx (F-05).
    Ordem: fontes (F-06) → tokens (DS-01..DS-03; `motion-extra.css` logo depois de `motion.css` e
    `deco-extra.css` depois dos tokens do DS, ambos do A-01) → base (reset, página, foco, rolagem da
-   F-13, transição de tema, movimento reduzido e .visually-hidden; DS-04) → tipografia (DS-03,
-   sempre por último). Nenhum hex fora de ./tokens/ (stylelint `color-no-hex`, DS-04).
+   F-13, transição de tema, movimento reduzido e .visually-hidden; DS-04) → flutuação dos cartões
+   por `[data-float]` (A-11a) → tipografia (DS-03, sempre por último). Nenhum hex fora de
+   ./tokens/ (stylelint `color-no-hex`, DS-04).
    O CSS de movimento do A-01 (`src/motion/reduced-motion.css`) entra pelo MotionProvider. */
 @import './fonts.css';
 @import './tokens/colors.css';
@@ -13,4 +14,5 @@
 @import './tokens/typography.css';
 @import './tokens/deco-extra.css';
 @import './base.css';
+@import '../components/decor/float/float.css';
 @import './typography.css';
