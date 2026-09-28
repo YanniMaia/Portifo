@@ -1,0 +1,31 @@
+/*
+ * Container (DS-10; doc de design §5, §10).
+ *
+ * - `--content-max` é a largura útil; o `max-width` soma as duas margens laterais (`--gutter`), e o
+ *   `padding-inline` devolve essas margens. Em 1440 px: 1200 + 2 × 32 = 1264 px, centralizado →
+ *   conteúdo de 1200 px com 120 px de cada lado.
+ * - Abaixo de 1024 px, `--container-max` = 100%: o `max-width` passa da largura, e vale o 100%.
+ * - Tela grande (§10): o contêiner não cresce além de 1200 px; o fundo é da `Section`.
+ * - Sem cor, sem movimento: nada muda entre os temas nem com movimento reduzido.
+ */
+.container {
+  --content-max: var(--container-max);
+
+  box-sizing: border-box;
+  width: 100%;
+  max-width: calc(var(--content-max) + 2 * var(--gutter));
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+}
+
+.narrow {
+  --content-max: var(--measure-narrow);
+}
+
+.motto {
+  --content-max: var(--measure-motto);
+}
+
+.contact {
+  --content-max: var(--measure-contact);
+}

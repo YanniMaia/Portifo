@@ -1,0 +1,32 @@
+/*
+ * Section (DS-10; doc de design §2, §5, §7.4, §10; DV-10; R-DS-16).
+ *
+ * - Espaço vertical: `--section-py` (112/88/64 px) ou, com `padding="motto"`, `--section-py-motto`
+ *   (96/88/64 px).
+ * - `overflow-x: clip`: decorações absolutas não geram rolagem horizontal, sem criar contêiner de
+ *   rolagem (não quebra `position: sticky` nem a rolagem por âncora).
+ * - Sem `scroll-margin-top` (D14: o offset é só do `scroll-padding-top` da F-13, no base.css).
+ * - Fundo por tom, sempre por token; a troca de tema anima pela `.theme-transition` do DS-04.
+ * - Sem movimento próprio: nada muda com movimento reduzido.
+ */
+.section {
+  position: relative;
+  padding-block: var(--section-py);
+  overflow-x: clip;
+}
+
+.motto {
+  padding-block: var(--section-py-motto);
+}
+
+.base {
+  background-color: var(--color-bg);
+}
+
+.alt {
+  background-color: var(--color-bg-alt);
+}
+
+.tint {
+  background-color: var(--color-bg-tint);
+}
