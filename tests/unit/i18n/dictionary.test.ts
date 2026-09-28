@@ -36,12 +36,16 @@ function folhasInvalidas(obj: Record<string, unknown>): string[] {
     .map(({ caminho }) => caminho);
 }
 
-/** Grupos com cara de objeto de metadado (`{ texto, sugerido }`), proibidos pela R7. */
+/**
+ * Grupos com cara de objeto de metadado (`{ texto, sugerido }`), proibidos pela R7.
+ * A marca é a chave `sugerido`: `texto` sozinho é nome legítimo de chave do Anexo A
+ * (ex.: `sobre.texto`, `interesses.dados.texto`), incluído pela C-02.
+ */
 function gruposDeMetadado(obj: Record<string, unknown>, prefixo = ''): string[] {
   return Object.entries(obj).flatMap(([chave, valor]) => {
     if (!ehGrupo(valor)) return [];
     const caminho = prefixo ? `${prefixo}.${chave}` : chave;
-    const proprio = 'texto' in valor || 'sugerido' in valor ? [caminho] : [];
+    const proprio = 'sugerido' in valor ? [caminho] : [];
     return [...proprio, ...gruposDeMetadado(valor, caminho)];
   });
 }
@@ -102,8 +106,10 @@ describe('dicionários pt/en', () => {
     }
   });
 
-  it('as chaves de infraestrutura da F-10 são exatamente as do Anexo A (A.1, A.2, A.14)', () => {
-    expect(chaves(pt)).toEqual(Object.keys(ESPERADO).sort());
+  it('as chaves de infraestrutura da F-10 (Anexo A.1, A.2, A.14) continuam presentes', () => {
+    // A C-02 acrescenta as demais chaves do Anexo A; o conjunto completo é testado em
+    // tests/unit/content/pt.literal.test.ts.
+    expect(chaves(pt)).toEqual(expect.arrayContaining(Object.keys(ESPERADO)));
   });
 
   it('os textos PT e EN batem com o Anexo A', () => {

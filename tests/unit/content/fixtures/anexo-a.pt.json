@@ -1,0 +1,329 @@
+{
+  "fonte": "plano/05-conteudo-dados-i18n.md, Anexo A (coluna pt-BR), transcrito à mão. Exceto os textos de projects.ts (A.9, segunda tabela).",
+  "legenda": {
+    "origem": "doc | eyebrow (doc em caixa alta) | sugerido-ia | sugerido-doc | derivado | novo-ui | novo-a11y | placeholder",
+    "doc": "trecho procurado no documento de design quando difere do valor (ex.: linha da frase com a seta)",
+    "pendencia": "pendência esperada em PENDENCIA_POR_CHAVE",
+    "fn": "função: argumento → resultado esperado"
+  },
+  "chaves": {
+    "a11y.skipToContent": { "pt": "Pular para o conteúdo", "origem": "doc" },
+    "a11y.opensInNewTab": { "pt": "abre em nova aba", "origem": "doc" },
+    "a11y.themeToDark": { "pt": "Alternar para modo escuro", "origem": "doc" },
+    "a11y.themeToLight": { "pt": "Alternar para modo claro", "origem": "doc" },
+    "a11y.language": { "pt": "Idioma", "origem": "novo-a11y" },
+    "a11y.languageNamePt": { "pt": "Português", "origem": "novo-a11y" },
+    "a11y.languageNameEn": { "pt": "English", "origem": "novo-a11y" },
+    "menu.abrir": { "pt": "Abrir menu", "origem": "novo-a11y" },
+    "menu.fechar": { "pt": "Fechar menu", "origem": "novo-a11y" },
+    "menu.navAria": { "pt": "Navegação principal", "origem": "novo-a11y" },
+
+    "marca.monograma": { "pt": "YE", "origem": "doc" },
+    "marca.nome": { "pt": "Yanni Elyssa", "origem": "doc" },
+    "marca.aria": { "pt": "Yanni Elyssa — voltar ao topo", "origem": "novo-a11y" },
+    "nav.sobre": { "pt": "Sobre", "origem": "doc" },
+    "nav.interesses": { "pt": "Interesses", "origem": "doc" },
+    "nav.habilidades": { "pt": "Habilidades", "origem": "doc" },
+    "nav.projetos": { "pt": "Projetos", "origem": "doc" },
+    "nav.formacao": { "pt": "Formação", "origem": "doc" },
+    "nav.contato": { "pt": "Contato", "origem": "doc" },
+
+    "hero.pilula": {
+      "pt": "Dados · Cibersegurança · IA",
+      "origem": "sugerido-ia",
+      "pendencia": "P-IA-2",
+      "original": "Dados · Cibersegurança · Desenvolvimento"
+    },
+    "hero.tituloLinha1": { "pt": "Olá, eu sou", "origem": "doc" },
+    "hero.tituloNome": { "pt": "Yanni Elyssa.", "origem": "doc" },
+    "hero.subtitulo": {
+      "pt": "Estudante de Ciência da Computação apaixonada por tecnologia, dados, cibersegurança e inteligência artificial.",
+      "origem": "sugerido-ia",
+      "pendencia": "P-IA-2",
+      "original": "Estudante de Ciência da Computação apaixonada por tecnologia, dados e cibersegurança."
+    },
+    "hero.assinatura": {
+      "pt": "Transformando conhecimento em soluções, dados em informação e desafios em aprendizado.",
+      "origem": "doc"
+    },
+    "hero.botaoProjetos": { "pt": "Ver meus projetos", "origem": "doc" },
+    "hero.botaoContato": { "pt": "Entre em contato", "origem": "doc" },
+    "hero.dicaMonograma": { "pt": "Clique no YE", "origem": "doc" },
+    "hero.monogramaAria": { "pt": "Soltar bits e cadeados", "origem": "novo-a11y" },
+
+    "destaques.aria": { "pt": "Destaques", "origem": "novo-a11y" },
+    "destaques.areas.valor": {
+      "pt": "3",
+      "origem": "sugerido-ia",
+      "pendencia": "P-IA-2",
+      "original": "2"
+    },
+    "destaques.areas.legenda": {
+      "pt": "áreas de estudo: Dados, Cibersegurança e IA",
+      "origem": "sugerido-ia",
+      "pendencia": "P-IA-2",
+      "original": "áreas de foco: Dados e Cibersegurança"
+    },
+    "destaques.linguagens.valor": { "pt": "2", "origem": "doc" },
+    "destaques.linguagens.legenda": { "pt": "linguagens em estudo: Python e SQL", "origem": "doc" },
+    "destaques.projetos.legenda": {
+      "fn": {
+        "1": "projeto publicado no GitHub",
+        "2": "projetos publicados no GitHub",
+        "5": "projetos publicados no GitHub"
+      },
+      "origem": "novo-ui",
+      "pendencia": "P-11"
+    },
+    "destaques.formacao.valor": { "pt": "UniCEUB", "origem": "doc" },
+    "destaques.formacao.legenda": { "pt": "Ciência da Computação, em andamento", "origem": "doc" },
+
+    "frase.eyebrow": { "pt": "O que me move", "origem": "eyebrow" },
+    "frase.linha1.antes": {
+      "pt": "Conhecimento",
+      "origem": "doc",
+      "doc": "Conhecimento → soluções."
+    },
+    "frase.linha1.depois": {
+      "pt": "soluções.",
+      "origem": "doc",
+      "doc": "Conhecimento → soluções."
+    },
+    "frase.linha2.antes": { "pt": "Dados", "origem": "doc", "doc": "Dados → informação." },
+    "frase.linha2.depois": { "pt": "informação.", "origem": "doc", "doc": "Dados → informação." },
+    "frase.linha3.antes": { "pt": "Desafios", "origem": "doc", "doc": "Desafios → aprendizado." },
+    "frase.linha3.depois": {
+      "pt": "aprendizado.",
+      "origem": "doc",
+      "doc": "Desafios → aprendizado."
+    },
+    "frase.conectivo": { "pt": "em", "origem": "novo-a11y" },
+    "frase.apoio": {
+      "pt": "Gosto de transformar conhecimentos acadêmicos em projetos práticos.",
+      "origem": "doc"
+    },
+
+    "sobre.eyebrow": { "pt": "Sobre", "origem": "eyebrow" },
+    "sobre.titulo": { "pt": "Sobre mim", "origem": "doc" },
+    "sobre.texto": {
+      "pt": "Sou estudante de Ciência da Computação e estou construindo minha trajetória na área de Tecnologia da Informação. Tenho interesse especialmente em dados, bancos de dados, governança de dados e cibersegurança. Gosto de aprender novas tecnologias, resolver problemas e transformar conhecimentos acadêmicos em projetos práticos.",
+      "origem": "doc"
+    },
+    "sobre.chips": { "pt": ["Python", "SQL", "Git", "GitHub", "Excel", "Trello"], "origem": "doc" },
+    "sobre.verHabilidades": { "pt": "Ver habilidades →", "origem": "doc" },
+    "sobre.trajetoria.titulo": { "pt": "Minha trajetória", "origem": "doc" },
+    "sobre.trajetoria.marcos": {
+      "pt": [
+        "Ciência da Computação — UniCEUB (em andamento)",
+        "Primeiro projeto: Gerenciador de Estoque (Python, Git/GitHub)",
+        "Próximo passo: aprofundar projetos em Dados e Cibersegurança"
+      ],
+      "origem": "sugerido-doc",
+      "pendencia": "P-10"
+    },
+    "sobre.trajetoria.ano": { "pt": "[ano]", "origem": "placeholder", "pendencia": "P-05" },
+
+    "interesses.eyebrow": { "pt": "Interesses", "origem": "eyebrow" },
+    "interesses.titulo": { "pt": "Áreas de interesse", "origem": "doc" },
+    "interesses.subtitulo": {
+      "pt": "Onde concentro meus estudos e minha curiosidade.",
+      "origem": "doc"
+    },
+    "interesses.seloFoco": { "pt": "Foco principal", "origem": "doc" },
+    "interesses.seloEstudo": { "pt": "Em estudo", "origem": "sugerido-ia", "pendencia": "P-IA-2" },
+    "interesses.dados.titulo": { "pt": "Dados", "origem": "doc" },
+    "interesses.dados.texto": {
+      "pt": "Banco de Dados, SQL, Análise de Dados, Governança de Dados, organização e qualidade dos dados.",
+      "origem": "doc"
+    },
+    "interesses.dados.chips": {
+      "pt": ["SQL", "Banco de Dados", "Governança de Dados"],
+      "origem": "derivado",
+      "pendencia": "P-10"
+    },
+    "interesses.ciber.titulo": { "pt": "Cibersegurança", "origem": "doc" },
+    "interesses.ciber.texto": {
+      "pt": "Segurança da Informação, segurança de aplicações, redes, proteção de dados e boas práticas de segurança.",
+      "origem": "doc"
+    },
+    "interesses.ciber.chips": {
+      "pt": ["Segurança da Informação", "Redes", "Proteção de Dados"],
+      "origem": "derivado",
+      "pendencia": "P-10"
+    },
+    "interesses.ia.titulo": {
+      "pt": "Inteligência Artificial",
+      "origem": "sugerido-ia",
+      "pendencia": "P-IA-2"
+    },
+    "interesses.ia.texto": {
+      "pt": "Fundamentos de Inteligência Artificial e aprendizado de máquina, e como aplicá-los a dados e à segurança.",
+      "origem": "sugerido-ia",
+      "pendencia": "P-IA-2"
+    },
+    "interesses.ia.chips": { "pt": [], "origem": "placeholder", "pendencia": "P-IA-1" },
+    "interesses.dev.titulo": { "pt": "Desenvolvimento", "origem": "doc" },
+    "interesses.dev.texto": {
+      "pt": "Python, Git/GitHub, desenvolvimento de sistemas e automação.",
+      "origem": "doc"
+    },
+    "interesses.dev.chips": {
+      "pt": ["Python", "Git/GitHub", "Automação"],
+      "origem": "derivado",
+      "pendencia": "P-10"
+    },
+
+    "habilidades.eyebrow": { "pt": "Habilidades", "origem": "eyebrow" },
+    "habilidades.titulo": { "pt": "Tecnologias e habilidades", "origem": "doc" },
+    "habilidades.subtitulo": {
+      "pt": "Ferramentas e conceitos que estou estudando e praticando.",
+      "origem": "doc"
+    },
+    "habilidades.linguagens.titulo": { "pt": "Linguagens", "origem": "doc" },
+    "habilidades.linguagens.chips": { "pt": ["Python", "SQL"], "origem": "doc" },
+    "habilidades.ferramentas.titulo": { "pt": "Ferramentas", "origem": "doc" },
+    "habilidades.ferramentas.chips": {
+      "pt": ["Git", "GitHub", "Microsoft Excel", "Trello"],
+      "origem": "doc"
+    },
+    "habilidades.conceitos.titulo": { "pt": "Conceitos", "origem": "doc" },
+    "habilidades.conceitos.chips": {
+      "pt": [
+        "Banco de Dados",
+        "Governança de Dados",
+        "Engenharia de Requisitos",
+        "Metodologias Ágeis",
+        "DevOps",
+        "Segurança da Informação"
+      ],
+      "origem": "doc"
+    },
+
+    "projetos.eyebrow": { "pt": "Projetos", "origem": "eyebrow" },
+    "projetos.titulo": { "pt": "Projetos", "origem": "doc" },
+    "projetos.subtitulo": { "pt": "O que estou construindo enquanto aprendo.", "origem": "doc" },
+    "projetos.emDestaque": { "pt": "Em destaque", "origem": "novo-ui", "pendencia": "P-10" },
+    "projetos.botaoVer": { "pt": "Ver projeto", "origem": "doc" },
+    "projetos.botaoGithub": { "pt": "GitHub", "origem": "doc" },
+    "projetos.seloEstudo": { "pt": "Projeto de estudo", "origem": "doc" },
+    "projetos.verTodos": { "pt": "Ver todos no GitHub →", "origem": "doc" },
+    "projetos.legendaReserva": {
+      "pt": "[substituir por print do projeto]",
+      "origem": "placeholder",
+      "pendencia": "P-03"
+    },
+    "projetos.ia.titulo": {
+      "pt": "Projeto de IA — em breve",
+      "origem": "sugerido-ia",
+      "pendencia": "P-IA-2"
+    },
+    "projetos.alt.estoque": {
+      "pt": "Ilustração abstrata em rosa com uma tabela de estoque estilizada e um mini gráfico de barras.",
+      "origem": "novo-a11y"
+    },
+    "projetos.alt.padrao": {
+      "pt": "Ilustração abstrata em rosa com uma grade e um mini gráfico de linha.",
+      "origem": "novo-a11y"
+    },
+
+    "formacao.eyebrow": { "pt": "Formação", "origem": "eyebrow" },
+    "formacao.titulo": { "pt": "Formação Acadêmica", "origem": "doc" },
+    "formacao.curso": { "pt": "Ciência da Computação", "origem": "doc" },
+    "formacao.instituicao": { "pt": "UniCEUB", "origem": "doc" },
+    "formacao.selo": { "pt": "Formação em andamento", "origem": "doc" },
+    "formacao.anoInicio": { "pt": "[ano de início]", "origem": "placeholder", "pendencia": "P-05" },
+    "formacao.previsao": {
+      "pt": "[previsão de conclusão]",
+      "origem": "placeholder",
+      "pendencia": "P-05"
+    },
+    "formacao.futuro": {
+      "pt": "Cursos, certificações e novas conquistas entrarão aqui.",
+      "origem": "doc"
+    },
+
+    "objetivos.eyebrow": { "pt": "Objetivos", "origem": "eyebrow" },
+    "objetivos.titulo": { "pt": "Onde quero chegar", "origem": "doc" },
+    "objetivos.texto": {
+      "pt": "Meu objetivo é construir uma carreira na área de Tecnologia da Informação, desenvolvendo experiência principalmente em Dados e Cibersegurança. Quero continuar aprendendo, participar de projetos reais e transformar minha formação acadêmica em soluções que gerem valor para empresas e pessoas.",
+      "origem": "doc"
+    },
+    "objetivos.trilhaRotulo": {
+      "fn": { "1": "Trilha 1", "2": "Trilha 2", "3": "Trilha 3" },
+      "origem": "novo-ui",
+      "pendencia": "P-10"
+    },
+    "objetivos.trilhaDados.nome": { "pt": "Dados", "origem": "doc" },
+    "objetivos.trilhaDados.etapas": {
+      "pt": ["Dados", "Banco de Dados", "Governança", "Análise"],
+      "origem": "doc",
+      "doc": "Dados → Banco de Dados → Governança → Análise"
+    },
+    "objetivos.trilhaCiber.nome": { "pt": "Cibersegurança", "origem": "doc" },
+    "objetivos.trilhaCiber.etapas": {
+      "pt": ["Cibersegurança", "Segurança da Informação", "Segurança de Sistemas", "Cybersecurity"],
+      "origem": "doc",
+      "doc": "Cibersegurança → Segurança da Informação → Segurança de Sistemas → Cybersecurity"
+    },
+    "objetivos.trilhaIA.nome": { "pt": "IA", "origem": "sugerido-ia", "pendencia": "P-IA-2" },
+    "objetivos.trilhaIA.etapas": {
+      "pt": [
+        "Fundamentos de IA",
+        "Machine Learning",
+        "IA aplicada a Dados",
+        "IA aplicada à Segurança"
+      ],
+      "origem": "sugerido-ia",
+      "pendencia": "P-IA-2"
+    },
+
+    "contato.eyebrow": { "pt": "Contato", "origem": "eyebrow" },
+    "contato.titulo": { "pt": "Vamos conversar?", "origem": "doc" },
+    "contato.texto": {
+      "pt": "Estou aberta a oportunidades, projetos, conexões e experiências que possam contribuir para minha evolução na área de tecnologia.",
+      "origem": "doc"
+    },
+    "contato.disponibilidade": {
+      "pt": "Aberta a oportunidades de estágio em tecnologia.",
+      "origem": "sugerido-doc",
+      "pendencia": "P-10"
+    },
+    "contato.botaoEmail": { "pt": "E-mail", "origem": "doc" },
+    "contato.botaoLinkedin": { "pt": "LinkedIn", "origem": "doc" },
+    "contato.botaoGithub": { "pt": "GitHub", "origem": "doc" },
+    "contato.copiar": { "pt": "Copiar", "origem": "doc" },
+    "contato.copiado": { "pt": "Copiado!", "origem": "doc" },
+    "contato.copiarAria": { "pt": "Copiar endereço de e-mail", "origem": "novo-a11y" },
+    "contato.copiadoAnuncio": { "pt": "E-mail copiado.", "origem": "novo-a11y" },
+
+    "rodape.frase": {
+      "pt": "Estudante de Ciência da Computação. Dados e Cibersegurança.",
+      "origem": "doc"
+    },
+    "rodape.linksRapidos": { "pt": "Links rápidos", "origem": "doc" },
+    "rodape.navAria": { "pt": "Links rápidos do rodapé", "origem": "novo-a11y" },
+    "rodape.socialTitulo": { "pt": "Social", "origem": "doc" },
+    "rodape.social.linkedinAria": { "pt": "LinkedIn de Yanni Elyssa", "origem": "novo-a11y" },
+    "rodape.social.githubAria": { "pt": "GitHub de Yanni Elyssa", "origem": "novo-a11y" },
+    "rodape.social.emailAria": { "pt": "Enviar e-mail para Yanni Elyssa", "origem": "novo-a11y" },
+    "rodape.copyright": {
+      "pt": "© 2026 Yanni Elyssa. Todos os direitos reservados.",
+      "origem": "doc"
+    },
+    "rodape.feitoPor": { "pt": "Feito por Yanni Elyssa", "origem": "doc" },
+    "rodape.voltarTopo": { "pt": "Voltar ao topo ↑", "origem": "doc" },
+
+    "meta.title": { "pt": "Yanni Elyssa | Portfólio", "origem": "doc" },
+    "meta.description": {
+      "pt": "Yanni Elyssa é estudante de Ciência da Computação com interesse em Dados, Cibersegurança e Inteligência Artificial.",
+      "origem": "sugerido-ia",
+      "pendencia": "P-IA-2",
+      "original": "Yanni Elyssa é estudante de Ciência da Computação com interesse em Dados e Cibersegurança."
+    },
+    "meta.ogFrase": { "pt": "Dados e Cibersegurança", "origem": "doc" },
+    "meta.ogAlt": { "pt": "Yanni Elyssa — Dados e Cibersegurança", "origem": "novo-a11y" },
+
+    "erro404.titulo": { "pt": "Página não encontrada", "origem": "novo-ui", "pendencia": "P-10" },
+    "erro404.voltar": { "pt": "Voltar ao início", "origem": "novo-ui", "pendencia": "P-10" }
+  }
+}
