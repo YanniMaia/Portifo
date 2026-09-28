@@ -36,6 +36,7 @@
   --color-primary: #c93a77; /* §3.2 */
   --color-primary-hover: #a82560; /* §9 */
   --color-on-primary: #ffffff; /* §3.4 */
+  --color-on-brand: #ffffff; /* §7.1 · §7.2 letras do monograma sobre --gradient-brand (DS-18) */
   --color-secondary-border: #f286b0; /* §7.2 · DV-1 · D13 (2,4:1 aceito: o texto identifica) */
   --color-secondary-text: #a82560; /* §7.2 */
   --color-focus: #e0518a; /* §5 · §11 */
@@ -113,6 +114,7 @@
   --color-primary: #f58fb8; /* §3.3 */
   --color-primary-hover: #f06ca3; /* (D) fim do degradê escuro */
   --color-on-primary: #2a0a1a; /* §3.3 · §3.4 */
+  --color-on-brand: #ffffff; /* R-DS-4: monograma igual nos 2 temas (DS-18; DS-01 V-03 #5) */
   --color-secondary-border: rgba(245, 143, 184, 0.6); /* DV-1 #F58FB8 a 60% */
   --color-secondary-text: #ffb3d1; /* (D) */
   --color-focus: #f58fb8; /* §11 */

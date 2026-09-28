@@ -1,0 +1,59 @@
+/*
+ * Monogram "YE" (DS-18; doc de design §7.1, §7.2, §7.12; R-DS-4; R-DS-7).
+ *
+ * - Medidas do doc sem token próprio: 36 px / 14 px (§7.1) e 120 px / 44 px (§7.2).
+ * - Degradê e letras iguais nos dois temas (`--gradient-brand`, `--color-on-brand`).
+ * - Alto contraste do sistema: mantém o degradê e as letras brancas (é logotipo) e ganha contorno
+ *   do sistema, para a forma não sumir.
+ * - Sem movimento próprio (o halo do hero é do doc 04): nada a desligar com movimento reduzido.
+ */
+.monogram {
+  display: inline-grid;
+  flex-shrink: 0;
+  box-sizing: border-box;
+  place-items: center;
+  background-image: var(--gradient-brand);
+  color: var(--color-on-brand);
+  font-family: var(--font-display);
+  font-weight: 800;
+  line-height: 1;
+  text-transform: none;
+  user-select: none;
+}
+
+.sm {
+  width: 36px;
+  height: 36px;
+  border-radius: var(--radius-monogram-sm);
+  font-size: 14px;
+}
+
+.lg {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  font-size: 44px;
+}
+
+/* Modo botão: sem estilo nativo; foco pelo contorno global (§5, §11). */
+.button {
+  position: relative;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  cursor: pointer;
+}
+
+/* Área de toque mínima de 44 × 44 px no tamanho de 36 px (§10), invisível. */
+.button.sm::before {
+  position: absolute;
+  inset: calc((var(--touch-min) - 36px) / -2);
+  content: '';
+}
+
+@media (forced-colors: active) {
+  .monogram {
+    outline: var(--border-width) solid canvastext;
+    forced-color-adjust: none;
+  }
+}

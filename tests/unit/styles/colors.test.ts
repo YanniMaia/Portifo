@@ -59,6 +59,7 @@ const ESPERADO: Record<string, [string, string]> = {
   '--color-primary': ['#C93A77', '#F58FB8'],
   '--color-primary-hover': ['#A82560', '#F06CA3'],
   '--color-on-primary': ['#FFFFFF', '#2A0A1A'],
+  '--color-on-brand': ['#FFFFFF', '#FFFFFF'], // DS-18 (pendência DS-01 V-03 #5)
   '--color-secondary-border': ['#F286B0', 'rgba(245, 143, 184, 0.60)'],
   '--color-secondary-text': ['#A82560', '#FFB3D1'],
   '--color-focus': ['#E0518A', '#F58FB8'],
