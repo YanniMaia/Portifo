@@ -1,0 +1,70 @@
+/*
+ * Chip e ChipList (DS-12; doc de design §4, §5, §7.6, §7.7; D17; R-DS-1).
+ *
+ * - Alturas 40/32 px e paddings 16/12 px são medidas do §7.6/§7.7 (sem token próprio).
+ * - Fundo `--color-chip-bg` (#FFF7FA / #1C0E16), borda 1 px `--color-border`, texto `--color-text`.
+ * - Hover só com ponteiro (`hover: hover`) e por `[data-state='hover']`: fundo
+ *   `--color-chip-bg-hover`, borda `--color-border-hover` e sobe `--lift-chip` (−2 px), em 200 ms.
+ * - Movimento reduzido: `--lift-chip` vira 0 (motion.css), e só a cor muda.
+ * - Sem `box-shadow` e sem animar `background` como imagem: só cor e `transform`.
+ */
+.chip {
+  display: inline-flex;
+  align-items: center;
+  box-sizing: border-box;
+  height: 40px;
+  padding: 0 16px;
+  border: var(--border-width) solid var(--color-border);
+  border-radius: var(--radius-pill);
+  background-color: var(--color-chip-bg);
+  color: var(--color-text);
+  font-family: var(--font-body);
+  font-size: var(--fs-chip-lg);
+  font-weight: var(--fw-chip-lg);
+  line-height: var(--lh-chip-lg);
+  white-space: nowrap;
+  transition:
+    background-color var(--dur-fast) var(--ease-out),
+    border-color var(--dur-fast) var(--ease-out),
+    transform var(--dur-fast) var(--ease-out);
+}
+
+.sm {
+  height: 32px;
+  padding: 0 12px;
+  font-size: var(--fs-chip-sm);
+  font-weight: var(--fw-chip-sm);
+  line-height: var(--lh-chip-sm);
+}
+
+.mono {
+  font-family: var(--font-mono);
+}
+
+.chip[data-state='hover'] {
+  border-color: var(--color-border-hover);
+  background-color: var(--color-chip-bg-hover);
+  transform: translateY(var(--lift-chip));
+}
+
+@media (hover: hover) {
+  .chip:hover {
+    border-color: var(--color-border-hover);
+    background-color: var(--color-chip-bg-hover);
+    transform: translateY(var(--lift-chip));
+  }
+}
+
+/* Lista: 12 px entre chips (§7.7) nos dois eixos; 8 px com gap="sm" (D). */
+.list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.listSm {
+  gap: var(--space-2);
+}
