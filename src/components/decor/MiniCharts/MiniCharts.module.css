@@ -1,0 +1,72 @@
+/*
+ * Mini gráficos (A-17; doc de design §8 "Gráficos"; doc 04 §5 e §7 "Mini gráficos").
+ * - Cores: `--deco-chart-1` e `--deco-chart-2` (aliases do A-01: #F286B0/#E0518A no claro,
+ *   #F06CA3/#F58FB8 no escuro). Nada de azul ou roxo.
+ * - Escala pelo `viewBox`: o consumidor dá o tamanho (classe ou atributos width/height).
+ * - Animação opcional das barras (`.animado`): scaleY 0 → 1 uma vez, `--dur-enter` (600 ms),
+ *   `--ease-out`, a partir da base de cada barra (`transform-box: fill-box`, achado B5 da V-02),
+ *   com cascata curta por `--bar-delay`. Só `transform`. Com movimento reduzido: sem animação,
+ *   barras já inteiras.
+ */
+.grafico {
+  display: block;
+  overflow: visible;
+  pointer-events: none;
+}
+
+.barra {
+  fill: var(--deco-chart-1);
+}
+
+.barraDestaque {
+  fill: var(--deco-chart-2);
+}
+
+.area {
+  fill: var(--deco-chart-1);
+  fill-opacity: 0.25;
+  stroke: none;
+}
+
+.linha {
+  fill: none;
+  stroke: var(--deco-chart-2);
+  stroke-width: 2.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.ponto {
+  fill: var(--deco-chart-2);
+}
+
+.animado .barra,
+.animado .barraDestaque {
+  transform-box: fill-box;
+  transform-origin: center bottom;
+  animation: crescer-barra var(--dur-enter) var(--ease-out) var(--bar-delay, 0ms) 1 both;
+}
+
+@keyframes crescer-barra {
+  from {
+    transform: scaleY(0);
+  }
+
+  to {
+    transform: scaleY(1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animado .barra,
+  .animado .barraDestaque {
+    animation: none;
+  }
+}
+
+/* Mesmo efeito com o atributo do MotionProvider (A-01). Elemento e atributo não são locais no
+   CSS Module, só as classes. */
+html[data-reduced-motion='true'] .animado .barra,
+html[data-reduced-motion='true'] .animado .barraDestaque {
+  animation: none;
+}
