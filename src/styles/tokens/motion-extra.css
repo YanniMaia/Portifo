@@ -1,0 +1,21 @@
+/*
+ * Tokens de movimento acrescentados pelo A-01 (doc 04 §4.1). Os demais (`--dur-*`, `--ease-out`,
+ * `--lift-*`, `--arrow-shift`) são do `motion.css` (DS-02, dono único, D14) e NÃO são repetidos
+ * aqui. Importado no `global.css` logo depois do `motion.css`.
+ * Testes: `tests/unit/motion/tokens-extra.test.ts` e `tests/unit/styles/motion-tokens.test.ts`.
+ *
+ * REGRA ANTI-PISCADA (R5, doc 04 §4.2; doc de design §11; WCAG 2.3.1):
+ *   1. Nada pisca mais de 3 vezes por segundo.
+ *   2. Todo `@keyframes` que altera `opacity` e roda em loop (`infinite` ou mais de 1 repetição)
+ *      tem período de 1 s ou mais.
+ *   3. Nenhum efeito alterna claro/escuro com contraste alto em menos de 333 ms.
+ *   O teste `tests/unit/motion/no-flash.test.ts` percorre todo CSS de `src/` e falha se um loop de
+ *   opacidade tiver duração abaixo de 1 s (ou duração que ele não consiga resolver).
+ *
+ * Deriva contínua (partículas, bits) usa a palavra-chave `linear` do CSS, sem token (§4.1).
+ */
+
+:root {
+  --dur-burst: 2000ms; /* §7.2 explosão de bits e cadeados do monograma (A-18) */
+  --ease-in-out: cubic-bezier(0.45, 0, 0.55, 1); /* §9 loops: flutuação, cintilar, formas */
+}

@@ -3,6 +3,7 @@ import { createRoot } from 'react-dom/client';
 import './styles/global.css';
 import App from './App.tsx';
 import { LanguageProvider } from './i18n/LanguageProvider.tsx';
+import { MotionProvider } from './motion/MotionProvider.tsx';
 import { ThemeProvider } from './theme/ThemeProvider.tsx';
 
 const rootElement = document.getElementById('root');
@@ -18,7 +19,10 @@ function renderizar(Conteudo: ComponentType) {
     <StrictMode>
       <ThemeProvider>
         <LanguageProvider>
-          <Conteudo />
+          {/* A-01: movimento (LazyMotion, MotionConfig, data-reduced-motion, pausa de loops). */}
+          <MotionProvider>
+            <Conteudo />
+          </MotionProvider>
         </LanguageProvider>
       </ThemeProvider>
     </StrictMode>,

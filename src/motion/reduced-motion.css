@@ -1,0 +1,114 @@
+/*
+ * CSS de movimento do A-01 (doc 04 §4.2 R4 e §4.3; doc de design §9 e §11). Importado pelo
+ * MotionProvider. COMPLEMENTA o movimento reduzido global do DS-04 (`base.css`, que leva toda
+ * animação ao primeiro quadro e a rolagem a `auto`) e os `--lift-*` zerados do DS-02; não repete
+ * essas regras. Só consome atributos-gancho (doc 04 §4.4); nenhum hex, nenhuma cor.
+ *
+ * 1) Pausa de loops (`[data-loop]`) e dos cartões flutuantes (`[data-float]`): `data-offscreen`
+ *    (fora da tela) e `data-page-hidden` (aba oculta) são escritos por `loopPause.ts`. Vale com
+ *    ou sem movimento reduzido.
+ * 2) Movimento reduzido, pela media query E pelo `html[data-reduced-motion='true']` (escrito pelo
+ *    MotionProvider): animações desligadas nos ganchos; entradas já no estado final visível;
+ *    transições de `transform`/`opacity` desligadas; transições de cor continuam (R4, §9).
+ *    Decorações (`data-decor`, `data-loop`, `data-float`) ficam paradas no próprio estado
+ *    estático (opacidade e posição de cada camada), por isso não recebem `opacity: 1`.
+ */
+
+/* ---------- 1) Loops e flutuantes pausados fora da tela e com a aba oculta ---------- */
+:is([data-loop], [data-float])[data-offscreen='true'],
+:is([data-loop], [data-float])[data-offscreen='true'] *,
+:is([data-loop], [data-float])[data-offscreen='true']::before,
+:is([data-loop], [data-float])[data-offscreen='true']::after,
+html[data-page-hidden] :is([data-loop], [data-float]),
+html[data-page-hidden] :is([data-loop], [data-float]) *,
+html[data-page-hidden] :is([data-loop], [data-float])::before,
+html[data-page-hidden] :is([data-loop], [data-float])::after {
+  animation-play-state: paused !important;
+}
+
+/* ---------- 2) Movimento reduzido (media query do sistema) ---------- */
+@media (prefers-reduced-motion: reduce) {
+  :is(
+    [data-decor],
+    [data-loop],
+    [data-float],
+    [data-reveal],
+    [data-stagger-item],
+    [data-draw],
+    [data-draw-tip]
+  ),
+  :is(
+    [data-decor],
+    [data-loop],
+    [data-float],
+    [data-reveal],
+    [data-stagger-item],
+    [data-draw],
+    [data-draw-tip]
+  )::before,
+  :is(
+    [data-decor],
+    [data-loop],
+    [data-float],
+    [data-reveal],
+    [data-stagger-item],
+    [data-draw],
+    [data-draw-tip]
+  )::after {
+    animation: none !important;
+    transition-property: color, background-color, border-color, fill, stroke !important;
+  }
+
+  :is([data-reveal], [data-stagger-item], [data-draw]) {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+
+  [data-draw-tip] {
+    opacity: 1 !important;
+  }
+}
+
+/* ---------- 2) Movimento reduzido (atributo do MotionProvider; mesmas regras) ---------- */
+html[data-reduced-motion='true']
+  :is(
+    [data-decor],
+    [data-loop],
+    [data-float],
+    [data-reveal],
+    [data-stagger-item],
+    [data-draw],
+    [data-draw-tip]
+  ),
+html[data-reduced-motion='true']
+  :is(
+    [data-decor],
+    [data-loop],
+    [data-float],
+    [data-reveal],
+    [data-stagger-item],
+    [data-draw],
+    [data-draw-tip]
+  )::before,
+html[data-reduced-motion='true']
+  :is(
+    [data-decor],
+    [data-loop],
+    [data-float],
+    [data-reveal],
+    [data-stagger-item],
+    [data-draw],
+    [data-draw-tip]
+  )::after {
+  animation: none !important;
+  transition-property: color, background-color, border-color, fill, stroke !important;
+}
+
+html[data-reduced-motion='true'] :is([data-reveal], [data-stagger-item], [data-draw]) {
+  opacity: 1 !important;
+  transform: none !important;
+}
+
+html[data-reduced-motion='true'] [data-draw-tip] {
+  opacity: 1 !important;
+}

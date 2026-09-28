@@ -1,0 +1,22 @@
+/*
+ * Aliases de decoração acrescentados pelo A-01 (doc 04 §5). Só `var()` de tokens do DS-01
+ * (`colors.css`, dono único, D14): nenhum hex novo e nenhum nome já existente. Mesmo prefixo
+ * `--deco-*` (não existe `--decor-*`). Como a cor de origem muda com `data-theme`, cada alias
+ * acompanha o tema sozinho.
+ *
+ * Declarados também em `[data-theme]`: o `var()` de uma propriedade customizada é resolvido no
+ * elemento em que ela é declarada, então um subtrecho com `data-theme` próprio (ex.: amostras do
+ * /__styleguide) resolve para o tema dele, e não para o do <html>.
+ *
+ * Testes: `tests/unit/motion/tokens-extra.test.ts` (texto) e `tests/e2e/motion-infra.spec.ts`
+ * (cor computada nos dois temas).
+ */
+
+:root,
+[data-theme] {
+  --deco-node: var(--color-deco-soft); /* §8 nós de rede: #F7B7D0 / #F06CA3 a 40% */
+  --deco-chart-1: var(--color-deco); /* §8 mini gráficos: #F286B0 / #F06CA3 */
+  --deco-chart-2: var(--color-accent); /* §8 mini gráficos: #E0518A / #F58FB8 */
+  --deco-burst-1: var(--color-accent); /* §7.2 explosão: #E0518A / #F58FB8 */
+  --deco-burst-2: var(--color-deco); /* §7.2 explosão: #F286B0 / #F06CA3 */
+}
