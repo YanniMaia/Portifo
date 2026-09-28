@@ -1,0 +1,41 @@
+/*
+ * GradientText (DS-07; doc de design §3.4, §3.5; D19 / R-DS-5).
+ *
+ * - Degradê `--gradient-text` recortado no texto: claro 135° #E0518A → #A82560, escuro
+ *   135° #FFB3D1 → #F06CA3 (valores só nos tokens).
+ * - `background-image` (e não o atalho `background`) para o atalho não zerar o `background-clip`
+ *   declarado em seguida; o valor computado é o mesmo que o critério de aceite pede.
+ * - `box-decoration-break: clone`: cada linha quebrada recebe o degradê inteiro.
+ * - Fallback sem suporte a `background-clip: text`: cor sólida `--color-link` (#C93A77 / #FFB3D1).
+ * - Alto contraste do sistema: cor do texto do sistema, sem fundo.
+ * - Seleção: o texto selecionado ganha cor sólida (`--color-text`), para não sumir sobre o realce.
+ * - Sem movimento: nada a desligar em `prefers-reduced-motion`.
+ */
+.text {
+  /* stylelint-disable-next-line property-no-vendor-prefix -- Chromium/Safari ainda exigem o prefixo */
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
+  background-image: var(--gradient-text);
+  /* stylelint-disable-next-line property-no-vendor-prefix -- Safari e Chromium antigos */
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.text::selection {
+  color: var(--color-text);
+}
+
+@supports not ((background-clip: text) or (-webkit-background-clip: text)) {
+  .text {
+    background-image: none;
+    color: var(--color-link);
+  }
+}
+
+@media (forced-colors: active) {
+  .text {
+    background-image: none;
+    color: canvastext;
+  }
+}
