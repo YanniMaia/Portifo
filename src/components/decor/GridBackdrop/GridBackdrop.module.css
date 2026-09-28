@@ -1,0 +1,40 @@
+/*
+ * Grade (A-12; doc de design §8 "Grade", §7.2, §7.11, §10; doc 04 §5).
+ * - Linhas de 1 px a cada 48 px: dois gradientes lineares (verticais e horizontais) em
+ *   `background-image`, na cor `--deco-grid-line` (DS-01). Estática: sem animação nem transição
+ *   de movimento; a cor troca com o tema.
+ * - Máscara radial: opaca até 35% do raio e transparente a partir de 85%, então a grade some
+ *   suavemente nas bordas. A 90% do raio o alfa já é 0 (critério do A-12: ≤ 0,05).
+ * - `.bleed` (tela grande, §10): de 1440 px em diante a máscara vira uma elipse do tamanho da
+ *   camada, opaca até 50% e transparente a 90%, e a grade chega perto das bordas da janela.
+ * - Decorativa: `pointer-events: none`, atrás do conteúdo (`z-index: 0`), sem texto.
+ * - As cores da máscara só servem pelo canal alfa (preto opaco × transparente).
+ */
+.grid {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background-image:
+    linear-gradient(to right, var(--deco-grid-line) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--deco-grid-line) 1px, transparent 1px);
+  background-position: 0 0;
+  background-size: 48px 48px;
+  mask-image: radial-gradient(
+    circle var(--grid-radius, 480px) at var(--grid-center, 50% 50%),
+    rgb(0, 0, 0) 0%,
+    rgb(0, 0, 0) 35%,
+    transparent 85%
+  );
+}
+
+@media (min-width: 1440px) {
+  .bleed {
+    mask-image: radial-gradient(
+      ellipse farthest-side at 50% 50%,
+      rgb(0, 0, 0) 0%,
+      rgb(0, 0, 0) 50%,
+      transparent 90%
+    );
+  }
+}
