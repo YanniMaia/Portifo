@@ -1,0 +1,20 @@
+/*
+ * Eyebrow (DS-09; doc de design §4, §3.5; D13; DV-16).
+ *
+ * - Tamanho, peso, entrelinha, caixa alta e espaçamento vêm da classe global `.t-eyebrow` (DS-03).
+ * - A cor é redeclarada aqui com especificidade de duas classes para não depender da ordem de
+ *   carga entre o `typography.css` global e este módulo.
+ * - `tint`: #A82560 sobre #FFEEF4 (4,5:1 ou mais); #C93A77 sobre #FFEEF4 reprova (D13).
+ * - Sem margem própria (o espaçamento é do SectionHeader) e sem movimento.
+ */
+.eyebrow {
+  margin: 0;
+}
+
+.eyebrow.eyebrow {
+  color: var(--color-eyebrow);
+}
+
+.eyebrow.tint {
+  color: var(--color-eyebrow-on-tint);
+}
