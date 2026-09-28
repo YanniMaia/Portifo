@@ -1,0 +1,123 @@
+/*
+ * Card (DS-15; doc de design §3.4, §5, §7.6, §7.8, §7.9, §14; R-DS-19; RS-6).
+ *
+ * Camadas: `::before` = sombra de hover (opacidade 0 → 1); `::after` = filete de 3 px (opacidade
+ * 0 → 1). Nada anima `box-shadow`, `background` nem `background-image`: só `transform`, `opacity`
+ * e `border-color` (regra R1 do doc 04; o A-06 só audita).
+ *
+ * Sem `overflow: hidden` (cortaria a sombra de hover). O filete fica 24 px para dentro de cada
+ * lado, então não passa do canto arredondado.
+ *
+ * Medidas sem token próprio (literais do doc): padding 40 px do painel (§7.8), 28 px dos cards
+ * menores (§14), filete de 3 px com raio 3 px e recuo 24 px (canvas, R-DS-19).
+ *
+ * Movimento reduzido: `--lift-card`/`--lift-panel` viram 0 (motion.css); sombra, borda e filete
+ * ainda aparecem (só cor e opacidade).
+ */
+.card {
+  --card-lift: var(--lift-card);
+
+  position: relative;
+  isolation: isolate;
+  box-sizing: border-box;
+  padding: var(--card-padding);
+  border: var(--border-width) solid var(--color-border);
+  border-radius: var(--radius-card);
+  background-color: var(--color-surface);
+  box-shadow: var(--shadow-card);
+  list-style: none;
+}
+
+/* ---------- Variantes ---------- */
+
+.panel {
+  --card-lift: var(--lift-panel);
+
+  border-radius: var(--radius-panel);
+}
+
+.dashed {
+  border: var(--border-width-strong) dashed var(--color-deco);
+  background-color: transparent;
+  box-shadow: none;
+}
+
+/* ---------- Padding ---------- */
+
+.paddingCompact,
+.paddingPanel {
+  padding: var(--space-6);
+}
+
+@media (min-width: 640px) {
+  .paddingCompact {
+    padding: 28px;
+  }
+
+  .paddingPanel {
+    padding: 40px;
+  }
+}
+
+/* ---------- Interativo ---------- */
+
+.interactive {
+  transition:
+    transform var(--dur-base) var(--ease-out),
+    border-color var(--dur-base) var(--ease-out);
+}
+
+/* Sombra de hover: camada do tamanho da caixa de borda, acesa por opacidade. */
+.interactive::before {
+  position: absolute;
+  z-index: -1;
+  inset: calc(-1 * var(--border-width));
+  border-radius: inherit;
+  box-shadow: var(--shadow-card-hover);
+  content: '';
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--dur-base) var(--ease-out);
+}
+
+/* Filete de 3 px na base (canvas): recuo de 24 px, degradê primário nos dois temas. */
+.accentBar::after {
+  position: absolute;
+  right: 24px;
+  bottom: 0;
+  left: 24px;
+  height: 3px;
+  border-radius: 3px;
+  background-image: var(--gradient-primary);
+  content: '';
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--dur-base) var(--ease-out);
+}
+
+/* Estado ativo: foco dentro do card (teclado) e hover forçado do styleguide. */
+.interactive:focus-within,
+.interactive[data-state='hover'] {
+  border-color: var(--color-border-hover);
+  transform: translateY(var(--card-lift));
+}
+
+.interactive:focus-within::before,
+.interactive[data-state='hover']::before,
+.accentBar:focus-within::after,
+.accentBar[data-state='hover']::after {
+  opacity: 1;
+}
+
+/* Hover só com ponteiro (doc 02 §1). */
+@media (hover: hover) {
+  .interactive:hover {
+    border-color: var(--color-border-hover);
+    transform: translateY(var(--card-lift));
+  }
+
+  .interactive:hover::before,
+  .accentBar:hover::after {
+    opacity: 1;
+  }
+}
