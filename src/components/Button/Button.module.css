@@ -1,0 +1,173 @@
+/*
+ * Button e ButtonLink (DS-11; doc de design §3.4, §4, §5, §7.2, §7.5, §7.11, §9, §14; DV-1; D13).
+ *
+ * Camada `::before` = preenchimento de hover, aceso por `opacity` (0 → 1):
+ * - primário: `--color-primary-hover` (#A82560 / #F06CA3) por cima do `--gradient-primary`, porque
+ *   o degradê não interpola;
+ * - secundário: `--color-fill-soft` (#FFEEF4 / rosa 12%).
+ * Assim nada anima `background`, `background-image` nem `box-shadow` (regra R1 do doc 04): só
+ * `transform` e `opacity`.
+ *
+ * Medidas sem token próprio (literais do doc): padding 0 28 px (§7.2). Gap ícone–texto 8 px
+ * (canvas) = --space-2.
+ *
+ * Movimento reduzido: `--lift-button` e `--arrow-shift` viram 0 (motion.css); a cor muda normalmente.
+ */
+.button {
+  position: relative;
+  isolation: isolate;
+  display: inline-flex;
+  box-sizing: border-box;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  height: var(--button-height);
+  min-width: var(--touch-min);
+  padding: 0 28px;
+  gap: var(--space-2);
+  border: 0;
+  border-radius: var(--radius-pill);
+  background: none;
+  cursor: pointer;
+  font-family: var(--font-body);
+  font-size: var(--fs-button);
+  font-weight: var(--fw-button);
+  line-height: var(--lh-button);
+  text-decoration: none;
+  text-transform: none;
+  white-space: nowrap;
+  transition: transform var(--dur-fast) var(--ease-out);
+}
+
+.button::before {
+  position: absolute;
+  z-index: -1;
+  inset: 0;
+  border-radius: inherit;
+  background-color: var(--button-layer, transparent);
+  content: '';
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--dur-fast) var(--ease-out);
+}
+
+.icon,
+.arrow {
+  flex: none;
+}
+
+.arrow {
+  transition: transform var(--dur-fast) var(--ease-out);
+}
+
+/* ---------- Variantes ---------- */
+
+.primary {
+  --button-layer: var(--color-primary-hover);
+
+  background-color: var(--color-primary);
+  background-image: var(--gradient-primary);
+  color: var(--color-on-primary);
+}
+
+/* DV-1: borda #F286B0 (2,4:1 aceito pelo D13; o texto #A82560 identifica o botão). */
+.secondary {
+  --button-layer: var(--color-fill-soft);
+
+  border: var(--border-width-strong) solid var(--color-secondary-border);
+  color: var(--color-secondary-text);
+}
+
+/* Botão de texto: sem fundo nem borda, altura mínima de toque 44 px (§10). */
+.text {
+  height: auto;
+  min-height: var(--touch-min);
+  padding: 0;
+  color: var(--color-link);
+}
+
+.text::before {
+  display: none;
+}
+
+.label {
+  text-decoration-line: none;
+  text-decoration-thickness: 1px;
+  text-underline-offset: var(--space-1);
+}
+
+/* ---------- Tamanho e largura ---------- */
+
+.compact {
+  height: var(--button-height-compact);
+}
+
+.text.compact {
+  height: auto;
+}
+
+.fullWidthOnMobile {
+  width: 100%;
+}
+
+@media (min-width: 640px) {
+  .fullWidthOnMobile {
+    width: auto;
+  }
+}
+
+/* ---------- Estados ---------- */
+
+/* Hover só com ponteiro (doc 02 §1); desabilitado não reage. */
+@media (hover: hover) {
+  .button:not([aria-disabled='true']):hover::before {
+    opacity: 1;
+  }
+
+  .button:not([aria-disabled='true']):hover .arrow {
+    transform: translateX(var(--arrow-shift));
+  }
+
+  .primary:not([aria-disabled='true']):hover {
+    transform: translateY(var(--lift-button));
+  }
+
+  .text:not([aria-disabled='true']):hover .label {
+    text-decoration-line: underline;
+  }
+}
+
+/* Estados forçados do styleguide e dos prints. */
+.button[data-state='hover']::before,
+.button[data-state='active']::before {
+  opacity: 1;
+}
+
+.button[data-state='hover'] .arrow {
+  transform: translateX(var(--arrow-shift));
+}
+
+.primary[data-state='hover'] {
+  transform: translateY(var(--lift-button));
+}
+
+.text[data-state='hover'] .label {
+  text-decoration-line: underline;
+}
+
+.button[data-state='focus'] {
+  outline: var(--focus-width) solid var(--color-focus);
+  outline-offset: var(--focus-offset);
+}
+
+/* Ativo (pressionado): volta ao chão. Vem depois do hover, com a mesma especificidade. */
+.button:not([aria-disabled='true']):active,
+.button[data-state='active'] {
+  transform: translateY(0);
+}
+
+/* Desabilitado (D): só estados transitórios; nunca em links (são removidos). */
+.button[aria-disabled='true'] {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
