@@ -1,0 +1,64 @@
+/*
+ * Badge / Selo (DS-13; doc de design §7.2, §7.6, §7.8, §7.9; DV-4; D17; D20; R-DS-10).
+ *
+ * Medidas sem token próprio (literais do canvas/doc): altura 26 px, padding 0 12 px e gap 6 px do
+ * `sm` (canvas, R-DS-10); altura 36 px, padding 0 16 px (= --space-4) e gap 10 px do `lg` (§7.2,
+ * canvas).
+ *
+ * `box-sizing: border-box`: a altura inclui a borda (1 px no `dashed` e no `lg`), então as três
+ * variantes medem exatamente 26/36 px.
+ *
+ * Mono com peso 500: a JetBrains Mono só é carregada em 400/500 (D4). O 600 do selo viraria negrito
+ * sintético. O `lg` (pílula do hero) é 500 pelo §7.2 (--fw-pill-hero).
+ */
+.badge {
+  display: inline-flex;
+  box-sizing: border-box;
+  flex: none;
+  align-items: center;
+  height: 26px;
+  padding: 0 12px;
+  gap: 6px;
+  border: 0;
+  border-radius: var(--radius-pill);
+  background-color: var(--color-fill-soft);
+  color: var(--color-text-pink-on-tint);
+  font-family: var(--font-body);
+  font-size: var(--fs-badge);
+  font-weight: var(--fw-badge);
+  line-height: var(--lh-badge);
+  white-space: nowrap;
+}
+
+/* DV-4: "Em estudo", transparente e tracejado. */
+.dashed {
+  border: var(--border-width) dashed var(--color-deco);
+  background-color: transparent;
+}
+
+/* Pílula do hero (§7.2). */
+.lg {
+  height: 36px;
+  padding: 0 var(--space-4);
+  gap: 10px;
+  border: var(--border-width) solid var(--color-border);
+  font-size: var(--fs-pill-hero);
+  font-weight: var(--fw-pill-hero);
+  line-height: var(--lh-pill-hero);
+}
+
+.mono {
+  font-family: var(--font-mono);
+  font-weight: var(--fw-pill-hero);
+}
+
+/* Alto contraste do sistema: a pílula ganha contorno para não sumir sem o fundo rosa. */
+@media (forced-colors: active) {
+  .badge {
+    border: var(--border-width) solid canvastext;
+  }
+
+  .dashed {
+    border-style: dashed;
+  }
+}
