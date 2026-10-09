@@ -13,6 +13,7 @@
     "check:placeholders": "node scripts/check-placeholders.mjs",
     "build:icons": "node scripts/build-icons.mjs",
     "build:og": "node scripts/build-og.mjs",
+    "pendencias": "node scripts/list-pendencias.mjs",
     "build:pages-test": "vite build --base /portifo-teste/",
     "preview": "vite preview",
     "typecheck": "tsc -b --noEmit",
