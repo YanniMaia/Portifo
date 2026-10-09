@@ -72,8 +72,17 @@ export const PENDENCIA_POR_CHAVE: Readonly<Partial<Record<ChaveDicionario, Pende
   'interesses.ia.chips': 'P-IA-1',
 };
 
-/** `id` do projeto (C-05) → pendências da ficha. */
-export const PENDENCIA_POR_PROJETO: Readonly<Record<string, readonly PendenciaId[]>> = {};
+/** `id` do projeto (`projects.ts`, C-05) → pendências da ficha (checklist do doc 05 §7, bloco A). */
+export const PENDENCIA_POR_PROJETO: Readonly<Record<string, readonly PendenciaId[]>> = {
+  // P-02 link do repositório, P-03 print, P-04 demonstração (opcional), P-14 dados fictícios?
+  'gerenciador-de-estoque': ['P-02', 'P-03', 'P-04', 'P-14'],
+  // P-01 publicar os 4 projetos de estudo com os nomes do §12.5.
+  'banco-de-dados-biblioteca': ['P-01'],
+  'ciberseguranca-analisador-de-logs': ['P-01'],
+  // P-15 arquivo `graficos/receita_por_mes.png` (C-07).
+  'analise-de-dados-vendas': ['P-01', 'P-15'],
+  'python-organizador-de-arquivos': ['P-01'],
+};
 
 /** Chave do dicionário → origem da tradução EN (para a revisão P-12). */
 export const TRADUCAO_EN: Readonly<Partial<Record<ChaveDicionario, OrigemTraducaoEn>>> = {
