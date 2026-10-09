@@ -1,0 +1,75 @@
+/*
+ * IconBox (DS-16; doc de design §5, §7.6, §7.10, §9).
+ *
+ * Camada `::before` = degradê do estado ativo, aceso por `opacity` (0 → 1). O ícone muda só de cor
+ * (`color`, herdado pelo `stroke="currentColor"`). Nada anima `background-image` (regra R1 do
+ * doc 04). Transição de 250 ms (--dur-base).
+ *
+ * Degradê ativo: `--gradient-brand` (#E0518A → #A82560) no claro; no escuro, `--gradient-primary`
+ * (#F58FB8 → #F06CA3), como pede o §4.1. Não há token próprio para essa troca, então o bloco escuro
+ * usa o `[data-theme='dark']` do <html> (F-09); seletor de atributo não é renomeado pelo CSS Modules.
+ *
+ * Gatilhos do ativo: classe `.active`; dentro de `Card interactive` (DS-15, `data-interactive`), o
+ * hover com ponteiro, o `:focus-within` (teclado) e o `data-state="hover"` forçado do styleguide.
+ * Sem movimento: com movimento reduzido nada muda (só cor e opacidade).
+ */
+.box {
+  position: relative;
+  isolation: isolate;
+  display: inline-flex;
+  box-sizing: border-box;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: var(--icon-box-size);
+  height: var(--icon-box-size);
+  border-radius: var(--radius-icon-box);
+  background-color: var(--color-fill-soft);
+  color: var(--color-accent);
+  transition: color var(--dur-base) var(--ease-out);
+}
+
+.box::before {
+  position: absolute;
+  z-index: -1;
+  inset: 0;
+  border-radius: inherit;
+  background-image: var(--gradient-brand);
+  content: '';
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--dur-base) var(--ease-out);
+}
+
+[data-theme='dark'] .box::before {
+  background-image: var(--gradient-primary);
+}
+
+.icon {
+  flex: none;
+}
+
+/* ---------- Estado ativo ---------- */
+
+.active,
+[data-interactive='true']:focus-within .box,
+[data-interactive='true'][data-state='hover'] .box {
+  color: var(--color-on-primary);
+}
+
+.active::before,
+[data-interactive='true']:focus-within .box::before,
+[data-interactive='true'][data-state='hover'] .box::before {
+  opacity: 1;
+}
+
+/* Hover só com ponteiro (doc 02 §1). */
+@media (hover: hover) {
+  [data-interactive='true']:hover .box {
+    color: var(--color-on-primary);
+  }
+
+  [data-interactive='true']:hover .box::before {
+    opacity: 1;
+  }
+}
