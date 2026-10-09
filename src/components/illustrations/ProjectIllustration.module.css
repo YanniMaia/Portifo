@@ -1,0 +1,29 @@
+/*
+ * Ilustração rosa padrão do projeto (C-08; doc de design §7.8, §14; DV-5, DV-7).
+ * - SVG vetorial em 4:3 exato (`viewBox 0 0 400 300` e `aspect-ratio: 4 / 3`); ocupa a largura
+ *   do contêiner. Cantos, sombra e borda do cartão ficam com o consumidor (S-10, S-11).
+ * - Cores: só tokens do DS-01, aplicados como `var(--…)` nos atributos do SVG (claro e escuro).
+ * - Sem animação própria (os mini gráficos do A-17 entram estáticos): nada a desligar com
+ *   movimento reduzido.
+ */
+.ilustracao {
+  display: grid;
+  gap: var(--space-3);
+  inline-size: 100%;
+}
+
+.svg {
+  display: block;
+  inline-size: 100%;
+  block-size: auto;
+  aspect-ratio: 4 / 3;
+}
+
+/*
+ * Legenda de reserva (PH-03, `PlaceholderMark kind="block"`, só em dev). O bloco do DS-21 tem
+ * `min-block-size: 100%` (pendência B-03): aqui ele fica abaixo do SVG, com a altura do próprio
+ * texto. Dois seletores de classe vencem o `.block` do DS-21 sem depender da ordem do CSS.
+ */
+.ilustracao .legenda {
+  min-block-size: auto;
+}
