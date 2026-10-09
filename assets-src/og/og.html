@@ -1,0 +1,143 @@
+<!doctype html>
+<!--
+  Modelo da imagem de prévia (Open Graph) 1200 × 630 — C-10 (doc de design §11, §3.2, §3.4).
+  Fora do bundle do site: só o scripts/build-og.mjs abre este arquivo e captura public/og-image.png.
+  Conteúdo permitido (regra de ouro): monograma, nome e a frase do §11. Os textos são injetados
+  pelo script a partir de src/content/site.ts (nome) e src/content/pt.ts (meta.ogFrase).
+-->
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8" />
+    <title>og-image</title>
+    <style>
+      @font-face {
+        font-family: 'Plus Jakarta Sans';
+        font-weight: 800;
+        src: url('../../node_modules/@fontsource/plus-jakarta-sans/files/plus-jakarta-sans-latin-800-normal.woff2')
+          format('woff2');
+      }
+      @font-face {
+        font-family: 'Plus Jakarta Sans';
+        font-weight: 600;
+        src: url('../../node_modules/@fontsource/plus-jakarta-sans/files/plus-jakarta-sans-latin-600-normal.woff2')
+          format('woff2');
+      }
+
+      * {
+        box-sizing: border-box;
+        margin: 0;
+      }
+
+      html,
+      body {
+        width: 1200px;
+        height: 630px;
+        overflow: hidden;
+      }
+
+      body {
+        position: relative;
+        background: #ffffff; /* §3.2 Branco */
+        font-family: 'Plus Jakarta Sans', sans-serif;
+      }
+
+      /* §3.4 Fundo do hero: brilho #FFDCE9 (70%) de 640 px no canto superior direito
+         e brilho #FFEEF4 de 480 px no canto inferior esquerdo. */
+      .brilho {
+        position: absolute;
+        border-radius: 50%;
+        filter: blur(48px);
+      }
+
+      /* Centros afastados do texto: o brilho não passa por trás do nome (contraste ≥ 4,5:1). */
+      .brilho--a {
+        width: 640px;
+        height: 640px;
+        top: -360px;
+        right: -300px;
+        background: #ffdce9;
+        opacity: 0.7;
+      }
+
+      .brilho--b {
+        width: 480px;
+        height: 480px;
+        bottom: -260px;
+        left: -200px;
+        background: #ffeef4;
+      }
+
+      /* Grade de linhas finas #F9D5E3 (§3.2 Rosa bebê) que some nas bordas (cap. 8).
+         O miolo fica limpo atrás do nome e da frase (contraste); a grade aparece ao redor. */
+      .grade {
+        position: absolute;
+        inset: 0;
+        background-image:
+          linear-gradient(#f9d5e3 1px, transparent 1px),
+          linear-gradient(90deg, #f9d5e3 1px, transparent 1px);
+        background-size: 48px 48px;
+        background-position: 24px 27px;
+        opacity: 0.7;
+        mask-image: radial-gradient(
+          ellipse 75% 100% at 50% 50%,
+          transparent 40%,
+          #000 56%,
+          transparent 100%
+        );
+      }
+
+      .conteudo {
+        position: absolute;
+        inset: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+      }
+
+      .monograma {
+        display: block;
+        width: 128px;
+        height: 128px;
+        margin-bottom: 36px;
+      }
+
+      /* Nome com degradê rosa (§3.4). Usa o degradê do botão primário (#C93A77 → #A82560)
+         para o contraste ≥ 4,5:1 exigido pela C-10 (#E0518A dá 3,7:1 sobre branco). */
+      .nome {
+        font-weight: 800;
+        font-size: 104px;
+        line-height: 1.1;
+        letter-spacing: -0.02em;
+        background: linear-gradient(135deg, #c93a77, #a82560);
+        background-clip: text;
+        color: transparent;
+      }
+
+      /* §3.2 Ameixa média (--color-text-secondary). */
+      .frase {
+        margin-top: 20px;
+        font-weight: 600;
+        font-size: 40px;
+        line-height: 1.2;
+        color: #6e4b5c;
+      }
+
+      body.sem-texto .nome,
+      body.sem-texto .frase {
+        visibility: hidden;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="brilho brilho--a"></div>
+    <div class="brilho brilho--b"></div>
+    <div class="grade"></div>
+    <main class="conteudo">
+      <img class="monograma" src="../../public/favicon.svg" alt="" />
+      <h1 class="nome" data-texto="nome"></h1>
+      <p class="frase" data-texto="frase"></p>
+    </main>
+  </body>
+</html>
