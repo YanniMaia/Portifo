@@ -1,0 +1,38 @@
+/*
+ * SectionHeader (DS-14; doc de design §4, §5, §7.6–§7.11; R-DS-11).
+ *
+ * Coluna flex: eyebrow → H2 (12 px, --space-3, D) → subtítulo (16 px, --space-4, D). A margem de
+ * baixo do bloco é o espaço até o conteúdo da seção (--section-head-gap: 56/48/40 px, §5).
+ * Tipografia pelas classes globais `.t-h2` e `.t-body` (DS-03).
+ */
+.header {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  margin: 0 0 var(--section-head-gap);
+}
+
+.center {
+  align-items: center;
+  text-align: center;
+}
+
+.title {
+  margin: var(--space-3) 0 0;
+  color: var(--color-text);
+}
+
+/* Foco programático (scrollToSection, F-13) sem contorno; pelo teclado, o contorno padrão. */
+.title:focus {
+  outline: none;
+}
+
+.title:focus-visible {
+  outline: var(--focus-width) solid var(--color-focus);
+  outline-offset: var(--focus-offset);
+}
+
+.subtitle {
+  margin: var(--space-4) 0 0;
+  color: var(--color-text-secondary);
+}
