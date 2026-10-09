@@ -103,6 +103,14 @@ export default defineConfig([
     },
   },
   {
+    // Scripts de geração (Node). `document`/`Image` aparecem dentro de `page.evaluate` do
+    // Playwright, que roda no navegador (C-09, C-10).
+    files: ['scripts/**/*.{js,mjs,cjs}'],
+    languageOptions: {
+      globals: { ...globals.node, ...globals.browser },
+    },
+  },
+  {
     // Arquivos .js ficam fora dos tsconfig: lint sem informação de tipos.
     files: ['**/*.{js,mjs,cjs}'],
     extends: [tseslint.configs.disableTypeChecked],
