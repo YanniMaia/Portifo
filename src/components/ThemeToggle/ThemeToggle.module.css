@@ -1,0 +1,87 @@
+/*
+ * ThemeToggle (DS-19; doc de design §5, §6, §9; D14).
+ *
+ * Círculo de 44 × 44 px (--touch-min), borda 1 px --control-border, fundo --control-bg, ícone de
+ * 20 px em --color-theme-icon (#C93A77 / #F58FB8). Hover (D): fundo --color-fill-soft em 200 ms,
+ * mesmo padrão dos ícones sociais do §7.12 (R-DS-9).
+ *
+ * Ícones sobrepostos: o visível com opacity 1 e rotate(0); o oculto com opacity 0 e rotate(-90deg).
+ * A troca leva 250 ms (--dur-base) e só anima `transform` e `opacity`. Com movimento reduzido, o
+ * oculto fica sem rotação: a troca vira só fade.
+ */
+.toggle {
+  position: relative;
+  display: inline-flex;
+  box-sizing: border-box;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: var(--touch-min);
+  height: var(--touch-min);
+  padding: 0;
+  border: var(--border-width) solid var(--control-border);
+  border-radius: 50%;
+  background-color: var(--control-bg);
+  color: var(--color-theme-icon);
+  cursor: pointer;
+  transition: background-color var(--dur-fast) var(--ease-out);
+}
+
+.icon {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  pointer-events: none;
+  transform: rotate(-90deg);
+  transition:
+    transform var(--dur-base) var(--ease-out),
+    opacity var(--dur-base) var(--ease-out);
+}
+
+.icon[data-visivel='true'] {
+  opacity: 1;
+  transform: rotate(0deg);
+}
+
+/*
+ * Durante a troca de tema, a regra global `.theme-transition *` (DS-04) usa `!important` e só lista
+ * cores, o que tiraria a rotação e o fade do ícone justamente nos 300 ms em que ele troca. Este
+ * seletor é mais específico (0,2,0 contra 0,1,0) e devolve ao ícone a própria transição, com as
+ * cores do tema junto. O seletor de atributo não é renomeado pelo CSS Modules.
+ */
+[class~='theme-transition'] .icon {
+  transition:
+    transform var(--dur-base) var(--ease-out),
+    opacity var(--dur-base) var(--ease-out),
+    color var(--dur-theme) ease !important;
+}
+
+/* Hover só com ponteiro (doc 02 §1), e o estado forçado do styleguide. */
+@media (hover: hover) {
+  .toggle:hover {
+    background-color: var(--color-fill-soft);
+  }
+}
+
+.toggle[data-state='hover'] {
+  background-color: var(--color-fill-soft);
+}
+
+.toggle[data-state='focus'] {
+  outline: var(--focus-width) solid var(--color-focus);
+  outline-offset: var(--focus-offset);
+}
+
+/* Movimento reduzido: troca sem rotação, só fade (§9). */
+@media (prefers-reduced-motion: reduce) {
+  .icon {
+    transform: none;
+  }
+
+  .icon[data-visivel='true'] {
+    transform: none;
+  }
+}
