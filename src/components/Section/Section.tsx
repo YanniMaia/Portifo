@@ -21,6 +21,11 @@ export interface SectionProps {
   tone?: SectionTone;
   /** Id do título (H2) que nomeia a seção (`aria-labelledby`). */
   labelledBy?: string;
+  /**
+   * Nome acessível direto (`aria-label`), só para seção sem título visível (a Faixa de destaques,
+   * S-05/AMB-S-13). O texto vem do dicionário. Com `labelledBy`, este é ignorado.
+   */
+  label?: string;
   padding?: SectionPadding;
   /** Classe extra do consumidor, colocada no fim. */
   className?: string;
@@ -38,6 +43,7 @@ export function Section({
   id,
   tone,
   labelledBy,
+  label,
   padding = 'default',
   className,
   children,
@@ -47,7 +53,13 @@ export function Section({
     .filter(Boolean)
     .join(' ');
   return (
-    <section id={id} aria-labelledby={labelledBy} className={classes} data-tone={tom}>
+    <section
+      id={id}
+      aria-labelledby={labelledBy}
+      aria-label={labelledBy ? undefined : label}
+      className={classes}
+      data-tone={tom}
+    >
       {children}
     </section>
   );
