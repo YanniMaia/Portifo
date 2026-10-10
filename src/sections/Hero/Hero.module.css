@@ -1,0 +1,135 @@
+/*
+ * Hero (S-03; doc de design §7.2, §4, §3.4, §10; DV-1; D13).
+ *
+ * - `section.hero` (0,1,1) vence o `.section` do DS-10 (0,1,0) sem depender da ordem dos módulos.
+ * - Padding: cabeçalho + 64 (celular: 64 + 64 = 128) ou + 80 (tablet 68 + 80 = 148; desktop
+ *   72 + 80 = 152). Inferior: `--section-py` (64 / 88) e 96 no desktop (`--space-24`).
+ * - Altura mínima `max(100svh, 640px)` (box-sizing do reset: inclui o padding). O conteúdo fica
+ *   centralizado na vertical.
+ * - Fundo: `--color-bg` (do `Section`) + `--hero-glow-1` (640 px, canto sup. direito) +
+ *   `--hero-glow-2` (480 px, canto inf. esquerdo). Escuro: #150A10 + #4A1A33 55% / #2A1020 40%.
+ * - `overflow: hidden` na seção: decoração não gera rolagem horizontal. A camada da prop
+ *   `backdrop` (A-19) fica atrás do conteúdo (`z-index` 0 × 1), também com `overflow: hidden`.
+ * - Sem transição nem animação própria (CC-6). As únicas transições são as do Button (DS-11) e do
+ *   PulseDot (DS-08), que já respeitam `prefers-reduced-motion`.
+ * - Medidas sem token (literais do doc §7.2): 80 px (padding superior), 20 px (subtítulo →
+ *   assinatura), 40 px (texto → botões), 3 px (barra da assinatura) e as alturas do visual
+ *   (520 / 420 / 320 px, preenchido no S-04).
+ */
+
+section.hero {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-height: max(100svh, 640px);
+  padding-block: calc(var(--header-height) + var(--space-16)) var(--section-py);
+  overflow: hidden;
+  background-image: var(--hero-glow-1), var(--hero-glow-2);
+}
+
+.backdrop {
+  position: absolute;
+  z-index: 0;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.grade {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  align-items: center;
+  gap: var(--space-12);
+}
+
+/* ---------- Coluna de texto ---------- */
+
+.texto {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  min-width: 0;
+}
+
+.pilula {
+  margin-bottom: var(--space-6);
+}
+
+.titulo {
+  margin: 0;
+}
+
+.subtitulo {
+  margin-top: var(--space-6);
+  color: var(--color-text-secondary);
+}
+
+.assinatura {
+  margin-top: 20px;
+  padding-inline-start: var(--space-4);
+  border-inline-start: 3px solid var(--color-accent);
+  color: var(--color-text-pink-on-tint);
+  font-family: var(--font-body);
+  font-size: var(--fs-signature);
+  font-style: italic;
+  font-weight: var(--fw-signature);
+  line-height: var(--lh-signature);
+}
+
+/* Celular: botões empilhados, largura total (o `fullWidthOnMobile` do DS-11), 12 px entre eles. */
+.botoes {
+  display: flex;
+  flex-direction: column;
+  align-self: stretch;
+  margin-top: 40px;
+  gap: var(--button-gap);
+}
+
+/* ---------- Coluna do visual (S-04) ---------- */
+
+.visual {
+  min-width: 0;
+  min-height: 320px;
+}
+
+/* ---------- Tablet (640–1023 px) ---------- */
+
+@media (min-width: 640px) {
+  section.hero {
+    padding-top: calc(var(--header-height) + 80px);
+  }
+
+  .botoes {
+    flex-flow: row wrap;
+    align-self: flex-start;
+  }
+
+  .visual {
+    min-height: 420px;
+  }
+}
+
+/* ---------- Desktop (≥ 1024 px) ---------- */
+
+@media (min-width: 1024px) {
+  section.hero {
+    padding-bottom: var(--space-24);
+  }
+
+  .grade {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--space-16);
+  }
+
+  /* Quebra forçada entre "Olá, eu sou" e "Yanni Elyssa." só no desktop. */
+  .nome {
+    display: block;
+    width: fit-content;
+  }
+
+  .visual {
+    min-height: 520px;
+  }
+}
