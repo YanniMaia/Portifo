@@ -1,0 +1,88 @@
+/*
+ * MenuButton (S-02; doc de design §7.1, §10, §11).
+ *
+ * - Alvo de 44 × 44 px (`--touch-min`), círculo como o botão de tema ao lado (DS-19), sem borda.
+ * - Três linhas de 20 × 2 px na cor do texto principal (#2B1620 / #FDF0F5, `--color-text`), 4 px
+ *   entre elas (caixa de 20 × 14 px). Com `data-open='true'` viram um X: a de cima desce 6 px e gira
+ *   45°, a do meio some, a de baixo sobe 6 px e gira −45°. Só `transform` e `opacity`.
+ * - A troca é imediata: este módulo não declara transição (a de 250 ms é do A-07). Movimento
+ *   reduzido: nada a desligar.
+ * - Hover (com ponteiro): fundo `--color-fill-soft` (#FFEEF4 / rosa 12%). Foco: contorno global do
+ *   base.css (3 px, afastamento 3 px, cor do modo). Ativo: o mesmo fundo do hover.
+ * - Medidas sem token (literais do doc): linhas 20 × 2 px, caixa 14 px, deslocamento 6 px.
+ */
+.botao {
+  position: relative;
+  display: inline-flex;
+  box-sizing: border-box;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: var(--touch-min);
+  height: var(--touch-min);
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background-color: transparent;
+  color: var(--color-text);
+  cursor: pointer;
+}
+
+@media (hover: hover) {
+  .botao:hover {
+    background-color: var(--color-fill-soft);
+  }
+}
+
+.botao:active {
+  background-color: var(--color-fill-soft);
+}
+
+.linhas {
+  position: relative;
+  display: block;
+  width: 20px;
+  height: 14px;
+}
+
+.linha {
+  position: absolute;
+  left: 0;
+  display: block;
+  width: 20px;
+  height: 2px;
+  border-radius: 1px;
+  background-color: currentcolor;
+}
+
+.linha:nth-child(1) {
+  top: 0;
+}
+
+.linha:nth-child(2) {
+  top: 6px;
+}
+
+.linha:nth-child(3) {
+  top: 12px;
+}
+
+/* Aberto: X (gancho `data-open`, doc 04 §4.4). */
+.botao[data-open='true'] .linha:nth-child(1) {
+  transform: translateY(6px) rotate(45deg);
+}
+
+.botao[data-open='true'] .linha:nth-child(2) {
+  opacity: 0;
+}
+
+.botao[data-open='true'] .linha:nth-child(3) {
+  transform: translateY(-6px) rotate(-45deg);
+}
+
+/* Alto contraste do sistema: as linhas seguem a cor do botão do sistema. */
+@media (forced-colors: active) {
+  .linha {
+    background-color: buttontext;
+  }
+}

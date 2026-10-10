@@ -1,0 +1,85 @@
+/*
+ * MobileMenu (S-02; doc de design §7.1, §10, §11; DV-12).
+ *
+ * - Painel fixo logo abaixo do cabeçalho (`top` = `--header-height`: 64/68 px abaixo de 1024 px),
+ *   largura total. Vidro `menu` do DS-17 (`--mobile-menu-bg`: branco 96% / #150A10 96%, desfoque
+ *   14 px) com padding de 24 px (`--space-6`). Borda inferior de 1 px `--color-border` para separar
+ *   o painel do conteúdo (#F9D5E3 / #3B2030).
+ * - Links: 20 px/500 (`--fs-nav-mobile`), 56 px de altura, cor do texto principal; divisória de
+ *   1 px `--color-border` entre eles (#F9D5E3 / #3B2030). Hover e ativo: `--color-link` (#C93A77 /
+ *   #FFB3D1); ativo com peso 600, como o S-01.
+ * - `data-open='false'`: invisível (`visibility: hidden`) e `inert` (no JSX). O painel fica no DOM
+ *   para o A-07 animar; este módulo não declara transição (deslize e fade de 250 ms são do A-07).
+ *   Movimento reduzido: nada a desligar.
+ * - Camada transparente (clique fora) cobre a tela abaixo do cabeçalho, atrás do painel.
+ * - Sem rolagem horizontal: o painel ocupa `inset-inline: 0`; telas baixas rolam dentro do painel.
+ * - Medida sem token (literal do doc): 56 px de altura do link.
+ */
+.camada {
+  position: fixed;
+  z-index: 98;
+  inset: var(--header-height) 0 0;
+  background-color: transparent;
+}
+
+.painel {
+  position: fixed;
+  z-index: 99;
+  inset: var(--header-height) 0 auto;
+  max-height: calc(100dvh - var(--header-height));
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+.painel[data-open='false'] {
+  visibility: hidden;
+}
+
+.vidro {
+  border-bottom: var(--border-width) solid var(--color-border);
+}
+
+.lista {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.item + .item {
+  border-top: var(--border-width) solid var(--color-border);
+}
+
+.link {
+  display: flex;
+  align-items: center;
+  min-height: 56px;
+  color: var(--color-text);
+  font-family: var(--font-body);
+  font-size: var(--fs-nav-mobile);
+  font-weight: var(--fw-nav-mobile);
+  line-height: var(--lh-nav-mobile);
+  text-decoration: none;
+}
+
+@media (hover: hover) {
+  .link:hover {
+    color: var(--color-link);
+  }
+}
+
+.link:active {
+  color: var(--color-link);
+}
+
+.link[aria-current='location'] {
+  color: var(--color-link);
+  font-weight: var(--fw-nav-active);
+}
+
+/* O painel não existe no desktop (o Header só o monta abaixo de 1024 px); garantia extra. */
+@media (min-width: 1024px) {
+  .camada,
+  .painel {
+    display: none;
+  }
+}
