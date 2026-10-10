@@ -2,7 +2,15 @@
 // `src/content/projects.ts` e com o documento de design (§12 e §12.5). Os casos negativos rodam numa
 // cópia temporária dos 3 arquivos, alterada de propósito.
 import { spawnSync } from 'node:child_process';
-import { cpSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
+import {
+  cpSync,
+  existsSync,
+  mkdirSync,
+  mkdtempSync,
+  readFileSync,
+  rmSync,
+  writeFileSync,
+} from 'node:fs';
 import { tmpdir } from 'node:os';
 import { dirname, join, resolve } from 'node:path';
 import { afterEach, describe, expect, it } from 'vitest';
@@ -11,7 +19,11 @@ import { PROJECTS } from '@/content/projects';
 const raiz = process.cwd();
 const script = resolve(raiz, 'scripts/conferir-runbook.mjs');
 const RUNBOOK = 'plano/runbooks/publicar-repositorios.md';
-const ARQUIVOS = [RUNBOOK, 'src/content/projects.ts', 'plano/referencia/documento-design-v1.1.txt'];
+const DOC = 'plano/referencia/documento-design-v1.1.txt';
+const ARQUIVOS = [RUNBOOK, 'src/content/projects.ts', DOC];
+// `plano/` fica fora do git (R3): na CI o runbook e o documento de design não existem, e o script só
+// teria o exit 2 de "arquivo ausente". Todos os casos abaixo usam esses arquivos, então o bloco é pulado.
+const TEM_PLANO = existsSync(resolve(raiz, RUNBOOK)) && existsSync(resolve(raiz, DOC));
 const pastas: string[] = [];
 
 function rodar(pastaRaiz: string) {
@@ -39,7 +51,7 @@ afterEach(() => {
   for (const p of pastas.splice(0)) rmSync(p, { recursive: true, force: true });
 });
 
-describe('scripts/conferir-runbook.mjs', () => {
+describe.skipIf(!TEM_PLANO)('scripts/conferir-runbook.mjs (local: precisa de plano/)', () => {
   it('imprime OK no repositório real (exit 0)', () => {
     const r = rodar(raiz);
     expect(r.stdout.trim()).toBe('OK');

@@ -1,6 +1,6 @@
 // C-05: fichas de projeto (src/content/projects.ts) conferidas com o doc 05 §5.1 / Anexo A.9 e com
 // o próprio documento de design (§7.8, §12.1–12.5, §14).
-import { readdirSync, readFileSync, statSync } from 'node:fs';
+import { existsSync, readdirSync, readFileSync, statSync } from 'node:fs';
 import { join, resolve } from 'node:path';
 import { afterEach, describe, expect, expectTypeOf, it, vi } from 'vitest';
 import type { ProjectIllustrationVariant } from '@/components/illustrations';
@@ -12,11 +12,19 @@ import type { Project } from '@/content/types';
 import { validarFichas } from '@/content/validarFichas';
 
 const raiz = process.cwd();
-const docDesign = readFileSync(resolve(raiz, 'plano/referencia/documento-design-v1.1.txt'), 'utf8');
+// `plano/` fica fora do git (R3): na CI o documento de design não existe e o bloco de conferência
+// direta com ele é pulado. Nada é lido no topo do módulo; a leitura só acontece dentro desse bloco.
+const CAMINHO_DOC = resolve(raiz, 'plano/referencia/documento-design-v1.1.txt');
+const TEM_DOC = existsSync(CAMINHO_DOC);
+let docCache: string | undefined;
+function docDesign(): string {
+  docCache ??= readFileSync(CAMINHO_DOC, 'utf8');
+  return docCache;
+}
 
 /** Trecho do doc de design entre o cabeçalho `inicio` e o próximo cabeçalho de seção. */
 function secaoDoDoc(inicio: string): string {
-  const linhas = docDesign.split(/\r?\n/);
+  const linhas = docDesign().split(/\r?\n/);
   const i = linhas.findIndex((l) => l.startsWith(`[Heading2] ${inicio}`));
   if (i < 0) throw new Error(`Seção "${inicio}" não encontrada no doc de design.`);
   const fim = linhas.findIndex((l, j) => j > i && l.startsWith('[Heading'));
@@ -208,45 +216,48 @@ describe('projects.ts (C-05): dados idênticos à tabela §5.1', () => {
   });
 });
 
-describe('projects.ts (C-05): conferência direta com o documento de design', () => {
-  it('Gerenciador (§7.8): etiqueta, nome, descrição, chips e os dois placeholders dos botões', () => {
-    const conteudo = valorDaLinha(secaoDoDoc('7.8 Projetos'), 'Conteúdo');
-    const g = porId('gerenciador-de-estoque');
-    expect(conteudo).toContain(`Etiqueta “${g.etiqueta?.pt ?? ''}”`);
-    expect(conteudo).toContain(`H3 “${g.nome}”`);
-    expect(conteudo).toContain(`Descrição: “${g.descricao.pt}”`);
-    expect(conteudo).toContain(`Chips de tecnologia: ${g.tecnologias.join(', ')}Botões`);
-    expect(conteudo).toContain(`Ver projeto (primário, ${g.linkProjeto ?? ''})`);
-    expect(conteudo).toContain(`GitHub (secundário, ${g.linkGithub ?? ''})`);
-  });
+describe.skipIf(!TEM_DOC)(
+  'projects.ts (C-05): conferência direta com o documento de design (local: precisa de plano/)',
+  () => {
+    it('Gerenciador (§7.8): etiqueta, nome, descrição, chips e os dois placeholders dos botões', () => {
+      const conteudo = valorDaLinha(secaoDoDoc('7.8 Projetos'), 'Conteúdo');
+      const g = porId('gerenciador-de-estoque');
+      expect(conteudo).toContain(`Etiqueta “${g.etiqueta?.pt ?? ''}”`);
+      expect(conteudo).toContain(`H3 “${g.nome}”`);
+      expect(conteudo).toContain(`Descrição: “${g.descricao.pt}”`);
+      expect(conteudo).toContain(`Chips de tecnologia: ${g.tecnologias.join(', ')}Botões`);
+      expect(conteudo).toContain(`Ver projeto (primário, ${g.linkProjeto ?? ''})`);
+      expect(conteudo).toContain(`GitHub (secundário, ${g.linkGithub ?? ''})`);
+    });
 
-  it.each(Object.entries(SECAO_12))('%s (§%s): área, descrição e chips do doc', (id, secao) => {
-    const trecho = secaoDoDoc(secao);
-    const p = porId(id);
-    expect(valorDaLinha(trecho, 'Repositório')).toBe(id);
-    expect(valorDaLinha(trecho, 'Área no site')).toBe(p.etiqueta?.pt);
-    expect(valorDaLinha(trecho, 'Descrição do card')).toBe(`“${p.descricao.pt}”`);
-    expect(valorDaLinha(trecho, 'Tecnologias (chips)')).toBe(p.tecnologias.join(', '));
-  });
+    it.each(Object.entries(SECAO_12))('%s (§%s): área, descrição e chips do doc', (id, secao) => {
+      const trecho = secaoDoDoc(secao);
+      const p = porId(id);
+      expect(valorDaLinha(trecho, 'Repositório')).toBe(id);
+      expect(valorDaLinha(trecho, 'Área no site')).toBe(p.etiqueta?.pt);
+      expect(valorDaLinha(trecho, 'Descrição do card')).toBe(`“${p.descricao.pt}”`);
+      expect(valorDaLinha(trecho, 'Tecnologias (chips)')).toBe(p.tecnologias.join(', '));
+    });
 
-  it('os 4 links do §12.5 são exatamente os linkGithub dos projetos de estudo', () => {
-    const tabela = secaoDoDoc('12.5 ');
-    const links = [...tabela.matchAll(/https:\/\/github\.com\/YanniMaia\/[\w-]+/g)].map(
-      (m) => m[0],
-    );
-    const deEstudo = PROJECTS.filter((p) => p.projetoDeEstudo).map((p) => p.linkGithub);
-    expect(deEstudo).toEqual(links);
-    expect(links).toHaveLength(4);
-    // O Gerenciador não tem link no §12.5: só o rótulo pendente.
-    expect(tabela).toContain(
-      '| Gerenciador de Estoque (o seu) | [colocar o link do seu repositório] |',
-    );
-  });
+    it('os 4 links do §12.5 são exatamente os linkGithub dos projetos de estudo', () => {
+      const tabela = secaoDoDoc('12.5 ');
+      const links = [...tabela.matchAll(/https:\/\/github\.com\/YanniMaia\/[\w-]+/g)].map(
+        (m) => m[0],
+      );
+      const deEstudo = PROJECTS.filter((p) => p.projetoDeEstudo).map((p) => p.linkGithub);
+      expect(deEstudo).toEqual(links);
+      expect(links).toHaveLength(4);
+      // O Gerenciador não tem link no §12.5: só o rótulo pendente.
+      expect(tabela).toContain(
+        '| Gerenciador de Estoque (o seu) | [colocar o link do seu repositório] |',
+      );
+    });
 
-  it('nomes de projeto do §7.8/§12 (não traduzidos, §15)', () => {
-    for (const p of PROJECTS) expect(docDesign, p.id).toContain(p.nome);
-  });
-});
+    it('nomes de projeto do §7.8/§12 (não traduzidos, §15)', () => {
+      for (const p of PROJECTS) expect(docDesign(), p.id).toContain(p.nome);
+    });
+  },
+);
 
 describe('projects.ts (C-05): produção (SHOW_PLACEHOLDERS = false)', () => {
   async function carregarProducao() {

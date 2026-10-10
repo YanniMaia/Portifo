@@ -5,11 +5,19 @@ import { describe, expect, it } from 'vitest';
 import { site } from '@/content/site';
 
 const raiz = process.cwd();
-const docDesign = readFileSync(resolve(raiz, 'plano/referencia/documento-design-v1.1.txt'), 'utf8');
+// `plano/` fica fora do git (R3): na CI o documento de design não existe e as conferências com ele
+// são puladas. Nada é lido no topo do módulo; a leitura só acontece dentro dos testes condicionais.
+const CAMINHO_DOC = resolve(raiz, 'plano/referencia/documento-design-v1.1.txt');
+const TEM_DOC = existsSync(CAMINHO_DOC);
+let docCache: string | undefined;
+function docDesign(): string {
+  docCache ??= readFileSync(CAMINHO_DOC, 'utf8');
+  return docCache;
+}
 
 /** Lê o valor de uma linha da tabela da capa do doc: `| Rótulo | valor |`. */
 function valorDaCapa(rotulo: string): string {
-  const linha = docDesign
+  const linha = docDesign()
     .split(/\r?\n/)
     .slice(0, 12)
     .find((l) => l.startsWith(`| ${rotulo} |`));
@@ -18,12 +26,15 @@ function valorDaCapa(rotulo: string): string {
 }
 
 describe('site.ts (C-04)', () => {
-  it('nome, LinkedIn, GitHub e e-mail são idênticos à capa do doc', () => {
-    expect(site.nome).toBe(valorDaCapa('Nome'));
-    expect(site.linkedin).toBe(valorDaCapa('LinkedIn'));
-    expect(site.github).toBe(valorDaCapa('GitHub'));
-    expect(site.email).toBe(valorDaCapa('E-mail'));
-  });
+  it.skipIf(!TEM_DOC)(
+    'nome, LinkedIn, GitHub e e-mail são idênticos à capa do doc (local: precisa de plano/)',
+    () => {
+      expect(site.nome).toBe(valorDaCapa('Nome'));
+      expect(site.linkedin).toBe(valorDaCapa('LinkedIn'));
+      expect(site.github).toBe(valorDaCapa('GitHub'));
+      expect(site.email).toBe(valorDaCapa('E-mail'));
+    },
+  );
 
   it('valores exatos (independentes do arquivo do doc)', () => {
     expect(site.nome).toBe('Yanni Elyssa');
@@ -52,9 +63,12 @@ describe('site.ts (C-04)', () => {
     expect(site.mailto).toBe(`mailto:${site.email}`);
   });
 
-  it('curso, instituição e situação aparecem no doc (§7.9)', () => {
-    expect(docDesign).toContain(`${site.curso} — ${site.instituicao} (${site.situacao})`);
-  });
+  it.skipIf(!TEM_DOC)(
+    'curso, instituição e situação aparecem no doc (§7.9) (local: precisa de plano/)',
+    () => {
+      expect(docDesign()).toContain(`${site.curso} — ${site.instituicao} (${site.situacao})`);
+    },
+  );
 
   it('nenhum dado extra: só os campos previstos (sem siteUrl, cidade, telefone etc.)', () => {
     expect(Object.keys(site).sort()).toEqual(

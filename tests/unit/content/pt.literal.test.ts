@@ -1,7 +1,7 @@
 // C-02: o dicionário pt-BR é cópia literal do Anexo A (doc 05), que é cópia do documento de design.
 // Fixture transcrito à mão do Anexo A; os textos de origem "doc" também são procurados no próprio
 // documento de design (plano/referencia/documento-design-v1.1.txt), caractere por caractere.
-import { readdirSync, readFileSync, statSync } from 'node:fs';
+import { existsSync, readdirSync, readFileSync, statSync } from 'node:fs';
 import { join, resolve } from 'node:path';
 import { describe, expect, it } from 'vitest';
 import { PENDENCIA_POR_CHAVE } from '@/content/metadados';
@@ -33,7 +33,15 @@ const fixture = JSON.parse(
   readFileSync(resolve(raiz, 'tests/unit/content/fixtures/anexo-a.pt.json'), 'utf8'),
 ) as { chaves: Record<string, Entrada> };
 const ESPERADO = fixture.chaves;
-const docDesign = readFileSync(resolve(raiz, 'plano/referencia/documento-design-v1.1.txt'), 'utf8');
+// `plano/` fica fora do git (R3): na CI o documento de design não existe e as conferências com ele
+// são puladas. O fixture (versionado) continua sendo conferido sempre.
+const CAMINHO_DOC = resolve(raiz, 'plano/referencia/documento-design-v1.1.txt');
+const TEM_DOC = existsSync(CAMINHO_DOC);
+let docCache: string | undefined;
+function docDesign(): string {
+  docCache ??= readFileSync(CAMINHO_DOC, 'utf8');
+  return docCache;
+}
 
 const ORIGENS_SUGERIDAS: readonly Origem[] = ['sugerido-ia', 'sugerido-doc', 'derivado', 'novo-ui'];
 
@@ -68,31 +76,39 @@ describe('pt.ts × Anexo A (C-02)', () => {
     }
   });
 
-  it('textos de origem "doc" existem literalmente no documento de design', () => {
-    const faltando: string[] = [];
-    for (const [chave, e] of Object.entries(ESPERADO)) {
-      if (!['doc', 'sugerido-doc', 'eyebrow'].includes(e.origem)) continue;
-      const procurar: string[] = e.doc
-        ? [e.doc]
-        : e.origem === 'eyebrow'
-          ? [`“${String(e.pt).toUpperCase()}”`]
-          : Array.isArray(e.pt)
-            ? e.pt
-            : [String(e.pt)];
-      for (const trecho of procurar) {
-        if (!docDesign.includes(trecho)) faltando.push(`${chave}: ${trecho}`);
+  it.skipIf(!TEM_DOC)(
+    'textos de origem "doc" existem literalmente no documento de design (local: precisa de plano/)',
+    () => {
+      const doc = docDesign();
+      const faltando: string[] = [];
+      for (const [chave, e] of Object.entries(ESPERADO)) {
+        if (!['doc', 'sugerido-doc', 'eyebrow'].includes(e.origem)) continue;
+        const procurar: string[] = e.doc
+          ? [e.doc]
+          : e.origem === 'eyebrow'
+            ? [`“${String(e.pt).toUpperCase()}”`]
+            : Array.isArray(e.pt)
+              ? e.pt
+              : [String(e.pt)];
+        for (const trecho of procurar) {
+          if (!doc.includes(trecho)) faltando.push(`${chave}: ${trecho}`);
+        }
       }
-    }
-    expect(faltando).toEqual([]);
-  });
+      expect(faltando).toEqual([]);
+    },
+  );
 
-  it('o texto original que a adaptação IA substituiu existe no doc (para reverter)', () => {
-    for (const [chave, e] of Object.entries(ESPERADO)) {
-      if (e.original && e.original.length > 1) {
-        expect(docDesign.includes(e.original), chave).toBe(true);
+  it.skipIf(!TEM_DOC)(
+    'o texto original que a adaptação IA substituiu existe no doc (para reverter) (local: precisa de plano/)',
+    () => {
+      const doc = docDesign();
+      for (const [chave, e] of Object.entries(ESPERADO)) {
+        if (e.original && e.original.length > 1) {
+          expect(doc.includes(e.original), chave).toBe(true);
+        }
       }
-    }
-  });
+    },
+  );
 
   it('SUGERIDOS = chaves sugerido (IA/doc), derivado e novo (UI) do Anexo A', () => {
     const esperadas = Object.entries(ESPERADO)
