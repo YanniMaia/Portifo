@@ -1,0 +1,54 @@
+/*
+ * Frase de destaque (S-06; doc de design §7.4, §3.5; DV-10, DV-16; D13).
+ *
+ * - Fundo e padding vêm do `Section` (tom `tint` do registro + `padding="motto"`); largura de
+ *   900 px do `Container size="motto"`. Aqui só o alinhamento central e a tipografia.
+ * - `<h2>` sem estilo de título: é só o invólucro semântico do Eyebrow (`tone="tint"`, que traz
+ *   tamanho, peso, caixa alta e cor). Margem 0 e a métrica do eyebrow, para não herdar a do H2.
+ * - Linhas: `--fs-motto` (48 / 38 / 30), `--fw-motto` (800), `--lh-motto` (1,2), `--color-text`.
+ * - Seta: claro #F286B0 (`--color-deco`) e escuro #F58FB8 (`--color-accent`). Não existe token com
+ *   esse par, então o escuro troca pelo `[data-theme='dark']` do <html> (mesmo padrão do Header e
+ *   do IconBox). A seta é decorativa (`aria-hidden`, AMB-S-25), por isso pode ser rosa claro.
+ * - Apoio: `--fs-lead` (18 px), cor secundária, 32 px abaixo.
+ * - Medida sem token: 24 px entre o eyebrow e as linhas (`--space-6`; o doc não fixa).
+ * - Sem transição nem animação (CC-6); o `data-stagger` (A-03) não recebe `transform` aqui.
+ */
+.conteudo {
+  text-align: center;
+}
+
+.titulo {
+  margin: 0;
+  font-size: var(--fs-eyebrow);
+  line-height: var(--lh-eyebrow);
+}
+
+.linhas {
+  margin-top: var(--space-6);
+}
+
+.linha {
+  margin: 0;
+  color: var(--color-text);
+  font-family: var(--font-display);
+  font-size: var(--fs-motto);
+  font-weight: var(--fw-motto);
+  line-height: var(--lh-motto);
+}
+
+.seta {
+  color: var(--color-deco);
+}
+
+[data-theme='dark'] .seta {
+  color: var(--color-accent);
+}
+
+.apoio {
+  margin: var(--space-8) 0 0;
+  color: var(--color-text-secondary);
+  font-family: var(--font-body);
+  font-size: var(--fs-lead);
+  font-weight: var(--fw-lead);
+  line-height: var(--lh-lead);
+}
