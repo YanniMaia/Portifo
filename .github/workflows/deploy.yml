@@ -1,0 +1,175 @@
+# D-04: CI e publicação no GitHub Pages (doc 07; V1 conforme doc 09 §3).
+# Ordem garantida por `needs:`: qualidade → build → e2e → deploy → smoke.
+# V1: sem regressão visual (Q-20) e sem Lighthouse (Q-23); os dois são V2.
+# O `base` do Vite vem de src/site.config.ts (D-02); este arquivo não define base nem URL.
+# Nenhum segredo é usado: só o GITHUB_TOKEN implícito e o OIDC do deploy-pages.
+name: CI e deploy
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+    inputs:
+      ref:
+        description: 'Tag ou commit a publicar (rollback, D-11). Vazio = commit do disparo.'
+        required: false
+        type: string
+        default: ''
+
+# Mínimo privilégio: o workflow só lê. Só o job `deploy` ganha pages/id-token.
+permissions:
+  contents: read
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  qualidade:
+    name: Lint, tipos e testes unitários
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: ${{ inputs.ref }}
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - run: npm ci
+      - run: npm run lint
+      - run: npm run typecheck
+      - run: npm test
+
+  build:
+    name: Build de produção
+    needs: qualidade
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    outputs:
+      sha: ${{ steps.sha.outputs.sha }}
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: ${{ inputs.ref }}
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - run: npm ci
+      # SHA do commit realmente construído (no rollback é o do `ref`, não o do disparo). Usado pela D-05.
+      - id: sha
+        run: echo "sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+      - run: npm run build
+        env:
+          GIT_SHA: ${{ steps.sha.outputs.sha }}
+      - uses: actions/upload-pages-artifact@v5
+        with:
+          path: dist/
+
+  e2e:
+    name: E2E (Playwright, projetos de produção)
+    needs: build
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    # Mesma versão do @playwright/test do package.json (navegadores já instalados na imagem).
+    container:
+      image: mcr.microsoft.com/playwright:v1.63.0-noble
+    env:
+      GIT_SHA: ${{ needs.build.outputs.sha }}
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: ${{ inputs.ref }}
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - run: npm ci
+      # Só os projetos `vp*` (build + preview). O projeto `styleguide` usa o servidor dev e a
+      # rota /__styleguide, que não existe no build publicado; fica fora da CI (decisão da D-04).
+      - run: npm run e2e -- --project='vp*'
+      - if: failure()
+        uses: actions/upload-artifact@v7
+        with:
+          name: e2e-relatorios
+          path: |
+            playwright-report/
+            test-results/
+            relatorios/
+          if-no-files-found: ignore
+          retention-days: 14
+
+  deploy:
+    name: Publicar no GitHub Pages
+    needs: [build, e2e]
+    # Nunca em pull_request: só push na main ou disparo manual.
+    if: (github.event_name == 'push' && github.ref == 'refs/heads/main') || github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      pages: write
+      id-token: write
+    concurrency:
+      group: pages
+      cancel-in-progress: false
+    environment:
+      name: github-pages
+      url: ${{ steps.publicacao.outputs.page_url }}
+    outputs:
+      page_url: ${{ steps.publicacao.outputs.page_url }}
+    steps:
+      - id: publicacao
+        uses: actions/deploy-pages@v5
+
+  smoke:
+    name: Smoke na URL pública
+    needs: [build, deploy]
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    container:
+      image: mcr.microsoft.com/playwright:v1.63.0-noble
+    env:
+      SMOKE_URL: ${{ needs.deploy.outputs.page_url }}
+      SMOKE_SHA: ${{ needs.build.outputs.sha }}
+      GIT_SHA: ${{ needs.build.outputs.sha }}
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: ${{ inputs.ref }}
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - run: npm ci
+      # O script `e2e:publico` é entregue pela D-05. Até lá, o passo só avisa.
+      - name: npm run e2e:publico
+        run: |
+          if [ "$(npm pkg get scripts.e2e:publico)" = "{}" ]; then
+            echo "::warning title=Smoke pendente::script e2e:publico ainda não existe (D-05)."
+            exit 0
+          fi
+          npm run e2e:publico
+      - if: failure()
+        name: Alerta de rollback
+        run: |
+          echo "::error title=Smoke falhou::O site já foi publicado. Avalie o rollback: Actions > CI e deploy > Run workflow, com ref = última tag boa."
+          {
+            echo "## Smoke falhou depois do deploy"
+            echo ""
+            echo "- URL: $SMOKE_URL"
+            echo "- Commit publicado: $SMOKE_SHA"
+            echo "- Rollback: rode este workflow manualmente (workflow_dispatch) com \`ref\` = última tag boa."
+          } >> "$GITHUB_STEP_SUMMARY"
+      - if: failure()
+        uses: actions/upload-artifact@v7
+        with:
+          name: smoke-relatorios
+          path: |
+            playwright-report/
+            test-results/
+          if-no-files-found: ignore
+          retention-days: 14
