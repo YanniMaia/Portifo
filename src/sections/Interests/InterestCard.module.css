@@ -1,0 +1,44 @@
+/*
+ * Card de área de interesse (S-08; doc de design §7.6; DV-4; D17).
+ *
+ * - Cores, borda, raio, padding, sombra e hover vêm do `Card` (DS-15) e do `IconBox` (DS-16); aqui só
+ *   o arranjo interno. Sem transição nem animação própria (CC-6).
+ * - Coluna flexível com altura total da célula: os cards da mesma linha ficam com a mesma altura
+ *   (DV-3) e os chips descem para o fim do card.
+ * - Medida sem token (literal do §7.6): descrição em 16 px (o `--fs-body` vira 17 px no desktop).
+ */
+.card {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.topo {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-3);
+}
+
+.selo {
+  margin-top: var(--space-1);
+}
+
+.titulo {
+  margin: var(--space-4) 0 0;
+  color: var(--color-text);
+}
+
+.texto {
+  margin: var(--space-2) 0 0;
+  color: var(--color-text-secondary);
+  font-family: var(--font-body);
+  font-size: 16px;
+  font-weight: var(--fw-body);
+  line-height: var(--lh-body);
+}
+
+.chips {
+  margin-top: auto;
+  padding-top: var(--space-6);
+}

@@ -1,0 +1,41 @@
+/*
+ * Áreas de interesse (S-08; doc de design §7.6; DV-3).
+ *
+ * - Fundo e padding vêm do `Section` (tom `alt`); cabeçalho e o espaço até a grade
+ *   (`--section-head-gap`) vêm do `SectionHeader` (DS-14).
+ * - `section.interesses` (0,1,1) vence o `.section` do DS-10 sem depender da ordem dos módulos:
+ *   `overflow: hidden` para a camada da prop `backdrop` (A-19) nunca gerar rolagem.
+ * - A camada `backdrop` fica atrás (`z-index` 0) e o conteúdo na frente (`z-index` 1).
+ * - Grade (DV-3): 1 coluna no celular, 2 × 2 a partir de 640 px; espaço `--card-gap` (16/24/24).
+ *   Cada célula estica até a altura da linha (cards da mesma linha com a mesma altura).
+ * - Sem transição nem animação própria (CC-6).
+ */
+section.interesses {
+  overflow: hidden;
+}
+
+.backdrop {
+  position: absolute;
+  z-index: 0;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.conteudo {
+  position: relative;
+  z-index: 1;
+}
+
+.grade {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  align-items: stretch;
+  gap: var(--card-gap);
+}
+
+@media (min-width: 640px) {
+  .grade {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
