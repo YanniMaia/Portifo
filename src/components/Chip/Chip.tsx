@@ -20,6 +20,8 @@ export interface ChipProps {
   className?: string;
   /** Força o visual de hover (styleguide/prints). */
   'data-state'?: 'hover';
+  /** Gancho de item da cascata do doc 04 §4.4 (A-03; S-09), repassado sem mudar o visual. */
+  'data-stagger-item'?: string;
   children: ReactNode;
 }
 
@@ -28,6 +30,7 @@ export function Chip({
   mono = false,
   className,
   'data-state': estado,
+  'data-stagger-item': itemDaCascata,
   children,
 }: ChipProps) {
   const Tag = useContext(DentroDeChipList) ? 'li' : 'span';
@@ -35,7 +38,7 @@ export function Chip({
     .filter(Boolean)
     .join(' ');
   return (
-    <Tag className={classes} data-size={size} data-state={estado}>
+    <Tag className={classes} data-size={size} data-state={estado} data-stagger-item={itemDaCascata}>
       {children}
     </Tag>
   );

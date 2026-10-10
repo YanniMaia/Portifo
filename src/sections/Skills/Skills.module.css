@@ -1,0 +1,34 @@
+/*
+ * Habilidades (S-09; doc de design §7.7).
+ *
+ * - Fundo e padding vêm do `Section` (tom `base`); cabeçalho e o espaço até a grade
+ *   (`--section-head-gap`) vêm do `SectionHeader` (DS-14).
+ * - Grade: 1 coluna no celular; 2 colunas no tablet, com a última categoria ímpar em largura total
+ *   (2 + 1); no desktop, uma coluna igual por categoria (3 hoje). Espaço `--card-gap` (16/24/24).
+ *   As células esticam até a altura da linha.
+ * - Sem transição nem animação própria (CC-6).
+ */
+.grade {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  align-items: stretch;
+  gap: var(--card-gap);
+}
+
+@media (min-width: 640px) and (max-width: 1023px) {
+  .grade {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .grade > :last-child:nth-child(odd) {
+    grid-column: 1 / -1;
+  }
+}
+
+@media (min-width: 1024px) {
+  .grade {
+    grid-auto-columns: minmax(0, 1fr);
+    grid-auto-flow: column;
+    grid-template-columns: none;
+  }
+}

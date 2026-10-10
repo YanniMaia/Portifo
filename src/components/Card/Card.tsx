@@ -30,6 +30,11 @@ export interface CardProps {
   className?: string;
   /** Força o visual de hover (styleguide/prints). */
   'data-state'?: 'hover';
+  /**
+   * Gancho de cascata do doc 04 §4.4 (A-03), repassado sem mudar o visual. Ex.: `"chips"` no
+   * cartão de categoria das Habilidades (S-09).
+   */
+  'data-stagger'?: string;
   children?: ReactNode;
 }
 
@@ -47,6 +52,7 @@ export function Card({
   padding,
   className,
   'data-state': estado,
+  'data-stagger': cascata,
   children,
 }: CardProps) {
   // O card tracejado nunca é interativo (passo 4). O filete só aparece no hover, então só existe
@@ -70,6 +76,7 @@ export function Card({
       data-card={variant}
       data-interactive={ativo ? 'true' : undefined}
       data-state={ativo ? estado : undefined}
+      data-stagger={cascata}
     >
       {children}
     </Tag>

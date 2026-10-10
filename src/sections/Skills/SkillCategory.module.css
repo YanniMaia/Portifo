@@ -1,0 +1,28 @@
+/*
+ * Cartão de categoria das Habilidades (S-09; doc de design §7.7).
+ *
+ * - Cores, borda, raio, padding e sombra vêm do `Card` (DS-15, não interativo); chips e o espaço de
+ *   12 px entre eles, do DS-12. Aqui só o arranjo interno. Sem transição nem animação (CC-6).
+ * - Título: ícone de 24 px na cor de destaque, 12 px antes do texto (§7.7). Chips 24 px abaixo.
+ * - O `data-stagger` fica no cartão e não recebe `transform` aqui (README do A-01).
+ */
+.categoria {
+  height: 100%;
+}
+
+.titulo {
+  display: flex;
+  align-items: center;
+  margin: 0;
+  gap: var(--space-3);
+  color: var(--color-text);
+}
+
+.icone {
+  flex: none;
+  color: var(--color-accent);
+}
+
+.chips {
+  margin-top: var(--space-6);
+}
