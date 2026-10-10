@@ -1,0 +1,148 @@
+/*
+ * Composição visual do hero (S-04; doc de design §7.2, §3.4, §10; DV-8, DV-9, DV-17; D13).
+ *
+ * - `.caixa`: quadrado de 320 (celular), 420 (tablet) e 520 px (desktop). `.palco`: o sistema de
+ *   coordenadas de 520 × 520 do A-14, escalado por igual com `scale(var(--hero-escala))` a partir do
+ *   canto superior esquerdo. O `transform` do palco não toca nenhum elemento com gancho de animação
+ *   (os `[data-float]` ficam dentro, com `left`/`top`).
+ * - Halo atrás do cartão central: 320 px (§3.4: 240–320), `--glow-deco` (#F286B0 25% / #F06CA3 18%).
+ * - Cartão central: vidro do DS-17 (`--glass-*`), raio 32 (`--radius-panel`), 300 × 300.
+ * - Monograma 120 px do DS-18. Interativo: cursor de mão e leve escala (1,04) no hover, só com
+ *   ponteiro e sem movimento reduzido; foco pelo contorno global (3 px, afastamento 3 px).
+ * - Dica 14 px, cor legenda `--color-text-muted` (#8C6A7A / #A98496; DV-17, D13), fora do palco
+ *   (não escala) e centralizada abaixo da composição, para nunca encostar nos cartões.
+ * - Medidas sem token (literais do doc §7.2 / A-14): 520 / 420 / 320 px, halo 320 px em (100, 100),
+ *   escala 1,04 do monograma.
+ */
+.visual {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  min-width: 0;
+}
+
+.caixa {
+  --hero-escala: calc(320 / 520);
+
+  position: relative;
+  flex: none;
+  width: 320px;
+  height: 320px;
+}
+
+.palco {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 520px;
+  height: 520px;
+  transform: scale(var(--hero-escala));
+  transform-origin: 0 0;
+}
+
+.halo {
+  position: absolute;
+  top: 100px;
+  left: 100px;
+  width: 320px;
+  height: 320px;
+  border-radius: 50%;
+  background-image: radial-gradient(closest-side, var(--glow-deco), transparent);
+  pointer-events: none;
+}
+
+.central {
+  position: absolute;
+}
+
+.vidroCentral {
+  width: 100%;
+  height: 100%;
+}
+
+.links {
+  z-index: 1;
+}
+
+.flutuantes {
+  position: absolute;
+  z-index: 2;
+  inset: 0;
+  pointer-events: none;
+}
+
+.slot {
+  position: absolute;
+  z-index: 3;
+  display: grid;
+  place-items: center;
+  pointer-events: none;
+}
+
+.slot > * {
+  pointer-events: auto;
+}
+
+/* Retrato futuro (P-08): o mesmo círculo de 120 px do monograma. */
+.retrato {
+  display: grid;
+  overflow: hidden;
+  width: 120px;
+  height: 120px;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background-image: var(--gradient-brand);
+  place-items: center;
+}
+
+.interativo {
+  cursor: pointer;
+  transition: transform var(--dur-fast) var(--ease-out);
+}
+
+@media (hover: hover) and (prefers-reduced-motion: no-preference) {
+  .interativo:hover {
+    transform: scale(1.04);
+  }
+}
+
+.burst {
+  position: absolute;
+  z-index: 4;
+  pointer-events: none;
+}
+
+.dica {
+  margin: var(--space-3) 0 0;
+  color: var(--color-text-muted);
+  font-family: var(--font-body);
+  font-size: var(--fs-hint);
+  font-weight: var(--fw-hint);
+  line-height: var(--lh-hint);
+  text-align: center;
+}
+
+/* ---------- Tablet (640–1023 px) ---------- */
+
+@media (min-width: 640px) {
+  .caixa {
+    --hero-escala: calc(420 / 520);
+
+    width: 420px;
+    height: 420px;
+  }
+}
+
+/* ---------- Desktop (≥ 1024 px) ---------- */
+
+@media (min-width: 1024px) {
+  .caixa {
+    --hero-escala: 1;
+
+    width: 520px;
+    height: 520px;
+  }
+}

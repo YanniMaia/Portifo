@@ -1,0 +1,39 @@
+/*
+ * Cartão flutuante do hero (S-04; doc de design §7.2, §3.4; DV-8).
+ *
+ * - Posição e tamanho chegam inline (`left`/`top`/`width`/`height`, no sistema de 520 do
+ *   HeroVisual). Nenhum `transform` aqui: o `transform` do `[data-float]` é da flutuação (A-11a).
+ * - Vidro do DS-17 (branco 65% + desfoque 16 + borda #F9D5E3; escuro branco 5% + borda rosa 16%),
+ *   raio 20 (`--radius-media`).
+ * - Ícone 32 px em `--color-accent` (#E0518A / #F58FB8). Código: mono 12 px numa linha só.
+ * - Sem transição nem animação própria (CC-6): o movimento é do `float.css` (A-11a), que o
+ *   `reduced-motion.css` do A-01 desliga.
+ */
+.cartao {
+  position: absolute;
+  box-sizing: border-box;
+}
+
+.vidro {
+  display: grid;
+  width: 100%;
+  height: 100%;
+  place-items: center;
+  overflow: hidden;
+}
+
+.icone {
+  width: var(--icon-xl);
+  height: var(--icon-xl);
+  color: var(--color-accent);
+}
+
+/* Sem padding: o texto (~187 px) cabe centralizado nos 210 px internos do cartão de 212 (DV-8). */
+.codigo {
+  color: var(--color-text-pink-on-tint);
+  font-family: var(--font-mono);
+  font-size: var(--fs-deco-code);
+  font-weight: var(--fw-deco-code);
+  line-height: var(--lh-deco-code);
+  white-space: nowrap;
+}

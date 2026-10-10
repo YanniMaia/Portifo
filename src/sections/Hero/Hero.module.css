@@ -87,7 +87,7 @@ section.hero {
   gap: var(--button-gap);
 }
 
-/* ---------- Coluna do visual (S-04) ---------- */
+/* ---------- Coluna do visual (S-04: `HeroVisual`, centralizado na coluna) ---------- */
 
 .visual {
   min-width: 0;
