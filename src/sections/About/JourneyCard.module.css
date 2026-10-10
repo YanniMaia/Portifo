@@ -1,0 +1,71 @@
+/*
+ * Cartão "Minha trajetória" (S-07; doc de design §7.5, §3.4).
+ *
+ * - Superfície, borda, raio 24, sombra de repouso e padding 32/28/24 vêm do `Card` (DS-15).
+ * - Linha do tempo: `::before` da lista, 2 px, `--gradient-timeline` (claro #F286B0 → #F7B7D0 →
+ *   transparente; escuro #F58FB8 → #3B2030), do centro da 1ª bolinha até o fim da lista (o degradê
+ *   apaga a linha depois do último marco).
+ * - Bolinhas de 14 px centradas na 1ª linha do texto (`1lh`). Feito: preenchida `--color-accent`
+ *   (#E0518A / #F58FB8). Próximo passo (último): vazada, borda 1,5 px tracejada na mesma cor e
+ *   fundo da superfície (a linha não aparece dentro dela).
+ * - Medidas sem token (literais do doc §7.5): bolinha 14 px e linha 2 px. Recuo do texto 30 px
+ *   (14 + 16) e 24 px entre marcos e entre o H3 e a lista.
+ * - Não interativo: sem hover nem transição.
+ */
+.cartao {
+  min-width: 0;
+}
+
+.titulo {
+  margin: 0;
+}
+
+.marcos {
+  position: relative;
+  margin: var(--space-6) 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.marcos::before {
+  position: absolute;
+  top: calc((1lh - 14px) / 2 + 7px);
+  bottom: 0;
+  left: 6px;
+  width: 2px;
+  background-image: var(--gradient-timeline);
+  content: '';
+  font-size: var(--fs-body);
+  line-height: var(--lh-body);
+}
+
+.marco {
+  position: relative;
+  padding-left: calc(14px + var(--space-4));
+  color: var(--color-text);
+  font-family: var(--font-body);
+  font-size: var(--fs-body);
+  font-weight: var(--fw-body);
+  line-height: var(--lh-body);
+}
+
+.marco + .marco {
+  margin-top: var(--space-6);
+}
+
+.marco::before {
+  position: absolute;
+  top: calc((1lh - 14px) / 2);
+  left: 0;
+  box-sizing: border-box;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background-color: var(--color-accent);
+  content: '';
+}
+
+.marco[data-estado='proximo']::before {
+  border: var(--border-width-strong) dashed var(--color-accent);
+  background-color: var(--color-surface);
+}
