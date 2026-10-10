@@ -1,0 +1,28 @@
+/*
+ * Grade de projetos de estudo (S-11; doc de design §7.8, §14; DV-5).
+ *
+ * - 1 coluna no celular, 2 no tablet e 3 no desktop, com quebra de linha; `--card-gap` (16/24/24).
+ *   As células esticam até a altura da linha (cards da mesma linha com a mesma altura).
+ * - 40 px abaixo do painel no celular e no tablet; 48 px (`--space-12`) no desktop.
+ * - Sem `transform` nem animação: o `data-reveal` fica na raiz da seção (B-6).
+ */
+.grade {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  align-items: stretch;
+  margin-top: 40px;
+  gap: var(--card-gap);
+}
+
+@media (min-width: 640px) {
+  .grade {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 1024px) {
+  .grade {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    margin-top: var(--space-12);
+  }
+}

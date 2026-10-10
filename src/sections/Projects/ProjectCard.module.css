@@ -1,0 +1,49 @@
+/*
+ * Card de projeto da grade (S-11; doc de design §7.8, §14).
+ *
+ * - Cores, borda, raio 24, padding 28/24 (`padding="compact"`), sombra e hover vêm do `Card`
+ *   (DS-15); aqui só o arranjo interno. Sem transição nem animação própria (CC-6).
+ * - Coluna flexível com altura total da célula: os cards da mesma linha ficam com a mesma altura e
+ *   o bloco de botões desce para a base (`margin-top: auto`).
+ * - Espaços (múltiplos de 4): imagem → selos 20; selos → H3 12; H3 → descrição 8;
+ *   descrição → chips 16; botões 24 acima (no mínimo).
+ * - Descrição em 3 linhas com reticências (`line-clamp`). O texto inteiro fica no DOM, então o
+ *   leitor de tela lê tudo. O par `display: -webkit-box` + `-webkit-box-orient` é o que os
+ *   navegadores pedem para o `line-clamp` funcionar hoje.
+ */
+.card {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.selos {
+  display: flex;
+  flex-wrap: wrap;
+  margin-top: 20px;
+  gap: var(--space-2);
+}
+
+.titulo {
+  margin: var(--space-3) 0 0;
+  color: var(--color-text);
+}
+
+.descricao {
+  display: -webkit-box;
+  margin: var(--space-2) 0 0;
+  overflow: hidden;
+  color: var(--color-text-secondary);
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+  line-clamp: 3;
+}
+
+.chips {
+  margin-top: var(--space-4);
+}
+
+.botoes {
+  margin-top: auto;
+  padding-top: var(--space-6);
+}

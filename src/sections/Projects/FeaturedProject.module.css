@@ -1,0 +1,80 @@
+/*
+ * Painel do projeto em destaque (S-10; doc de design §7.8; DV-7; AMB-S-32).
+ *
+ * - Cores, borda, raio 32, sombra, hover (sobe 4 px) e padding 24/40 vêm do `Card variant="panel"`
+ *   (DS-15). No tablet (640–1023 px) o padding é 32 (proposta do S-10); `article.painel` (0,1,1)
+ *   vence o `.paddingPanel` do DS-15 sem depender da ordem dos módulos.
+ * - Grade: uma coluna abaixo de 1024 px (imagem em cima, 24 px até o conteúdo no celular e 32 no
+ *   tablet); a partir de 1024 px, 5fr + 7fr (= 5/12 + 7/12) com 48 px e conteúdo centrado na
+ *   vertical.
+ * - H3 do painel (DV-7): `--fs-featured-title` 24/28/32 px, `--fw-featured-title` 800.
+ * - Espaços (múltiplos de 4): selos → H3 16; H3 → descrição 12; descrição → chips 24; → botões 32.
+ * - Sem transição nem animação aqui (CC-6): as do Card, do Button e da imagem são dos donos.
+ */
+.painel {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--space-6);
+}
+
+.midia {
+  min-width: 0;
+}
+
+.conteudo {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  min-width: 0;
+}
+
+.selos {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+.titulo {
+  margin: var(--space-4) 0 0;
+  color: var(--color-text);
+  font-family: var(--font-display);
+  font-size: var(--fs-featured-title);
+  font-weight: var(--fw-featured-title);
+  line-height: var(--lh-featured-title);
+}
+
+.descricao {
+  margin: var(--space-3) 0 0;
+  color: var(--color-text-secondary);
+}
+
+.chips {
+  margin-top: var(--space-6);
+}
+
+.botoes {
+  align-self: stretch;
+  margin-top: var(--space-8);
+}
+
+/* ---------- Tablet (640–1023 px): padding 32 e 32 px entre imagem e conteúdo ---------- */
+
+@media (min-width: 640px) and (max-width: 1023px) {
+  article.painel {
+    padding: var(--space-8);
+  }
+
+  .painel {
+    gap: var(--space-8);
+  }
+}
+
+/* ---------- Desktop (≥ 1024 px): 5/12 + 7/12 com 48 px ---------- */
+
+@media (min-width: 1024px) {
+  .painel {
+    grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+    align-items: center;
+    gap: var(--space-12);
+  }
+}

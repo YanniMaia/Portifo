@@ -1,0 +1,63 @@
+/*
+ * Imagem do projeto (S-10/S-11; doc de design §7.8, §14; B-02 do Portão DS).
+ *
+ * - Quadro com raio `--radius-media` (20 px) e `overflow: hidden`: corta os cantos da imagem e da
+ *   ilustração e segura a ampliação de 3% do hover dentro do quadro.
+ * - Imagem e ilustração em 4:3, largura total, sem distorção (`object-fit: cover`; a ilustração
+ *   da C-08 já tem `aspect-ratio: 4 / 3`).
+ * - Ampliação (`.zoom`): só `transform`, 250 ms (`--dur-base`), no hover com ponteiro do card
+ *   interativo em volta (`data-interactive`, DS-15) e no hover forçado (`data-state="hover"`).
+ *   Literal do §7.8: 3% (`--zoom-midia: 1.03`). Com movimento reduzido (media query ou
+ *   `html[data-reduced-motion='true']` do A-01), a escala fica em 1.
+ */
+.quadro {
+  --zoom-midia: 1.03;
+
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  border-radius: var(--radius-media);
+}
+
+.imagem {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+  background-color: var(--color-bg-alt);
+}
+
+.ilustracao {
+  width: 100%;
+}
+
+/* Em DEV a legenda de reserva (PH-03) fica dentro do quadro, abaixo do SVG: o próprio SVG também
+   leva o raio, para a área 4:3 continuar com os quatro cantos arredondados. */
+.ilustracao > svg {
+  border-radius: var(--radius-media);
+}
+
+.zoom > * {
+  transition: transform var(--dur-base) var(--ease-out);
+}
+
+[data-interactive='true'][data-state='hover'] .zoom > * {
+  transform: scale(var(--zoom-midia));
+}
+
+@media (hover: hover) {
+  [data-interactive='true']:hover .zoom > * {
+    transform: scale(var(--zoom-midia));
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .quadro {
+    --zoom-midia: 1;
+  }
+}
+
+html[data-reduced-motion='true'] .quadro {
+  --zoom-midia: 1;
+}

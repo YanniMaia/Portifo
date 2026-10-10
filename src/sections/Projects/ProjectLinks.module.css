@@ -1,0 +1,20 @@
+/*
+ * Botões de um projeto (S-10/S-11; doc de design §7.8, §5).
+ *
+ * - Celular: empilhados em largura total (o `fullWidthOnMobile` do DS-11), 12 px entre eles.
+ * - A partir de 640 px: lado a lado, com quebra de linha, 16 px entre eles (`--button-gap`).
+ * - Altura, cores, hover, foco e movimento reduzido são do `ButtonLink` (DS-11). Sem transição aqui.
+ */
+.links {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: var(--button-gap);
+}
+
+@media (min-width: 640px) {
+  .links {
+    flex-flow: row wrap;
+    align-items: center;
+  }
+}
