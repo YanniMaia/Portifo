@@ -2,12 +2,13 @@
 // - Estado inicial: o `<html lang>` que o script inline do `index.html` (F-08) já aplicou a partir
 //   de `ye-lang`. É a fonte única; o provedor não recalcula, então o primeiro render já sai no
 //   idioma certo. PT é o padrão e o idioma do navegador não é seguido (§6).
-// - Troca: `<html lang>` (`pt-BR`/`en`), `document.title` (`dict.meta.title`) e `ye-lang` (via
-//   `writeStorage`). As escritas no DOM acontecem no próprio manipulador da troca.
+// - Troca: `<html lang>` (`pt-BR`/`en`), `document.title` (`dict.meta.title`), a meta description
+//   (`dict.meta.description`, C-11) e `ye-lang` (via `writeStorage`). As escritas no DOM acontecem no próprio manipulador da troca.
 // Só infraestrutura: os textos vêm de `src/content/pt.ts` e `src/content/en.ts`.
 import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
 import { en } from '@/content/en';
 import { pt } from '@/content/pt';
+import { atualizarMetaDescription } from '@/content/seo';
 import { SUGERIDOS } from '@/content/sugeridos';
 import { writeStorage } from '@/lib/storage';
 import { LANG_STORAGE_KEY } from '@/theme/constants';
@@ -36,6 +37,7 @@ export function LanguageProvider({ children }: LanguageProviderProps) {
   const setLang = useCallback((novo: Lang) => {
     document.documentElement.lang = HTML_LANG[novo];
     document.title = DICIONARIOS[novo].meta.title;
+    atualizarMetaDescription(DICIONARIOS[novo].meta.description); // C-11
     writeStorage(LANG_STORAGE_KEY, novo);
     idiomaAtual.current = novo;
     setLangState(novo);
@@ -52,6 +54,7 @@ export function LanguageProvider({ children }: LanguageProviderProps) {
     if (document.title !== titulo) {
       document.title = titulo;
     }
+    atualizarMetaDescription(DICIONARIOS[idiomaAtual.current].meta.description); // C-11
   }, []);
 
   const valor = useMemo<LanguageContextValue>(

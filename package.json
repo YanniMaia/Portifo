@@ -8,6 +8,7 @@
   },
   "scripts": {
     "dev": "vite",
+    "prebuild": "node scripts/build-seo.mjs",
     "build": "tsc -b && vite build",
     "postbuild": "node scripts/check-placeholders.mjs",
     "check:placeholders": "node scripts/check-placeholders.mjs",
