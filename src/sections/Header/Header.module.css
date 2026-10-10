@@ -1,0 +1,143 @@
+/*
+ * Header (S-01; doc de design §7.1, §5, §6, §9; DV-12; D13, D14).
+ *
+ * - Vidro, borda inferior e sombra são do GlassPanel `header` (DS-17). A sombra fica no `::after`
+ *   do painel, com `opacity` 0 → 1 por `[data-scrolled='true']` (gancho do doc 04 §4.4). Este
+ *   módulo não declara sombra nem transição de sombra.
+ * - Altura 72/68/64 px pelo `--header-height` (com a borda incluída: `box-sizing: border-box`).
+ * - Links: 15 px/500, cor secundária, 32 px entre eles. Sublinhado de 2 px num `::after` com
+ *   `scaleX(0)` em repouso e `scaleX(1)` a partir do centro no hover e no ativo. A troca aqui é
+ *   imediata; a transição de 200 ms é do A-07.
+ * - Cor do sublinhado: #F286B0 no claro (`--color-deco`) e #F58FB8 no escuro (`--color-accent`).
+ * - Abaixo de 1024 px o `<nav>` sai com `display: none` (o hambúrguer do S-02 assume).
+ * - Movimento reduzido: não há transição própria; nada a desligar.
+ */
+
+/* `header.bar`: vence o `.header` do GlassPanel sem depender da ordem dos módulos. */
+header.bar {
+  position: fixed;
+  z-index: 100;
+  inset: 0 0 auto;
+  box-sizing: border-box;
+  height: var(--header-height);
+}
+
+/* Fallback sem `backdrop-filter` (§7.1): branco 96% / #150A10 96% (= `--mobile-menu-bg`). */
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  header.bar {
+    background-color: var(--mobile-menu-bg);
+  }
+}
+
+.inner {
+  display: flex;
+  align-items: center;
+  height: 100%;
+}
+
+/* ---------- Logo ---------- */
+
+.logo {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  min-height: var(--touch-min);
+  gap: var(--space-3);
+  border-radius: var(--radius-monogram-sm);
+  color: var(--color-text);
+  text-decoration: none;
+}
+
+.nome {
+  font-family: var(--font-display);
+  font-size: var(--fs-logo);
+  font-weight: var(--fw-logo);
+  line-height: var(--lh-logo);
+  white-space: nowrap;
+}
+
+/* ---------- Menu desktop ---------- */
+
+.nav {
+  display: none;
+}
+
+.lista {
+  display: flex;
+  align-items: center;
+  margin: 0;
+  padding: 0;
+  gap: var(--space-8);
+  list-style: none;
+}
+
+.link {
+  --nav-underline: var(--color-deco);
+
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--touch-min);
+  color: var(--color-text-secondary);
+  font-family: var(--font-body);
+  font-size: var(--fs-nav);
+  font-weight: var(--fw-nav);
+  line-height: var(--lh-nav);
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+[data-theme='dark'] .link {
+  --nav-underline: var(--color-accent);
+}
+
+.link::after {
+  position: absolute;
+  inset: auto 0 var(--space-2);
+  height: 2px;
+  background-color: var(--nav-underline);
+  content: '';
+  pointer-events: none;
+  transform: scaleX(0);
+  transform-origin: center;
+}
+
+@media (hover: hover) {
+  .link:hover {
+    color: var(--color-link);
+  }
+
+  .link:hover::after {
+    transform: scaleX(1);
+  }
+}
+
+.link[aria-current='location'] {
+  color: var(--color-link);
+  font-weight: var(--fw-nav-active);
+}
+
+.link[aria-current='location']::after {
+  transform: scaleX(1);
+}
+
+/* ---------- Ações (tema; hambúrguer do S-02) ---------- */
+
+.acoes {
+  display: flex;
+  flex: none;
+  align-items: center;
+  margin-inline-start: auto;
+  gap: var(--space-2);
+}
+
+@media (min-width: 1024px) {
+  .nav {
+    display: block;
+    margin-inline-start: auto;
+  }
+
+  .acoes {
+    margin-inline-start: var(--space-6);
+  }
+}
