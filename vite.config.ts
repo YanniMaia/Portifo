@@ -1,4 +1,6 @@
 import react from '@vitejs/plugin-react';
+import { existsSync, readFileSync, statSync } from 'node:fs';
+import { join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { defineConfig, type Plugin } from 'vite';
 // URL base do GitHub Pages (F-07, D14): única fonte é src/site.config.ts. A extensão `.ts` é
@@ -71,11 +73,37 @@ function atalhoStyleguide(): Plugin {
   };
 }
 
+// Página 404 no preview (D-03): imita o GitHub Pages. Caminho dentro do `base` que não é arquivo nem
+// pasta com index.html responde 404 com o `404.html` do build (em vez do index.html do fallback SPA).
+// O site é página única (âncoras), então nenhuma rota depende do fallback. Só `vite preview`.
+function pagina404NoPreview(): Plugin {
+  return {
+    name: 'portifolio:pagina-404-preview',
+    configurePreviewServer(server) {
+      const base = server.config.base;
+      const dist = resolve(server.config.root, server.config.build.outDir);
+      server.middlewares.use((req, res, next) => {
+        if (req.method !== 'GET' && req.method !== 'HEAD') return next();
+        const caminho = decodeURIComponent((req.url ?? '/').split(/[?#]/)[0] ?? '/');
+        if (!caminho.startsWith(base)) return next();
+        const alvo = join(dist, caminho.slice(base.length));
+        const existe =
+          existsSync(alvo) && (statSync(alvo).isFile() || existsSync(join(alvo, 'index.html')));
+        const pagina = join(dist, '404.html');
+        if (existe || !existsSync(pagina)) return next();
+        res.statusCode = 404;
+        res.setHeader('Content-Type', 'text/html; charset=utf-8');
+        res.end(req.method === 'HEAD' ? undefined : readFileSync(pagina));
+      });
+    },
+  };
+}
+
 // https://vite.dev/config/
 export default defineConfig({
   // `vite build --base …` (script build:pages-test) sobrepõe este valor sem variável de ambiente.
   base: BASE_PATH,
-  plugins: [react(), preloadFontes(), atalhoStyleguide()],
+  plugins: [react(), preloadFontes(), atalhoStyleguide(), pagina404NoPreview()],
   resolve: {
     // Alias `@/` → `src/` (F-05). Mesmo mapeamento do `paths` em tsconfig.app.json.
     alias: {
