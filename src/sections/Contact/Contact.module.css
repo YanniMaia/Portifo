@@ -1,0 +1,113 @@
+/*
+ * Contato (S-15; doc de design §7.11, §3.4, §3.5; DESIGN.md DV-16; D13, D21).
+ *
+ * - `.painel`: largura máx. `--measure-contact` (1000 px; já é o teto do `Container size="contact"`,
+ *   repetido aqui para a medida do painel em si ficar explícita e testável), raio `--radius-panel`
+ *   (32 px), borda `--border-width` `--color-border`, degradê `--gradient-contact` (token já
+ *   pronto em DS-01: claro `linear-gradient(160deg, #ffeef4, #ffffff)`, escuro
+ *   `linear-gradient(160deg, #2a1422, #1c0e16)` — exatamente o §3.4/§7.11, nenhum token novo
+ *   precisou ser criado). `position: relative` + `overflow: hidden` para a camada `.backdrop`
+ *   (grade, 2 brilhos dos cantos e nós do A-19) nunca vazar do raio nem gerar rolagem.
+ * - Padding do painel (§7.11 + proposta AMB-S-21 do tablet, citada na task): 40 px no celular
+ *   (sem token exato na escala de 4 px do §5 — literal, mesmo padrão de medidas sem token usado em
+ *   outras seções, ex. `Education.module.css`), 48 px no tablet (`--space-12`) e 64 px no desktop
+ *   (`--space-16`).
+ * - `.backdrop`: atrás do conteúdo do painel (z-index 0), `aria-hidden`, `overflow: hidden` — a
+ *   task pede a camada "atrás do conteúdo DO PAINEL" (grade/brilhos/nós dentro do degradê), por
+ *   isso fica dentro de `.painel`, não da `Section` inteira (diferente do padrão do Hero/
+ *   Interests/Goals, onde o backdrop cobre a seção toda). Registrado no diário da task.
+ * - `.conteudo`: z-index 1, na frente do `.backdrop`; recebe o `data-reveal` (gancho do A-02).
+ * - `.texto`: até `--measure-contact-text` (640 px), centralizado, texto de leitura normal
+ *   (`--fs-body`/`--fw-body`/`--lh-body`, sem tamanho próprio no doc), cor secundária.
+ * - `.disponibilidade`: 16 px abaixo do parágrafo (`--space-4`); `PulseDot` + texto em linha, gap
+ *   de 8 px (`--space-2`, decisão — o doc não fixa o espaço entre o ponto e o texto, mesmo caso
+ *   dos gaps literais do `Badge`); 15 px (sem token exato — o §7.11 pede "14–15 px"), cor
+ *   secundária.
+ * - `.botoes`: 40 px abaixo da disponibilidade (mesma observação do padding de 40 px: sem token
+ *   exato, literal); `--button-gap` entre eles, que já vale exatamente 12 px no celular e 16 px a
+ *   partir do tablet (bate com o §7.11 "16 px de espaço... no celular, empilhados"); empilhados e
+ *   centralizados (`align-items: stretch` para a largura total do `fullWidthOnMobile` do
+ *   `ButtonLink`) até 639 px, em linha centralizada a partir de 640 px.
+ * - `.copiarEmail`: 24 px abaixo dos botões (`--space-6`).
+ * - Sem transição nem animação própria (CC-6): só os ganchos `data-reveal` e a prop `backdrop`.
+ */
+.painel {
+  position: relative;
+  width: 100%;
+  max-width: var(--measure-contact);
+  margin-inline: auto;
+  overflow: hidden;
+  border: var(--border-width) solid var(--color-border);
+  border-radius: var(--radius-panel);
+  background-image: var(--gradient-contact);
+  padding: 40px;
+}
+
+@media (min-width: 640px) {
+  .painel {
+    padding: var(--space-12);
+  }
+}
+
+@media (min-width: 1024px) {
+  .painel {
+    padding: var(--space-16);
+  }
+}
+
+.backdrop {
+  position: absolute;
+  z-index: 0;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.conteudo {
+  position: relative;
+  z-index: 1;
+}
+
+.texto {
+  max-width: var(--measure-contact-text);
+  margin: 0 auto;
+  color: var(--color-text-secondary);
+  text-align: center;
+  font-family: var(--font-body);
+  font-size: var(--fs-body);
+  font-weight: var(--fw-body);
+  line-height: var(--lh-body);
+}
+
+.disponibilidade {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: var(--space-4) 0 0;
+  gap: var(--space-2);
+  color: var(--color-text-secondary);
+  font-family: var(--font-body);
+  font-size: 15px;
+  font-weight: var(--fw-body);
+  line-height: var(--lh-body);
+}
+
+.botoes {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: center;
+  margin: 40px 0 0;
+  gap: var(--button-gap);
+}
+
+@media (min-width: 640px) {
+  .botoes {
+    flex-direction: row;
+    align-items: center;
+  }
+}
+
+.copiarEmail {
+  margin-top: var(--space-6);
+}

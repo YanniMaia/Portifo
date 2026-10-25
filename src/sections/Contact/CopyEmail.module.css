@@ -1,0 +1,25 @@
+/*
+ * CopyEmail (S-15; doc de design §7.11, §11).
+ *
+ * - `.wrap`: linha centralizada que quebra em telas estreitas (`flex-wrap: wrap`), gap
+ *   `--space-3` (12 px — o doc não fixa esse espaço entre o endereço e o botão; decisão).
+ * - `.endereco`: 16 px (§7.11, literal — o doc não dá um tamanho responsivo para o endereço),
+ *   cor secundária, `user-select: text` (o projeto não zera `user-select` em nenhum lugar herdado
+ *   — só o `Monogram` usa `user-select: none`, conferido em `src/components/Monogram`; aqui é só
+ *   uma confirmação explícita, não a reversão de nenhuma regra).
+ */
+.wrap {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-3);
+}
+
+.endereco {
+  color: var(--color-text-secondary);
+  font-family: var(--font-body);
+  font-size: 16px;
+  font-weight: var(--fw-body);
+  user-select: text;
+}
