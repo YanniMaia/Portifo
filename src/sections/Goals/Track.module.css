@@ -1,0 +1,184 @@
+/*
+ * Track (S-14; doc de design §7.10, §3.4, §3.5; DESIGN.md DV-11; D13).
+ *
+ * - `.painel`: o `GlassPanel` com padding próprio (`--card-padding`, 32/28/24) em vez do padding
+ *   fixo do componente (DS-17); raio 24 já é o padrão da variante `glass`, sem precisar repassar.
+ *   Celular e tablet (< 1024 px): coluna (`.cabecalho` em cima, `.etapas` embaixo). Decisão de
+ *   layout (diário da task): a trilha Cibersegurança ("Segurança da Informação", "Segurança de
+ *   Sistemas", PT e EN) não cabe em linha nem no limite superior do tablet (1023 px), então as 3
+ *   trilhas usam o mesmo layout vertical do celular em toda a faixa abaixo de 1024 px — só o
+ *   desktop (≥ 1024 px, DV-11) usa a coluna fixa de 140 px ao lado das etapas em linha.
+ * - `.cabecalho`: `IconBox` (56 px) + `.textos` (rótulo "Trilha N" + nome, H3). No celular/tablet,
+ *   linha; no desktop, coluna fixa de 140 px à esquerda, alinhada ao topo da 1ª pílula.
+ * - `.etapas` (`<ol>`): no celular/tablet, coluna; no desktop, linha, ocupando o espaço restante
+ *   depois da coluna de 140 px.
+ * - `.item` (`<li>`): pílula + conector (quando não é a última etapa). No celular/tablet, coluna
+ *   (conector abaixo, seta para baixo); no desktop, linha (conector ao lado, seta para a direita).
+ *   Só os itens sem ser o último crescem (`flex: 1 1 auto`) no desktop, para o conector ocupar o
+ *   espaço entre pílulas de tamanhos diferentes, sempre com no mínimo 20 px (DV-11).
+ * - `.pilula`: 44 px de altura, padding 0/20 px, 15 px (`--fs-chip-lg`) / 600, borda 1 px
+ *   (`--color-border`), fundo `--color-surface`. `.primeira`: `--gradient-primary` (D13) e
+ *   `--color-on-primary`. Hover (só com ponteiro): borda `--color-border-hover` — não são focáveis.
+ * - `.conector`/`.seta`: 2 px `--color-deco-soft`, com a ponta de seta por borda (triângulo CSS),
+ *   sempre `aria-hidden` (marcado no JSX) e sem nenhum estado de foco/hover (decorativos).
+ * - Nada aqui cria animação própria (CC-6): a única transição é a cor da borda da pílula no hover.
+ */
+.painel {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  padding: var(--card-padding);
+  gap: var(--space-6);
+}
+
+.cabecalho {
+  display: flex;
+  flex: none;
+  align-items: center;
+  gap: var(--space-4);
+}
+
+.textos {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.rotulo {
+  margin: 0;
+  color: var(--color-text-muted);
+  font-family: var(--font-body);
+  font-size: var(--fs-caption);
+  font-weight: var(--fw-caption);
+  line-height: var(--lh-caption);
+}
+
+.nome {
+  margin: 0;
+  color: var(--color-text);
+}
+
+.etapas {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.item {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  min-width: 0;
+}
+
+.pilula {
+  display: inline-flex;
+  box-sizing: border-box;
+  flex: none;
+  align-items: center;
+  height: 44px;
+  padding: 0 20px;
+  border: var(--border-width) solid var(--color-border);
+  border-radius: var(--radius-pill);
+  background-color: var(--color-surface);
+  color: var(--color-text);
+  font-family: var(--font-body);
+  font-size: var(--fs-chip-lg);
+  font-weight: 600;
+  line-height: 1;
+  white-space: nowrap;
+  transition: border-color var(--dur-base) var(--ease-out);
+}
+
+.primeira {
+  border-color: transparent;
+  background-image: var(--gradient-primary);
+  color: var(--color-on-primary);
+}
+
+@media (hover: hover) {
+  .pilula:hover {
+    border-color: var(--color-border-hover);
+  }
+}
+
+.conector {
+  position: relative;
+  flex: none;
+  align-self: center;
+  width: 2px;
+  height: var(--space-6);
+  margin: var(--space-2) 0;
+  background-color: var(--color-deco-soft);
+}
+
+.seta {
+  position: absolute;
+  bottom: -4px;
+  left: 50%;
+  width: 0;
+  height: 0;
+  border-top: 5px solid var(--color-deco-soft);
+  border-right: 4px solid transparent;
+  border-left: 4px solid transparent;
+  transform: translateX(-50%);
+}
+
+/* ---------- Desktop (≥ 1024 px, DV-11): coluna fixa de 140 px + etapas em linha ---------- */
+
+@media (min-width: 1024px) {
+  .painel {
+    flex-direction: row;
+    align-items: flex-start;
+    gap: var(--space-8);
+  }
+
+  .cabecalho {
+    flex: 0 0 140px;
+    flex-direction: column;
+    align-items: flex-start;
+    width: 140px;
+  }
+
+  .etapas {
+    flex: 1 1 auto;
+    flex-direction: row;
+    align-items: center;
+    min-width: 0;
+  }
+
+  .item {
+    flex-direction: row;
+    align-items: center;
+    min-width: 0;
+  }
+
+  .item:not(:last-child) {
+    flex: 1 1 auto;
+  }
+
+  .item:last-child {
+    flex: 0 0 auto;
+  }
+
+  .conector {
+    flex: 1 1 auto;
+    align-self: center;
+    width: auto;
+    min-width: 20px;
+    height: 2px;
+    margin: 0 var(--space-2);
+  }
+
+  .seta {
+    inset: 50% -4px auto auto;
+    border-top: 4px solid transparent;
+    border-right: none;
+    border-bottom: 4px solid transparent;
+    border-left: 5px solid var(--color-deco-soft);
+    transform: translateY(-50%);
+  }
+}

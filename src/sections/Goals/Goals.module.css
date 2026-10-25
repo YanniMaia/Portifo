@@ -1,0 +1,50 @@
+/*
+ * Onde quero chegar (S-14; doc de design §7.10, §3.4, §3.5; DESIGN.md DV-11).
+ *
+ * - Fundo e padding vêm do `Section` (tom `alt` do registro); cabeçalho e o espaço até o
+ *   parágrafo vêm do `SectionHeader` (DS-14).
+ * - `section.objetivos` (0,1,1) vence `.section`/`.alt` do DS-10 sem depender da ordem dos módulos:
+ *   `overflow: hidden` para a camada da prop `backdrop` (A-19) nunca gerar rolagem — mesmo padrão
+ *   de `Hero.module.css`/`Interests.module.css`.
+ * - A camada `backdrop` fica atrás (`z-index` 0) e o conteúdo na frente (`z-index` 1).
+ * - `.texto`: parágrafo de 760 px (`--measure-narrow`) centralizado, `--fs-lead`/`--fw-lead` (18 px,
+ *   400) e `--lh-lead` (1,7), cor secundária.
+ * - `.trilhas`: 48 px abaixo do parágrafo (`--space-12`); `--card-gap` entre as trilhas (24 px no
+ *   tablet/desktop, 16 px no celular) — o mesmo token usado na grade de projetos (S-11) e na linha
+ *   do tempo da Formação (S-13), para manter o ritmo vertical entre seções.
+ * - Sem transição nem animação própria (CC-6).
+ */
+section.objetivos {
+  overflow: hidden;
+}
+
+.backdrop {
+  position: absolute;
+  z-index: 0;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.conteudo {
+  position: relative;
+  z-index: 1;
+}
+
+.texto {
+  max-width: var(--measure-narrow);
+  margin: 0 auto;
+  color: var(--color-text-secondary);
+  text-align: center;
+  font-family: var(--font-body);
+  font-size: var(--fs-lead);
+  font-weight: var(--fw-lead);
+  line-height: var(--lh-lead);
+}
+
+.trilhas {
+  display: flex;
+  flex-direction: column;
+  margin-top: var(--space-12);
+  gap: var(--card-gap);
+}
