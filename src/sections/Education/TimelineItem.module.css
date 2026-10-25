@@ -1,0 +1,46 @@
+/*
+ * Marco da linha do tempo (S-13; doc de design §7.9).
+ *
+ * - O nó de 20 px fica centrado na linha vertical da `Education` (variáveis `--linha-x` e
+ *   `--linha-gap`, definidas na lista). O cartão começa `--linha-gap` à direita da linha.
+ * - Nó do marco principal/comum alinhado ao centro da caixa de ícone do cartão
+ *   (`--card-padding` + metade de 56 px); nó do marco futuro centrado na altura do cartão.
+ * - Nó vazado do futuro: borda 1,5 px tracejada `--color-deco` (a mesma do `Card dashed`), fundo
+ *   da seção por baixo (`--color-bg`) para a linha não atravessar o círculo.
+ * - Nada aqui anima nem tem `transform` (o pulso é do `PulseDot`, DS-08/A-10). Não interativo.
+ * - Literais: 20 px (nó, §7.9).
+ */
+.item {
+  position: relative;
+  padding-left: calc(var(--linha-x) + var(--linha-gap));
+  list-style: none;
+}
+
+.no {
+  position: absolute;
+  top: calc(var(--card-padding) + (var(--icon-box-size) - 20px) / 2);
+  left: calc(var(--linha-x) - 10px);
+  display: block;
+  box-sizing: border-box;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+}
+
+.principal {
+  display: flex;
+}
+
+.comum {
+  background-color: var(--color-accent);
+}
+
+.futuro {
+  top: calc(50% - 10px);
+  border: var(--border-width-strong) dashed var(--color-deco);
+  background-color: var(--color-bg);
+}
+
+.cartao {
+  min-width: 0;
+}

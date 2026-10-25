@@ -1,0 +1,97 @@
+/*
+ * Formação acadêmica (S-13; doc de design §7.9, §3.4; D21).
+ *
+ * - `--linha-x` e `--linha-gap` (consumidas por `TimelineItem.module.css`, D14: dono único das
+ *   duas variáveis) ficam em `.linhaDoTempo`, o ancestral comum da linha e da lista (`.trilho` e
+ *   `.lista` são irmãos no JSX). Celular: linha a 16 px da borda esquerda da coluna
+ *   (`--linha-x: 16px`); tablet e desktop (≥ 640 px): linha alinhada à própria borda da coluna
+ *   (`--linha-x: 0`), com os cartões 28 px à direita dela (`--linha-gap: 28px`, §7.9, inalterado
+ *   nas duas faixas — só a posição da linha muda).
+ * - `.trilho`: invólucro decorativo (`aria-hidden` no JSX) do tamanho da lista inteira, sem
+ *   `transform` nem clique (gancho do A-05, README do A-01). `.linha`: o traço de 2 px em degradê
+ *   (`--gradient-timeline`: claro #F286B0 → #F7B7D0 sumindo; escuro #F58FB8 → #3B2030, §3.4),
+ *   `data-draw="y"` vem do JSX. Sem o A-05, aparece inteira (nenhum `clip-path`/altura 0 aqui).
+ * - `.lista`: a coluna de marcos (`<ol>`), com `--card-gap` (16/24/24) entre eles — o mesmo token
+ *   usado na grade de projetos (S-11), para manter o ritmo vertical entre seções.
+ * - `.curso` → `.instituicao` → `.rodapeDoCartao` (selo + datas): ritmo interno do cartão
+ *   principal nos mesmos múltiplos de 4 usados no card de interesse (S-08) e no de projeto (S-11).
+ *   "UniCEUB" usa `--fs-lead` (18 px, §7.9/§7.4) e `--color-text-pink-on-tint` (#A82560/#FFB3D1).
+ * - `.datas`: legenda pequena e muda (`--color-text-muted`) ao lado do selo; só existe com
+ *   `anoInicio`/`previsao` resolvidos (D11 — sem eles, nenhum espaço vazio).
+ * - `.futuro`: texto do cartão tracejado, cor secundária (§7.9). Sem sombra nem hover: vêm do
+ *   `Card variant="dashed"` (DS-15), que nunca é interativo.
+ * - Nada aqui anima (CC-6): a única transição de cor vem do tema (F-09), herdada de `--color-*`.
+ */
+.linhaDoTempo {
+  position: relative;
+  --linha-x: 16px;
+  --linha-gap: 28px;
+}
+
+.trilho {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.linha {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: calc(var(--linha-x) - 1px);
+  width: 2px;
+  background-image: var(--gradient-timeline);
+}
+
+.lista {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  gap: var(--card-gap);
+}
+
+.curso {
+  margin: var(--space-4) 0 0;
+  color: var(--color-text);
+}
+
+.instituicao {
+  margin: var(--space-1) 0 0;
+  color: var(--color-text-pink-on-tint);
+  font-family: var(--font-body);
+  font-size: var(--fs-lead);
+  font-weight: var(--fw-lead);
+  line-height: var(--lh-lead);
+}
+
+.rodapeDoCartao {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  margin-top: var(--space-4);
+  gap: var(--space-3);
+}
+
+.datas {
+  margin: 0;
+  color: var(--color-text-muted);
+  font-family: var(--font-body);
+  font-size: var(--fs-caption);
+  font-weight: var(--fw-caption);
+  line-height: var(--lh-caption);
+}
+
+.futuro {
+  margin: 0;
+  color: var(--color-text-secondary);
+}
+
+/* ---------- Tablet e desktop (≥ 640 px): linha alinhada à borda da coluna ---------- */
+@media (min-width: 640px) {
+  .linhaDoTempo {
+    --linha-x: 0px;
+  }
+}
