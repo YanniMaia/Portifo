@@ -1,12 +1,21 @@
 /*
- * Projetos (S-10/S-11; doc de design §7.8).
+ * Projetos (S-10/S-11/S-12; doc de design §7.8).
  *
- * - Fundo e padding vêm do `Section` (tom `alt`); cabeçalho e o espaço até o painel
- *   (`--section-head-gap`, 56/48/40) vêm do `SectionHeader` (DS-14).
+ * - Fundo e padding (112/88/64) vêm do `Section` (tom `alt`); cabeçalho e o espaço até o painel
+ *   (`--section-head-gap`, 56/48/40) vêm do `SectionHeader` (DS-14). Painel → grade 48/40 no
+ *   `ProjectGrid.module.css`.
+ * - Link final "Ver todos no GitHub →" centralizado, 40 px abaixo da grade (§7.8). Cor, 16 px/600,
+ *   sublinhado no hover, foco e área de toque de 44 px vêm do `ButtonLink variant="text"` (DS-11).
  * - O contêiner de conteúdo leva o `data-reveal` (A-02) e não recebe `transform` aqui.
  * - Sem transição nem animação própria (CC-6).
  */
 .conteudo {
   display: flex;
   flex-direction: column;
+}
+
+.linkFinal {
+  display: flex;
+  justify-content: center;
+  margin-top: 40px;
 }

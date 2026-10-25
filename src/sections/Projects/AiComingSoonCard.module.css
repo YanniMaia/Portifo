@@ -1,0 +1,22 @@
+/*
+ * Card "Projeto de IA — em breve" (S-12; DV-5; D21).
+ *
+ * - Borda tracejada, fundo transparente, sem sombra e raio: tudo do `Card variant="dashed"` (DS-15).
+ *   Aqui só o arranjo interno, sem nenhuma regra de borda.
+ * - Altura total da célula (mesma altura dos vizinhos da linha); conteúdo centralizado nos dois eixos.
+ * - Ícone → título 16 px. Título H3 (`.t-h3`) em cor secundária.
+ * - Não interativo: sem hover, transição nem animação (CC-6).
+ */
+.card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  text-align: center;
+}
+
+.titulo {
+  margin: var(--space-4) 0 0;
+  color: var(--color-text-secondary);
+}
