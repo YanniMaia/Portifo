@@ -1,0 +1,189 @@
+/*
+ * Rodapé (S-16; doc de design §7.12; referencia/DESIGN.md DV-2).
+ *
+ * - Fundo névoa (`--color-bg-alt`), borda superior 1 px do modo, padding 64 px em cima / 32 px
+ *   embaixo (`--space-16`/`--space-8`, escala de 4 px do §5).
+ * - 3 colunas: 1 coluna no celular (32 px entre elas); tablet (640–1023 px) a coluna 1 ocupa a
+ *   largura total e as colunas 2 e 3 ficam lado a lado; desktop (≥ 1024 px) 3 colunas iguais.
+ * - Links rápidos: cor secundária em repouso, `--color-link` com sublinhado no hover/foco (sem
+ *   `transition` própria: a seção não anima, CC-6 — igual ao `.link` do cabeçalho, S-01).
+ * - Ícones sociais: círculo 44 × 44 (`--touch-min`), borda `--color-border`, ícone `--color-primary`
+ *   (20 px); hover com fundo `--color-fill-soft`, mesmo padrão (e mesma transição) do `ThemeToggle`
+ *   (DS-19, R-DS-9 cita este §7.12 como o mesmo caso) — não é animação nova da seção.
+ * - Linha final (DV-2): divisória 1 px, 32 px acima (`margin-top`) e 32 px abaixo dela até o texto
+ *   (`padding-top`); "Feito por…" e "Voltar ao topo ↑" com 24 px entre eles (`--space-6`), nesta
+ *   ordem. Celular: tudo empilhado e alinhado à esquerda (os 24 px continuam, na vertical).
+ * - Sem `transition`/`transform` de hover além do já descrito: nenhum loop, deslize ou contagem
+ *   (CC-6). Sem hex (CC-2): só tokens.
+ */
+
+.rodape {
+  border-top: var(--border-width) solid var(--color-border);
+  background-color: var(--color-bg-alt);
+  padding-top: var(--space-16);
+  padding-bottom: var(--space-8);
+}
+
+/* ---------- Colunas ---------- */
+
+.colunas {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--space-8);
+}
+
+@media (min-width: 640px) and (max-width: 1023px) {
+  .colunas {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .marca {
+    grid-column: 1 / -1;
+  }
+}
+
+@media (min-width: 1024px) {
+  .colunas {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+/* ---------- Coluna 1: marca ---------- */
+
+.marcaLinha {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.marcaNome {
+  font-family: var(--font-display);
+  font-size: var(--fs-logo);
+  font-weight: var(--fw-logo);
+  line-height: var(--lh-logo);
+  color: var(--color-text);
+}
+
+.frase {
+  margin: var(--space-3) 0 0;
+  max-width: 32ch;
+  color: var(--color-text-secondary);
+  font-family: var(--font-body);
+  font-size: var(--fs-footer-text);
+  font-weight: var(--fw-footer-text);
+  line-height: var(--lh-footer-text);
+}
+
+/* ---------- Coluna 2: links rápidos ---------- */
+
+.listaLinks {
+  display: flex;
+  flex-direction: column;
+  margin: var(--space-4) 0 0;
+  padding: 0;
+  gap: var(--space-3);
+  list-style: none;
+}
+
+.link {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--touch-min);
+  color: var(--color-text-secondary);
+  font-family: var(--font-body);
+  font-size: var(--fs-nav);
+  font-weight: var(--fw-nav);
+  line-height: var(--lh-nav);
+  text-decoration: none;
+}
+
+@media (hover: hover) {
+  .link:hover {
+    color: var(--color-link);
+    text-decoration: underline;
+  }
+}
+
+/* ---------- Coluna 3: social ---------- */
+
+.social {
+  display: flex;
+  margin-top: var(--space-4);
+  gap: var(--space-3);
+}
+
+.socialLink {
+  display: inline-flex;
+  box-sizing: border-box;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: var(--touch-min);
+  height: var(--touch-min);
+  border: var(--border-width) solid var(--color-border);
+  border-radius: 50%;
+  color: var(--color-primary);
+  transition: background-color var(--dur-fast) var(--ease-out);
+}
+
+@media (hover: hover) {
+  .socialLink:hover {
+    background-color: var(--color-fill-soft);
+  }
+}
+
+/* ---------- Linha final (DV-2) ---------- */
+
+.final {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+  margin-top: var(--space-8);
+  padding-top: var(--space-8);
+  border-top: var(--border-width) solid var(--color-border);
+}
+
+.copyright,
+.feitoPor,
+.voltarTopo {
+  margin: 0;
+  color: var(--color-text-secondary);
+  font-family: var(--font-body);
+  font-size: var(--fs-footer-text);
+  font-weight: var(--fw-footer-text);
+  line-height: var(--lh-footer-text);
+}
+
+.voltarTopo {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--touch-min);
+  text-decoration: none;
+}
+
+@media (hover: hover) {
+  .voltarTopo:hover {
+    color: var(--color-link);
+    text-decoration: underline;
+  }
+}
+
+.acoesFinais {
+  display: flex;
+  align-items: center;
+  gap: var(--space-6);
+}
+
+@media (max-width: 639px) {
+  .final {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .acoesFinais {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
