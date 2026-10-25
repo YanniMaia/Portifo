@@ -1,5 +1,5 @@
 /*
- * App shell (F-14). Provisório: o S-17 troca os stubs pelas seções reais (mesmos ids) e apaga `.stub`.
+ * App shell (F-14/S-17). As seções reais vêm de `src/sections/`, cada uma com o próprio CSS.
  */
 
 /*
@@ -10,13 +10,4 @@
  */
 .main:focus {
   outline: none;
-}
-
-/*
- * Seção-stub: altura mínima de uma tela em QUALQUER modo (dev e produção), sem texto em produção.
- * Sem ela as seções vazias teriam altura 0 e não daria para medir a rolagem por âncora (F-13) no
- * build de produção, que é o que o e2e usa.
- */
-.stub {
-  min-height: 100vh;
 }

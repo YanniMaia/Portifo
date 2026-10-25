@@ -1,21 +1,16 @@
 // Teste de fumaça de unidade (F-04, estendido no Q-01): o <App /> renderiza sem erro.
-// Desde a F-14 o App usa o dicionário (SkipLink), então renderiza dentro do LanguageProvider.
-// O Q-01 acrescenta o render com TODOS os provedores do main.tsx, nos dois temas.
-import { render, screen } from '@testing-library/react';
+// Desde o S-17 o App monta as seções reais (Header com ThemeToggle, Footer, etc.), então precisa
+// de TODOS os provedores do main.tsx (tema, idioma, motion) — não só o LanguageProvider da F-14.
+import { screen } from '@testing-library/react';
 import { describe, expect, it } from 'vitest';
 import App from '@/App';
 import { pt } from '@/content/pt';
-import { LanguageProvider } from '@/i18n/LanguageProvider';
 import type { Theme } from '@/theme/constants';
 import { renderWithProviders } from './support/render';
 
 describe('smoke', () => {
   it('renderiza o App sem erro, com o <main id="conteudo">', () => {
-    render(
-      <LanguageProvider>
-        <App />
-      </LanguageProvider>,
-    );
+    renderWithProviders(<App />);
     const main = screen.getByRole('main');
     expect(main).toBeInTheDocument();
     expect(main).toHaveAttribute('id', 'conteudo');

@@ -31,9 +31,14 @@ async function abrir(page: Page, tema: Theme): Promise<void> {
 
 for (const tema of TEMAS) {
   test.describe(`App shell (tema ${tema})`, () => {
-    test('nenhum <h1> ainda (o único H1 vem do Hero, doc 03)', async ({ page }) => {
+    // S-17 montou as seções reais no lugar dos stubs: a partir daqui o Hero traz o único <h1> da
+    // página e cada `SectionHeader` (DS-14) usado dentro das 7 seções com cabeçalho renderiza o
+    // PRÓPRIO <header> (válido: <header> dentro de section/article não é "banner", só decorativo
+    // na árvore de acessibilidade — por isso `page.locator('header')`, que conta pela tag e não
+    // pelo papel ARIA, precisa ser filtrado para o <header> de topo nos dois testes abaixo).
+    test('exatamente um <h1> (o do Hero, doc 03 S-03)', async ({ page }) => {
       await abrir(page, tema);
-      await expect(page.locator('h1')).toHaveCount(0);
+      await expect(page.locator('h1')).toHaveCount(1);
     });
 
     test('landmarks: 1 banner, 1 main, 1 contentinfo, irmãos no mesmo nível', async ({ page }) => {
@@ -41,18 +46,30 @@ for (const tema of TEMAS) {
       await expect(page.getByRole('banner')).toHaveCount(1);
       await expect(page.getByRole('main')).toHaveCount(1);
       await expect(page.getByRole('contentinfo')).toHaveCount(1);
-      await expect(page.locator('header')).toHaveCount(1);
+      // <header> de topo (fora do <main>): só o do Header (S-01). Os demais <header> da página são
+      // os `SectionHeader` (DS-14) dentro de cada <section>, que não contam como "banner".
+      const headersDeTopo = await page.evaluate(
+        () =>
+          document.querySelectorAll('header').length -
+          document.querySelectorAll('main header').length,
+      );
+      expect(headersDeTopo).toBe(1);
       await expect(page.locator('main')).toHaveCount(1);
       await expect(page.locator('footer')).toHaveCount(1);
       await expect(page.locator('main')).toHaveAttribute('id', 'conteudo');
 
       // Ordem no DOM: skip link → header → main → footer, todos filhos do mesmo pai (fora de
-      // article/section/main, onde header/footer deixariam de ser banner/contentinfo).
+      // article/section/main, onde header/footer deixariam de ser banner/contentinfo). Abaixo de
+      // 1024 px o painel do hambúrguer (S-02, `MobileMenu`) é irmão do <header> (não filho, porque
+      // o `backdrop-filter` do cabeçalho prenderia o `position: fixed` dele — comentário do
+      // `Header.tsx`): filtramos esse <div> extra, que não afeta a ordem dos landmarks.
       const ordem = await page.evaluate(() => {
         const main = document.querySelector('main');
         const pai = main?.parentElement;
         if (!pai) return [];
-        return Array.from(pai.children).map((el) => el.tagName.toLowerCase());
+        return Array.from(pai.children)
+          .map((el) => el.tagName.toLowerCase())
+          .filter((tag) => tag !== 'div');
       });
       expect(ordem).toEqual(['a', 'header', 'main', 'footer']);
     });
@@ -63,13 +80,17 @@ for (const tema of TEMAS) {
         .locator('main#conteudo > section')
         .evaluateAll((secoes) => secoes.map((s) => s.id));
       expect(ids).toEqual([...SECTION_IDS]);
-      await expect(page.locator('section')).toHaveCount(SECTION_IDS.length);
+      await expect(page.locator('main#conteudo > section')).toHaveCount(SECTION_IDS.length);
     });
 
-    test('build de produção não mostra ids de seção como texto', async ({ page }) => {
+    // D23: placeholder = qualquer string que contenha "[" e "]". O `postbuild` (check-placeholders,
+    // C-01) já falha o build se o `dist/` tiver algum; este teste é a 2ª confirmação, no navegador
+    // real servindo o mesmo build. Não exige mais texto vazio (isso só valia com os stubs da F-14).
+    test('nenhum placeholder "[...]" visível no conteúdo da página', async ({ page }) => {
       await abrir(page, tema);
       const texto = await page.locator('main#conteudo').innerText();
-      expect(texto.trim()).toBe('');
+      const comPlaceholder = /\[[^[\]]*\]/.test(texto);
+      expect(comPlaceholder, texto).toBe(false);
     });
 
     test('primeiro Tab foca o skip link, visível e com as cores do token', async ({ page }) => {

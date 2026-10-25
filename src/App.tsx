@@ -1,11 +1,21 @@
 // App shell semântico (F-14; doc de design §11 e §2). Ordem fixa:
-// SkipLink → <header> (slot do Header, doc 03) → <main id="conteudo"> com as 10 seções → <footer>
-// (slot do Footer, doc 03). O S-17 troca os stubs pelas seções reais, com os MESMOS ids.
-// Ids e ordem das seções vêm só do registro da F-12 (`SECTIONS`); nenhum id escrito aqui.
+// SkipLink → Header (<header>) → <main id="conteudo"> com as 10 seções → Footer (<footer>).
+// O S-17 troca os stubs da F-14 pelas seções reais, com os MESMOS ids (vindos de cada seção,
+// nunca escritos aqui). Nenhuma seção recebe `backdrop`: a A-integração ainda não existe (D15).
 import { useEffect } from 'react';
 import { MAIN_CONTENT_ID, SkipLink } from '@/components/SkipLink';
-import { SECTIONS } from '@/content/sections';
-import { SHOW_PLACEHOLDERS } from '@/lib/flags';
+import { About } from '@/sections/About/About';
+import { Contact } from '@/sections/Contact/Contact';
+import { Education } from '@/sections/Education/Education';
+import { Footer } from '@/sections/Footer/Footer';
+import { Goals } from '@/sections/Goals/Goals';
+import { Header } from '@/sections/Header/Header';
+import { Hero } from '@/sections/Hero/Hero';
+import { Highlights } from '@/sections/Highlights/Highlights';
+import { Interests } from '@/sections/Interests/Interests';
+import { Motto } from '@/sections/Motto/Motto';
+import { Projects } from '@/sections/Projects/Projects';
+import { Skills } from '@/sections/Skills/Skills';
 import { scrollToInitialHash } from '@/lib/scroll';
 import styles from './App.module.css';
 
@@ -17,17 +27,20 @@ function App() {
   return (
     <>
       <SkipLink />
-      <header />
+      <Header />
       <main id={MAIN_CONTENT_ID} tabIndex={-1} className={styles.main}>
-        {SECTIONS.map(({ id }) => (
-          // Stub sem título: sem `aria-labelledby` (apontaria para um elemento inexistente).
-          // O id só aparece como texto em dev (D11); em produção a seção fica vazia.
-          <section key={id} id={id} className={styles.stub}>
-            {SHOW_PLACEHOLDERS ? id : null}
-          </section>
-        ))}
+        <Hero />
+        <Highlights />
+        <Motto />
+        <About />
+        <Interests />
+        <Skills />
+        <Projects />
+        <Education />
+        <Goals />
+        <Contact />
       </main>
-      <footer />
+      <Footer />
     </>
   );
 }

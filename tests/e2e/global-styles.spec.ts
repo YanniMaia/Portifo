@@ -32,7 +32,12 @@ async function abrir(page: Page, tema: Theme): Promise<void> {
   await expect(page.locator('html')).toHaveAttribute('data-theme', tema);
 }
 
-/** Link de teste como primeiro filho do <body>: o primeiro Tab cai nele. */
+/**
+ * Link de teste como primeiro filho do <body>: o primeiro Tab cai nele. Desde o S-17 o `<header>`
+ * real (`position: fixed`, S-01) cobre a faixa onde este link nasceria (margem de 40 px); por isso
+ * `position: relative` + `z-index` máximo, só para o clique de mouse do 2º bloco do teste não ser
+ * interceptado pelo cabeçalho fixo (sondagem de CSS, não um elemento real da página).
+ */
 async function injetarLinkDeTeste(page: Page): Promise<void> {
   await page.evaluate(() => {
     const a = document.createElement('a');
@@ -43,6 +48,8 @@ async function injetarLinkDeTeste(page: Page): Promise<void> {
     a.style.margin = '40px';
     a.style.padding = '12px';
     a.style.borderRadius = '9999px';
+    a.style.position = 'relative';
+    a.style.zIndex = '2147483647';
     a.addEventListener('click', (e) => e.preventDefault());
     document.body.prepend(a);
   });
