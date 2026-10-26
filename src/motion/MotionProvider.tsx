@@ -10,10 +10,14 @@
 //    cada `[data-stagger]`.
 // 6. Liga a contagem da faixa de destaques (`useCountUp.ts`, A-04): 0 → valor final em cada
 //    `[data-countup]`.
+// 7. Liga o desenho de linha (`useDrawLine.ts`, A-05): a linha vertical da Formação
+//    (`[data-draw="y"]`) e os conectores das trilhas (`[data-draw="trail"]`, com a ponta de seta
+//    `[data-draw-tip]` em fade no fim de cada um).
 import { useEffect, useLayoutEffect, type ReactNode } from 'react';
 import { LazyMotion, MotionConfig } from 'motion/react';
 import { iniciarPausaDeLoops } from './loopPause';
 import { useCountUp } from './useCountUp';
+import { useDrawLine } from './useDrawLine';
 import { ATRIBUTO_MOVIMENTO_REDUZIDO, useReducedMotion } from './useReducedMotion';
 import { useReveal } from './useReveal';
 import { useStagger } from './useStagger';
@@ -38,6 +42,7 @@ export function MotionProvider({ children }: MotionProviderProps) {
   useReveal();
   useStagger();
   useCountUp();
+  useDrawLine();
 
   return (
     <LazyMotion features={carregarFeatures}>
