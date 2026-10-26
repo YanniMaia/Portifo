@@ -8,9 +8,12 @@
 // 4. Liga a revelação de seções (`useReveal.ts`, A-02): fade + 24 px em cada `[data-reveal]`.
 // 5. Liga as cascatas (`useStagger.ts`, A-03): chips, linhas da frase e etapas das trilhas em
 //    cada `[data-stagger]`.
+// 6. Liga a contagem da faixa de destaques (`useCountUp.ts`, A-04): 0 → valor final em cada
+//    `[data-countup]`.
 import { useEffect, useLayoutEffect, type ReactNode } from 'react';
 import { LazyMotion, MotionConfig } from 'motion/react';
 import { iniciarPausaDeLoops } from './loopPause';
+import { useCountUp } from './useCountUp';
 import { ATRIBUTO_MOVIMENTO_REDUZIDO, useReducedMotion } from './useReducedMotion';
 import { useReveal } from './useReveal';
 import { useStagger } from './useStagger';
@@ -34,6 +37,7 @@ export function MotionProvider({ children }: MotionProviderProps) {
   useEffect(() => iniciarPausaDeLoops(document), []);
   useReveal();
   useStagger();
+  useCountUp();
 
   return (
     <LazyMotion features={carregarFeatures}>

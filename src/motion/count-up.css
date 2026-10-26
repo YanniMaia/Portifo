@@ -1,0 +1,23 @@
+/*
+ * CSS da contagem da faixa de destaques (A-04; doc 04 §4.4 passo 5; doc de design §9 "Números da
+ * faixa"). Importado por `useCountUp.ts` (só os consumidores do gancho carregam esta folha).
+ *
+ * 1) `font-variant-numeric: tabular-nums`: todo dígito tem a mesma largura durante a contagem
+ *    (0, 1, 2… 24), para o número não "tremer" de largura quadro a quadro.
+ * 2) Largura mínima reservada para os dígitos do valor final, igual à tabela-resumo do doc 04 §4.4
+ *    passo 5 ("min-width em ch definido pela quantidade de dígitos"): `attr()` ainda não é aceito
+ *    em `width`/`min-width` por nenhum navegador estável (CSS Values and Units 5 é só rascunho),
+ *    então o valor em `ch` não pode vir só de CSS — é `useCountUp.ts` que escreve
+ *    `el.style.minWidth` (decisão registrada no diário cp/A-04). Este arquivo só garante que o
+ *    `min-width` tenha efeito: em um `<span>` (`display: inline` por padrão) o `min-width` é
+ *    ignorado pelo navegador (só vale em elementos em bloco ou substituídos); `inline-block` aqui é
+ *    o único ajuste necessário para a largura reservada funcionar, sem herdar nenhum outro
+ *    comportamento de bloco (a linha de base e o fluxo inline continuam os mesmos). Não quebra o
+ *    degradê do texto (DS-07/GradientText): o recorte (`background-clip: text`) é feito pelo
+ *    ancestral (`.valor`/`GradientText`) e continua pintando os glifos deste `<span>`, que herda
+ *    `color: transparent` e não ganha fundo próprio.
+ */
+[data-countup] {
+  display: inline-block;
+  font-variant-numeric: tabular-nums;
+}

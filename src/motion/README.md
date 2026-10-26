@@ -17,6 +17,11 @@ Infraestrutura de animação, criada pela task A-01 (doc 04), que também instal
   - Mesmo padrão de `useReveal.ts`: observa todo `[data-stagger]` com `inView()`, uma vez só por contêiner. Ao entrar, anima todo `[data-stagger-item]` DESCENDENTE (não só filho direto — em Habilidades e Trilhas o item fica dentro de um `<ul>`/`<li>`) com `stagger()` (`staggerDelay`), na ordem do DOM.
   - Três tipos por `data-stagger="chips|motto|steps"`: chips = `fade` + `--dur-chip` (sobrescrita), 40 ms; motto = `fadeUp`, 150 ms; steps = `lightUp`, 200 ms. Tipo desconhecido não faz nada.
   - `MutationObserver` cobre `[data-stagger]` montados depois, mesmo padrão de `useReveal.ts`.
+- `useCountUp.ts` (A-04): `iniciarContagem(doc = document)` e o hook `useCountUp()`, chamado dentro do `MotionProvider`.
+  - Não usa `inView()`: o passo 2 da task exige decidir de forma SÍNCRONA, no instante da montagem, se o elemento já está visível (via `getBoundingClientRect()`, mesmo limiar de 15%) — um `IntersectionObserver` assíncrono chegaria tarde demais para evitar 1 quadro do valor final "piscando" para 0. Se já visível, o `textContent` nunca é tocado (fica no valor que o S-05 renderizou); só se estiver fora da tela escreve `'0'` e liga um `IntersectionObserver` (threshold 0.15) para animar depois.
+  - A contagem em si não é WAAPI (não é `opacity`/`transform`): usa `animate(0, valorFinal, { duration, ease, onUpdate, onComplete })` do `motion` (sobrecarga numérica, sem elemento), que entrega o valor interpolado quadro a quadro; `onUpdate` arredonda e `onComplete` finaliza no valor exato.
+  - `count-up.css`: `font-variant-numeric: tabular-nums` + `display: inline-block` em `[data-countup]` (necessário para o `min-width` ter efeito num `<span>`). A largura mínima em `ch` (dígitos do valor final) é escrita em JS (`el.style.minWidth`), porque `attr()` não é aceito em `min-width` por nenhum navegador estável.
+  - `MutationObserver` cobre `[data-countup]` montados depois, cada um passando pela mesma checagem síncrona de visibilidade.
 
 ## Restrições para quem usa os ganchos
 
