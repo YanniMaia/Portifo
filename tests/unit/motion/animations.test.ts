@@ -20,6 +20,7 @@ import {
   duracaoEmSegundos,
   fade,
   fadeUp,
+  lightUp,
   lineDrawX,
   lineDrawY,
   resolverPreset,
@@ -48,8 +49,14 @@ describe('presets: só transform e opacity (R1)', () => {
     expect(new Set(PROPRIEDADES_PERMITIDAS)).toEqual(PERMITIDAS);
   });
 
-  it('existem fadeUp, fade, lineDrawX e lineDrawY', () => {
-    expect(Object.keys(PRESETS).sort()).toEqual(['fade', 'fadeUp', 'lineDrawX', 'lineDrawY']);
+  it('existem fadeUp, fade, lineDrawX, lineDrawY e lightUp', () => {
+    expect(Object.keys(PRESETS).sort()).toEqual([
+      'fade',
+      'fadeUp',
+      'lightUp',
+      'lineDrawX',
+      'lineDrawY',
+    ]);
   });
 
   for (const [nome, preset] of Object.entries(PRESETS)) {
@@ -104,6 +111,14 @@ describe('presets: valores do doc 04 §7 (via tokens)', () => {
     expect(fade).toEqual({
       quadros: { opacity: [0, 1] },
       duracao: '--dur-enter',
+      curva: '--ease-out',
+    });
+  });
+
+  it('lightUp: opacity 0,35→1, scale 0,96→1, --dur-base, --ease-out (A-03, etapas das trilhas)', () => {
+    expect(lightUp).toEqual({
+      quadros: { opacity: [0.35, 1], transform: ['scale(0.96)', 'scale(1)'] },
+      duracao: '--dur-base',
       curva: '--ease-out',
     });
   });

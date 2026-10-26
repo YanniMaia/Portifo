@@ -82,8 +82,26 @@ export const lineDrawY: Preset = {
   origem: 'center top',
 };
 
+/**
+ * "Acende" as etapas das trilhas (A-03; §7.10, §9 "Etapas das trilhas"): opacidade 0,35 → 1 e
+ * escala 0,96 → 1 (sem `transform-origin` próprio: o padrão `center` já serve para um "pop" no
+ * lugar, sem deslocar a pílula). Duração: `--dur-base` (250 ms), não `--dur-chip` (400 ms) —
+ * decisão registrada no diário cp/A-03: a tabela-resumo do doc 04 §7 só fixa o atraso entre
+ * etapas (200 ms), não a duração de cada uma; `--dur-chip` fica reservado à cascata de chips
+ * (opacidade só, §9 "Cascata de chips"), para cada token continuar ligado a uma única família
+ * semântica (D14). `--dur-base` é o token dos realces "acesos" por hover de card/painel/IconBox
+ * (DS-15/DS-16) — a mesma linguagem visual de "ressaltar", e os 250 ms encaixam melhor no atraso
+ * de 200 ms entre etapas (sobreposição de 50 ms, mais parecido com um aceso em cadeia do que os
+ * 400 ms do chip, que dobrariam a sobreposição).
+ */
+export const lightUp: Preset = {
+  quadros: { opacity: [0.35, 1], transform: ['scale(0.96)', 'scale(1)'] },
+  duracao: '--dur-base',
+  curva: '--ease-out',
+};
+
 /** Todos os presets, para os testes percorrerem (R1). */
-export const PRESETS = { fadeUp, fade, lineDrawX, lineDrawY } as const;
+export const PRESETS = { fadeUp, fade, lineDrawX, lineDrawY, lightUp } as const;
 
 /**
  * Atraso em cascata de `ms` milissegundos entre itens (chips 40 ms, linhas da frase 150 ms,

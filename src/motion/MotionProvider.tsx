@@ -6,11 +6,14 @@
 // 2. Escreve `data-reduced-motion="true|false"` no <html>, lido por `reduced-motion.css`.
 // 3. Liga o observador de loops (`loopPause.ts`): pausa `[data-loop]` fora da tela e com a aba oculta.
 // 4. Liga a revelação de seções (`useReveal.ts`, A-02): fade + 24 px em cada `[data-reveal]`.
+// 5. Liga as cascatas (`useStagger.ts`, A-03): chips, linhas da frase e etapas das trilhas em
+//    cada `[data-stagger]`.
 import { useEffect, useLayoutEffect, type ReactNode } from 'react';
 import { LazyMotion, MotionConfig } from 'motion/react';
 import { iniciarPausaDeLoops } from './loopPause';
 import { ATRIBUTO_MOVIMENTO_REDUZIDO, useReducedMotion } from './useReducedMotion';
 import { useReveal } from './useReveal';
+import { useStagger } from './useStagger';
 import './reduced-motion.css';
 
 /** `domAnimation` em chunk próprio (features.ts), carregado sob demanda (§4.3). */
@@ -30,6 +33,7 @@ export function MotionProvider({ children }: MotionProviderProps) {
 
   useEffect(() => iniciarPausaDeLoops(document), []);
   useReveal();
+  useStagger();
 
   return (
     <LazyMotion features={carregarFeatures}>

@@ -9,10 +9,14 @@ Infraestrutura de animação, criada pela task A-01 (doc 04), que também instal
   - `MutationObserver` cobre blocos `[data-reveal]` montados depois (um `inView` por nó novo, nunca reobservando o que já existia).
   - Sem `IntersectionObserver` no ambiente, não aplica nada: os blocos ficam no estado visível normal do CSS (nenhum estilo "escondido" é escrito por JS em lugar nenhum).
 - `animations.ts`:
-  - presets `fadeUp`, `fade`, `lineDrawX` e `lineDrawY`, só com `opacity` e `transform` em string (`translateY(24px)`, `scaleX(0)`…). Em string, o `motion` manda a animação para o WAAPI, e ela aparece em `document.getAnimations()`. As chaves `x`/`y`/`scale*` rodariam em JS e não aparecem ali. Presets novos seguem o mesmo formato;
+  - presets `fadeUp`, `fade`, `lineDrawX`, `lineDrawY` e `lightUp` (A-03: opacidade 0,35→1 + escala 0,96→1, `--dur-base`, etapas das trilhas), só com `opacity` e `transform` em string (`translateY(24px)`, `scaleX(0)`…). Em string, o `motion` manda a animação para o WAAPI, e ela aparece em `document.getAnimations()`. As chaves `x`/`y`/`scale*` rodariam em JS e não aparecem ali. Presets novos seguem o mesmo formato;
   - `staggerDelay(ms)`, `resolverPreset()` e `animarPreset()`, com versão reduzida de duração 0;
   - `duracaoDoToken('--dur-*')` (segundos) e `curvaDoToken('--ease-*')` leem os tokens do CSS;
-  - `animarPreset(alvos, preset, reduzido, atraso?, { duracao })` aceita uma duração em segundos no lugar do token, por exemplo `duracaoDoToken('--dur-draw') / 3` por conector. No modo reduzido a duração continua 0.
+  - `animarPreset(alvos, preset, reduzido, atraso?, { duracao })` aceita uma duração em segundos no lugar do token, por exemplo `duracaoDoToken('--dur-draw') / 3` por conector, ou `duracaoDoToken('--dur-chip')` na cascata de chips (A-03), que reaproveita o preset `fade` em vez de um preset novo só para trocar o token. No modo reduzido a duração continua 0.
+- `useStagger.ts` (A-03): `iniciarCascata(doc = document)` e o hook `useStagger()`, chamado dentro do `MotionProvider`.
+  - Mesmo padrão de `useReveal.ts`: observa todo `[data-stagger]` com `inView()`, uma vez só por contêiner. Ao entrar, anima todo `[data-stagger-item]` DESCENDENTE (não só filho direto — em Habilidades e Trilhas o item fica dentro de um `<ul>`/`<li>`) com `stagger()` (`staggerDelay`), na ordem do DOM.
+  - Três tipos por `data-stagger="chips|motto|steps"`: chips = `fade` + `--dur-chip` (sobrescrita), 40 ms; motto = `fadeUp`, 150 ms; steps = `lightUp`, 200 ms. Tipo desconhecido não faz nada.
+  - `MutationObserver` cobre `[data-stagger]` montados depois, mesmo padrão de `useReveal.ts`.
 
 ## Restrições para quem usa os ganchos
 
