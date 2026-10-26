@@ -10,6 +10,11 @@
 //   componente (doc 05 §A.5), igual em todos os idiomas; não é texto do dicionário.
 // - Gancho do doc 04 §4.4 (A-03): o contêiner das linhas tem `data-stagger="motto"` e cada linha
 //   `data-stagger-item`. Sem animação própria (CC-6): as linhas aparecem prontas.
+// - Gancho do A-02 (pendência registrada em S-17/CHECKPOINTS.md, opção (b) do diário de A-02): o
+//   mesmo contêiner também tem `data-reveal=""`, para a Frase participar do fade + 24 px de
+//   entrada de seção igual às outras (ela não tinha o gancho antes). Convive sem conflito com o
+//   `data-stagger` do A-03: o reveal anima o contêiner (`translateY`/`opacity`) e a cascata, mais
+//   tarde, anima cada `<p data-stagger-item>` dentro dele.
 // - Texto de apoio opcional (D11): sem valor, o parágrafo não existe.
 // - Não interativo.
 import { useId } from 'react';
@@ -44,7 +49,7 @@ export function Motto() {
             {frase.eyebrow}
           </Eyebrow>
         </h2>
-        <div className={styles.linhas} data-stagger="motto">
+        <div className={styles.linhas} data-reveal="" data-stagger="motto">
           {linhas.map((linha) => (
             <p key={linha.antes} className={styles.linha} data-stagger-item="">
               {linha.antes}{' '}

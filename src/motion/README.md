@@ -4,6 +4,10 @@ Infraestrutura de animação, criada pela task A-01 (doc 04), que também instal
 - `MotionProvider.tsx`: `LazyMotion` (features de `features.ts`, sob demanda) + `MotionConfig reducedMotion="user"`, `data-reduced-motion` no `<html>` e o observador de loops. Registrado em `src/main.tsx`.
 - `loopPause.ts`: `iniciarPausaDeLoops()` escreve `data-offscreen` em cada `[data-loop]` e em cada `[data-float]` (cartões flutuantes do A-11a) e `data-page-hidden` no `<html>`. Os dois ganchos pausam fora da tela e com a aba oculta; não é preciso pôr `data-loop` junto com `data-float`.
 - `reduced-motion.css`: pausa dos loops e flutuantes e movimento reduzido nos ganchos `data-*` (complementa o DS-04).
+- `useReveal.ts` (A-02): `iniciarRevelacao(doc = document)` e o hook `useReveal()`, chamado dentro do `MotionProvider`.
+  - Observa todo `[data-reveal]` com a API vanilla `inView()` do `motion`: ao cruzar 15% de visibilidade, aplica o preset `fadeUp` (`animarPreset`) uma vez só — o próprio `inView` para de observar o elemento quando o `onStart` não devolve uma função de saída.
+  - `MutationObserver` cobre blocos `[data-reveal]` montados depois (um `inView` por nó novo, nunca reobservando o que já existia).
+  - Sem `IntersectionObserver` no ambiente, não aplica nada: os blocos ficam no estado visível normal do CSS (nenhum estilo "escondido" é escrito por JS em lugar nenhum).
 - `animations.ts`:
   - presets `fadeUp`, `fade`, `lineDrawX` e `lineDrawY`, só com `opacity` e `transform` em string (`translateY(24px)`, `scaleX(0)`…). Em string, o `motion` manda a animação para o WAAPI, e ela aparece em `document.getAnimations()`. As chaves `x`/`y`/`scale*` rodariam em JS e não aparecem ali. Presets novos seguem o mesmo formato;
   - `staggerDelay(ms)`, `resolverPreset()` e `animarPreset()`, com versão reduzida de duração 0;

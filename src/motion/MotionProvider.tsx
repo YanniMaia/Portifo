@@ -1,14 +1,16 @@
-// Provedor de movimento (A-01; doc 04 §4.2 R4 e §4.3; D2). Registrado em src/main.tsx dentro de
-// ThemeProvider › LanguageProvider (F-14). Faz três coisas:
+// Provedor de movimento (A-01/A-02; doc 04 §4.2 R4, §4.3 e §4.4; D2). Registrado em src/main.tsx
+// dentro de ThemeProvider › LanguageProvider (F-14). Faz quatro coisas:
 // 1. `LazyMotion` com `domAnimation` (carregado sob demanda de `features.ts`, para o bundle inicial
 //    caber no orçamento da §4.3) + `MotionConfig reducedMotion="user"`: componentes `m.*` (quando
 //    existirem) usam só as features de DOM e respeitam o movimento reduzido do sistema.
 // 2. Escreve `data-reduced-motion="true|false"` no <html>, lido por `reduced-motion.css`.
 // 3. Liga o observador de loops (`loopPause.ts`): pausa `[data-loop]` fora da tela e com a aba oculta.
+// 4. Liga a revelação de seções (`useReveal.ts`, A-02): fade + 24 px em cada `[data-reveal]`.
 import { useEffect, useLayoutEffect, type ReactNode } from 'react';
 import { LazyMotion, MotionConfig } from 'motion/react';
 import { iniciarPausaDeLoops } from './loopPause';
 import { ATRIBUTO_MOVIMENTO_REDUZIDO, useReducedMotion } from './useReducedMotion';
+import { useReveal } from './useReveal';
 import './reduced-motion.css';
 
 /** `domAnimation` em chunk próprio (features.ts), carregado sob demanda (§4.3). */
@@ -27,6 +29,7 @@ export function MotionProvider({ children }: MotionProviderProps) {
   }, [reduzido]);
 
   useEffect(() => iniciarPausaDeLoops(document), []);
+  useReveal();
 
   return (
     <LazyMotion features={carregarFeatures}>

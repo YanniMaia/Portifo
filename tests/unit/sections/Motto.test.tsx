@@ -1,6 +1,8 @@
 // Testes da Frase de destaque (S-06). Medidas e cores computadas ficam no diário S-06 (navegador).
 // Aqui: id e H2, eyebrow `tone="tint"`, 3 linhas com seta `aria-hidden` + conectivo oculto, gancho
 // `data-stagger="motto"` (doc 04 §4.4, A-03), troca de idioma, ocultação do apoio e o contrato do CSS.
+// Desde o A-02 (decisão registrada no diário cp/A-02, opção (b) da pendência de S-17/S-06), o mesmo
+// contêiner também leva `data-reveal` (fade + 24 px de entrada de seção), ao lado de `data-stagger`.
 import { readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { render, screen, within } from '@testing-library/react';
@@ -112,7 +114,14 @@ describe('Motto (S-06): gancho da cascata (doc 04 §4.4, A-03) e apoio', () => {
     expect(c.children).toHaveLength(3);
     for (const filho of c.children) expect(filho).toHaveAttribute('data-stagger-item');
     expect(secao().querySelectorAll('[data-stagger-item]')).toHaveLength(3);
-    expect(secao().querySelector('[data-reveal], [data-draw], [data-bg-slot]')).toBeNull();
+    expect(secao().querySelector('[data-draw], [data-bg-slot]')).toBeNull();
+  });
+
+  it('o mesmo contêiner também tem data-reveal (A-02), um único gancho de entrada', () => {
+    renderWithProviders(<Motto />);
+    const reveal = secao().querySelectorAll('[data-reveal]');
+    expect(reveal).toHaveLength(1);
+    expect(reveal[0]).toBe(secao().querySelector('[data-stagger="motto"]'));
   });
 
   it('texto de apoio presente (18 px, cor secundária, no CSS)', () => {

@@ -3,6 +3,11 @@
 // footer, SkipLink para o `<main>` e o gancho `data-reveal` (A-02) em cada seção exceto o hero.
 // Placeholders em produção: não duplicado aqui — o `postbuild` roda `check:placeholders` (C-01)
 // sobre o `dist/` real; este teste de unidade roda com `SHOW_PLACEHOLDERS` do modo de teste (DEV).
+//
+// Atualizado pelo A-02 (decisão registrada no diário cp/A-02, opção (b) da pendência de S-17/S-06,
+// CHECKPOINTS.md "Pendências"): a Frase (`#frase`) ganhou `data-reveal` no mesmo contêiner que já
+// tinha `data-stagger="motto"` (meia linha em `Motto.tsx`), para participar do fade de entrada
+// igual às outras 8. Ela deixa de ser excluída de `SECOES_COM_REVEAL`.
 import { screen } from '@testing-library/react';
 import { describe, expect, it } from 'vitest';
 import App from '@/App';
@@ -11,10 +16,9 @@ import { SECTION_IDS } from '@/content/sections';
 import { pt } from '@/content/pt';
 import { renderWithProviders } from '../support/render';
 
-// As 8 seções com `data-reveal` (A-02; doc 04 §4.4). `inicio` (hero) não anima (CC-6) e `frase`
-// (Motto) só tem `data-stagger="motto"` no código real do S-06 — divergência do doc 04 §4.4
-// (linha 163, que listaria também o S-06) registrada no checkpoint desta task, sem alterar o S-06.
-const SECOES_COM_REVEAL = SECTION_IDS.filter((id) => id !== 'inicio' && id !== 'frase');
+// As 9 seções com `data-reveal` (A-02; doc 04 §4.4). Só `inicio` (hero) não anima (CC-6, D11: o H1
+// não pode atrasar o LCP). `frase` (Motto) ganhou o gancho nesta task (ver nota acima).
+const SECOES_COM_REVEAL = SECTION_IDS.filter((id) => id !== 'inicio');
 
 describe('App (S-17: montagem final)', () => {
   it('renderiza os 10 ids do registro, cada um uma vez, na ordem do §2', () => {
@@ -68,11 +72,12 @@ describe('App (S-17: montagem final)', () => {
     expect(hero?.querySelectorAll('[data-reveal]')).toHaveLength(0);
   });
 
-  it('a frase (#frase) usa data-stagger="motto", sem data-reveal próprio (divergência do S-06 registrada no checkpoint)', () => {
+  it('a frase (#frase) tem data-reveal e data-stagger="motto" no mesmo contêiner (A-02)', () => {
     renderWithProviders(<App />);
     const frase = document.getElementById('frase');
-    expect(frase?.querySelectorAll('[data-reveal]')).toHaveLength(0);
-    expect(frase?.querySelectorAll('[data-stagger="motto"]')).toHaveLength(1);
+    const reveal = frase?.querySelectorAll('[data-reveal]');
+    expect(reveal).toHaveLength(1);
+    expect(reveal?.[0]).toBe(frase?.querySelector('[data-stagger="motto"]'));
   });
 
   it.each(['light', 'dark'] as const)(
