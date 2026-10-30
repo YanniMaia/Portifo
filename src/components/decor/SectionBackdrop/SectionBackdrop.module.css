@@ -1,0 +1,62 @@
+/*
+ * Fundo decorativo por seção (A-19; doc de design §3.4, §7.2, §7.11; doc 04 §5 e §6.2).
+ * - `.camada`: preenche o contêiner `.backdrop` que o Hero/Contact já criam (`position: absolute;
+ *   inset: 0; z-index: 0; overflow: hidden;`, D14) — repete só o que falta para funcionar sozinha
+ *   fora desse wrapper. Sem `z-index`: não há irmão para disputar pilha aqui dentro.
+ * - Cantos: cada constelação (A-14) fica a uma distância fixa da borda da camada (24 px, medida de
+ *   composição sem token — não é a escala de 4 px do design system).
+ * - `.glow` (só `contato`; o hero já tem os dois brilhos pintados em `Hero.module.css`, D14):
+ *   círculo de 280 px (dentro de 240–320 px, §3.4) na cor `--glow-deco` (DS-01), com
+ *   `filter: blur(100px)` (dentro de 80–120 px). Sem animação (CC-6); a troca de tema só troca a
+ *   cor do token, sem crossfade (essa animação é da A-09, ⏭ V2).
+ */
+.camada {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.cantoSuperiorEsquerdo {
+  position: absolute;
+  top: 24px;
+  left: 24px;
+}
+
+.cantoSuperiorDireito {
+  position: absolute;
+  top: 24px;
+  right: 24px;
+}
+
+.cantoInferiorEsquerdo {
+  position: absolute;
+  bottom: 24px;
+  left: 24px;
+}
+
+.cantoInferiorDireito {
+  position: absolute;
+  bottom: 24px;
+  right: 24px;
+}
+
+.glow {
+  position: absolute;
+  width: 280px;
+  height: 280px;
+  border-radius: 50%;
+  background: var(--glow-deco);
+  filter: blur(100px);
+  pointer-events: none;
+}
+
+.glowSuperiorEsquerdo {
+  top: -70px;
+  left: -70px;
+}
+
+.glowInferiorDireito {
+  right: -70px;
+  bottom: -70px;
+}

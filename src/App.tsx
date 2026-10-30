@@ -1,8 +1,13 @@
 // App shell semântico (F-14; doc de design §11 e §2). Ordem fixa:
 // SkipLink → Header (<header>) → <main id="conteudo"> com as 10 seções → Footer (<footer>).
-// O S-17 troca os stubs da F-14 pelas seções reais, com os MESMOS ids (vindos de cada seção,
-// nunca escritos aqui). Nenhuma seção recebe `backdrop`: a A-integração ainda não existe (D15).
+// O S-17 trocou os stubs da F-14 pelas seções reais, com os MESMOS ids (vindos de cada seção,
+// nunca escritos aqui).
+// A-19 (D14: esta task só acrescenta as props `backdrop`): Hero e Contact recebem
+// `<SectionBackdrop variant="…" />`. Interests/Goals NÃO recebem `backdrop` nesta rodada — a
+// variante delas dependeria da marca-d'água do A-16 (⏭ V2, doc 09 §1); ver `plano/checkpoints/
+// A-19.md`. As duas seções já funcionam sem a prop (contrato do doc 04 §4.4).
 import { useEffect } from 'react';
+import { SectionBackdrop } from '@/components/decor/SectionBackdrop';
 import { MAIN_CONTENT_ID, SkipLink } from '@/components/SkipLink';
 import { About } from '@/sections/About/About';
 import { Contact } from '@/sections/Contact/Contact';
@@ -29,7 +34,7 @@ function App() {
       <SkipLink />
       <Header />
       <main id={MAIN_CONTENT_ID} tabIndex={-1} className={styles.main}>
-        <Hero />
+        <Hero backdrop={<SectionBackdrop variant="hero" />} />
         <Highlights />
         <Motto />
         <About />
@@ -38,7 +43,7 @@ function App() {
         <Projects />
         <Education />
         <Goals />
-        <Contact />
+        <Contact backdrop={<SectionBackdrop variant="contato" />} />
       </main>
       <Footer />
     </>
