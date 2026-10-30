@@ -124,6 +124,11 @@ html {
     stroke var(--dur-theme) ease !important;
 }
 
+.theme-transition [data-decor],
+.theme-transition [data-decor] * {
+  transition: none !important;
+}
+
 /* ---------- Movimento reduzido global (passo 4; §9) ---------- */
 
 /*
