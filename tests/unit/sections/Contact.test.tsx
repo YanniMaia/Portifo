@@ -1,14 +1,17 @@
 // Testes de Contato (S-15). Medidas e cores computadas ficam no diário S-15 (navegador).
 // Aqui: id, H2, eyebrow `tone="tint"`; parágrafo e disponibilidade (PulseDot); 3 botões
 // (E-mail → LinkedIn → GitHub, D21) com `href` corretos, externos com `target="_blank"`/`rel` e
-// aviso de nova aba, largura total no celular (`fullWidthOnMobile`); "Copiar" → "Copiado!" por
-// 2 s com `aria-live`, timers reiniciados em cliques repetidos, falha/ausência do clipboard sem
-// erro e sem "Copiado!"; EN; `data-reveal` só na raiz; prop `backdrop`; contrato do CSS e do JSX.
+// aviso de nova aba, largura total no celular (`fullWidthOnMobile`); EN; `data-reveal` só na raiz;
+// prop `backdrop`; contrato do CSS e do JSX.
+// O comportamento do "Copiar" → "Copiado!" (timers, `aria-live`, falha/ausência do clipboard, EN)
+// mudou de dono (D14, "um dono por artefato, sem duplicata") para
+// `tests/unit/sections/copiar-email.test.tsx` (Q-04); aqui fica só a presença estrutural do
+// endereço no layout do painel.
 import { readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
-import { act, fireEvent, render, screen, within } from '@testing-library/react';
+import { render, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { afterEach, describe, expect, it, vi } from 'vitest';
+import { describe, expect, it } from 'vitest';
 import { en } from '@/content/en';
 import { pt } from '@/content/pt';
 import { SECTION_IDS } from '@/content/sections';
@@ -16,7 +19,6 @@ import { site } from '@/content/site';
 import { LanguageContext, type LanguageContextValue } from '@/i18n/LanguageContext';
 import type { Dictionary } from '@/i18n/types';
 import { Contact } from '@/sections/Contact/Contact';
-import { mockClipboard } from '../support/mocks';
 import { renderWithProviders } from '../support/render';
 
 const ler = (arquivo: string) =>
@@ -169,106 +171,11 @@ describe('Contact (S-15): botões — ordem, href e nova aba (D21)', () => {
   });
 });
 
-describe('Contact (S-15): CopyEmail — "Copiar" → "Copiado!" (aria-live) e falhas', () => {
-  const botaoCopiar = () => screen.getByRole('button', { name: pt.contato.copiarAria });
-  const anuncio = () => secao().querySelector('[aria-live="polite"]') as HTMLElement;
-
+describe('Contact (S-15): CopyEmail — presença estrutural no painel', () => {
+  // Comportamento de clique (sucesso/falha/timers/aria-live/EN): tests/unit/sections/copiar-email.test.tsx (Q-04).
   it('endereço de `site.email` visível e selecionável, 24 px abaixo dos botões', () => {
     renderWithProviders(<Contact />);
     expect(within(secao()).getByText(site.email)).toBeInTheDocument();
-  });
-
-  // `fireEvent.click` (síncrono) + `act(async () => { await Promise.resolve(); })` para esvaziar
-  // a fila de microtarefas da Promise do `navigator.clipboard.writeText`: o `userEvent.click`
-  // (assíncrono) trava com `vi.useFakeTimers()`, porque parte da simulação de clique dele depende
-  // de temporizadores reais, que ficam "congelados" pelos timers falsos.
-  async function clicarEmCopiar() {
-    fireEvent.click(botaoCopiar());
-    await act(async () => {
-      await Promise.resolve();
-      await Promise.resolve();
-    });
-  }
-
-  it('clique com sucesso: rótulo vira "Copiado!" (ícone Check), anuncia e volta a "Copiar" após 2 s', async () => {
-    mockClipboard('sucesso');
-    renderWithProviders(<Contact />);
-    vi.useFakeTimers();
-
-    await clicarEmCopiar();
-    expect(botaoCopiar()).toHaveTextContent(pt.contato.copiado);
-    expect(botaoCopiar().querySelector('svg')?.getAttribute('class')).toContain('lucide-check');
-    expect(anuncio()).toHaveTextContent(pt.contato.copiadoAnuncio);
-
-    act(() => {
-      vi.advanceTimersByTime(1999);
-    });
-    expect(botaoCopiar()).toHaveTextContent(pt.contato.copiado);
-
-    act(() => {
-      vi.advanceTimersByTime(1);
-    });
-    expect(botaoCopiar()).toHaveTextContent(pt.contato.copiar);
-    expect(botaoCopiar().querySelector('svg')?.getAttribute('class')).toContain('lucide-copy');
-    expect(anuncio()).toHaveTextContent('');
-  });
-
-  it('cliques repetidos reiniciam o temporizador de 2 s', async () => {
-    mockClipboard('sucesso');
-    renderWithProviders(<Contact />);
-    vi.useFakeTimers();
-
-    await clicarEmCopiar();
-    act(() => {
-      vi.advanceTimersByTime(1500);
-    });
-    expect(botaoCopiar()).toHaveTextContent(pt.contato.copiado);
-
-    await clicarEmCopiar(); // reinicia o contador
-    act(() => {
-      vi.advanceTimersByTime(1500);
-    });
-    expect(botaoCopiar()).toHaveTextContent(pt.contato.copiado); // ainda dentro dos 2 s do 2º clique
-
-    act(() => {
-      vi.advanceTimersByTime(600);
-    });
-    expect(botaoCopiar()).toHaveTextContent(pt.contato.copiar);
-  });
-
-  it('falha do clipboard (permissão negada): nenhum "Copiado!", nenhum erro no console', async () => {
-    mockClipboard('negado');
-    const erro = vi.spyOn(console, 'error').mockImplementation(() => undefined);
-    renderWithProviders(<Contact />);
-
-    fireEvent.click(botaoCopiar());
-    await act(async () => {
-      await Promise.resolve();
-      await Promise.resolve();
-    });
-    expect(botaoCopiar()).toHaveTextContent(pt.contato.copiar);
-    expect(anuncio()).toHaveTextContent('');
-    expect(erro).not.toHaveBeenCalled();
-    erro.mockRestore();
-  });
-
-  it('clipboard ausente (API inexistente): nenhum "Copiado!", nenhum erro no console', async () => {
-    mockClipboard('ausente');
-    const erro = vi.spyOn(console, 'error').mockImplementation(() => undefined);
-    renderWithProviders(<Contact />);
-
-    fireEvent.click(botaoCopiar());
-    await act(async () => {
-      await Promise.resolve();
-    });
-    expect(botaoCopiar()).toHaveTextContent(pt.contato.copiar);
-    expect(anuncio()).toHaveTextContent('');
-    expect(erro).not.toHaveBeenCalled();
-    erro.mockRestore();
-  });
-
-  afterEach(() => {
-    vi.useRealTimers();
   });
 });
 
