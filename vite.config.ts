@@ -1,8 +1,12 @@
 import react from '@vitejs/plugin-react';
+import { execSync } from 'node:child_process';
 import { existsSync, readFileSync, statSync } from 'node:fs';
 import { join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { defineConfig, type Plugin } from 'vite';
+// SHA curto do build (D-05): regra única em src/build/gitSha.ts, compartilhada com o teste de
+// smoke (tests/e2e/smoke-publico.spec.ts).
+import { encurtarSha } from './src/build/gitSha.ts';
 // URL base do GitHub Pages (F-07, D14): única fonte é src/site.config.ts. A extensão `.ts` é
 // obrigatória porque o tsconfig.node.json usa `module: nodenext`.
 import { BASE_PATH } from './src/site.config.ts';
@@ -44,6 +48,37 @@ function preloadFontes(): Plugin {
           };
         });
       },
+    },
+  };
+}
+
+// SHA do build (D-05, doc 07 linha 188): `GIT_SHA` vem do job `build` do workflow (`git rev-parse
+// HEAD` do commit publicado, D-04); localmente, sem a variável, usa o HEAD do repositório local.
+// `encurtarSha` (src/build/gitSha.ts) é a MESMA função usada pelo teste de smoke, então os dois
+// lados nunca divergem na regra "7 primeiros caracteres".
+function shaDoBuild(): string {
+  const bruto = process.env.GIT_SHA?.trim() || execSync('git rev-parse HEAD').toString();
+  return encurtarSha(bruto);
+}
+
+// Injeta <meta name="version" content="<sha curto>"> no <head> do dist/index.html (D-05, passo 1).
+// Só no build (apply: 'build'): o smoke público lê essa meta para confirmar que a URL publicada é
+// o commit esperado. O index.html de origem não tem essa meta (nada a manter em sincronia à mão).
+// O SHA é calculado DENTRO do hook (não na fábrica do plugin): com `apply: 'build'`, Vite só chama
+// o hook durante `vite build`, então o `git rev-parse` nunca roda à toa em `vite dev`/`vite preview`
+// (o `preview` só serve o `dist/` já pronto; não reconstrói nem chama este hook).
+function injetarVersao(): Plugin {
+  return {
+    name: 'portifolio:versao',
+    apply: 'build',
+    transformIndexHtml() {
+      return [
+        {
+          tag: 'meta',
+          attrs: { name: 'version', content: shaDoBuild() },
+          injectTo: 'head' as const,
+        },
+      ];
     },
   };
 }
@@ -103,7 +138,7 @@ function pagina404NoPreview(): Plugin {
 export default defineConfig({
   // `vite build --base …` (script build:pages-test) sobrepõe este valor sem variável de ambiente.
   base: BASE_PATH,
-  plugins: [react(), preloadFontes(), atalhoStyleguide(), pagina404NoPreview()],
+  plugins: [react(), preloadFontes(), injetarVersao(), atalhoStyleguide(), pagina404NoPreview()],
   resolve: {
     // Alias `@/` → `src/` (F-05). Mesmo mapeamento do `paths` em tsconfig.app.json.
     alias: {
