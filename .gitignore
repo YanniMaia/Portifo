@@ -13,6 +13,7 @@ test-results/
 playwright-report/
 blob-report/
 playwright/.cache/
+relatorios/
 
 # Arquivos locais e segredos
 *.local
