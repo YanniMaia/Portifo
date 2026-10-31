@@ -1,6 +1,8 @@
 // Contrastes WCAG dos pares da DS-01 (doc 02, critérios da DS-01; doc de design §3.5 e §11).
 // Os pares usam os fundos reais onde o texto aparece (RS-3): #FFEEF4, #1C0E16 e os dois extremos
 // dos degradês primários. O Q-15 repete as medições na página montada.
+import { readFileSync } from 'node:fs';
+import { resolve } from 'node:path';
 import { describe, expect, it } from 'vitest';
 import { contrastRatio, hueSaturation, parseColor, relativeLuminance } from '../support/contrast';
 
@@ -80,5 +82,357 @@ describe('contrastes da DS-01', () => {
     const razao = contrastRatio('#C93A77', '#FFEEF4');
     console.info(`[DS-01] #C93A77/#FFEEF4 = ${fmt(razao)}:1 (reprova; D13)`);
     expect(razao).toBeLessThan(4.5);
+  });
+});
+
+// =============================================================================================
+// Q-15 — Contraste de cores nos dois temas (doc 06, linhas 448-502).
+//
+// Diferença do bloco acima (DS-01): aqui os hex NÃO são copiados à mão. O teste lê
+// `src/styles/tokens/colors.css` como texto (mesma técnica de `tests/unit/styles/colors.test.ts`),
+// extrai o valor de cada token nos blocos claro/escuro e só então calcula a razão de contraste.
+// Isso prova que o TOKEN certo existe para cada uso da tabela do doc 06 (ex.: eyebrow sobre
+// `--color-bg-tint` usa `--color-eyebrow-on-tint`, não `--color-eyebrow`) e falha se alguém trocar
+// um token por outro (prova de mutação registrada no checkpoint `cp/Q-15`, revertida).
+//
+// Pares ❌ da tabela (linhas 5 e 9) são combinações PROIBIDAS: o teste confirma que elas reprovam
+// (ratio < mínimo), isto é, confirma que a proibição é real e mensurável — não que elas apareçam
+// na página (isso é papel do e2e `tests/e2e/contraste.spec.ts`).
+// Pares ℹ️ (12, 14, 15, 17, 26, 27) são decorativos ou isentos (D13, logotipo WCAG 1.4.3, seta
+// decorativa do cp/S-06): o teste fixa o valor medido (`toBeCloseTo`) como guarda de regressão,
+// sem exigir o mínimo de texto.
+describe('contrastes da tabela Q-15 (tokens de colors.css, não hex copiados)', () => {
+  const caminhoCores = resolve(process.cwd(), 'src/styles/tokens/colors.css');
+  const cssCores = readFileSync(caminhoCores, 'utf8').replace(/\/\*[\s\S]*?\*\//g, '');
+
+  /** Declarações `--token: valor;` de um bloco `:root/[data-theme]` como mapa bruto (sem normalizar). */
+  function blocoDeTokens(regex: RegExp): Map<string, string> {
+    const corpo = regex.exec(cssCores)?.[1];
+    if (corpo === undefined) throw new Error(`Bloco não encontrado em colors.css: ${regex}`);
+    const mapa = new Map<string, string>();
+    for (const m of corpo.matchAll(/(--[\w-]+)\s*:\s*([^;]+);/g)) {
+      mapa.set(m[1] as string, (m[2] as string).trim());
+    }
+    return mapa;
+  }
+
+  const CLARO = blocoDeTokens(/:root,\s*\[data-theme=['"]light['"]\]\s*\{([^}]*)\}/);
+  const ESCURO = blocoDeTokens(/\[data-theme=['"]dark['"]\]\s*\{([^}]*)\}/);
+
+  /** Extrai cada stop de cor (hex ou rgb/rgba) de um valor; um valor sólido devolve 1 item. */
+  function paradas(valor: string): string[] {
+    const achados = valor.match(/#[0-9a-fA-F]{3,8}\b|rgba?\([^)]*\)/g);
+    if (!achados || achados.length === 0) throw new Error(`Nenhuma cor em: ${valor}`);
+    return achados;
+  }
+
+  /** Resolve um `--token` (claro ou escuro) nas cores que ele representa (1 para sólido, 2+ p/ degradê). */
+  function cores(mapa: Map<string, string>, token: string): string[] {
+    const valor = mapa.get(token);
+    if (valor === undefined)
+      throw new Error(`Token ausente em colors.css: ${token} (${[...mapa.keys()].join(', ')})`);
+    return paradas(valor);
+  }
+
+  /** Pior razão (mínimo) entre todas as combinações texto × fundo — o caso mais exigente. */
+  function piorRazao(textos: string[], fundos: string[]): number {
+    let pior = Number.POSITIVE_INFINITY;
+    for (const t of textos) {
+      for (const f of fundos) {
+        pior = Math.min(pior, contrastRatio(t, f));
+      }
+    }
+    return pior;
+  }
+
+  interface LinhaQ15 {
+    linha: number;
+    tema: 'claro' | 'escuro';
+    texto: string; // nome do token (resolvido em paradas de cor)
+    fundos: string[]; // nomes dos tokens (resolvidos em paradas de cor)
+    minimo: number;
+    uso: string;
+  }
+
+  const PARES_ESPERADOS: LinhaQ15[] = [
+    {
+      linha: 1,
+      tema: 'claro',
+      texto: '--color-text',
+      fundos: ['--color-bg', '--color-bg-alt', '--color-bg-tint'],
+      minimo: 7,
+      uso: 'corpo/títulos/chips sobre branco, névoa e rosa clarinho',
+    },
+    {
+      linha: 2,
+      tema: 'claro',
+      texto: '--color-text-secondary',
+      fundos: ['--color-bg', '--color-bg-alt'],
+      minimo: 4.5,
+      uso: 'texto secundário',
+    },
+    {
+      linha: 3,
+      tema: 'claro',
+      texto: '--color-text-secondary',
+      fundos: ['--color-bg-tint'],
+      minimo: 4.5,
+      uso: 'apoio da Frase de destaque / painel de contato',
+    },
+    {
+      linha: 4,
+      tema: 'claro',
+      texto: '--color-text-muted',
+      fundos: ['--color-bg'],
+      minimo: 4.5,
+      uso: 'legendas ≥14px, só sobre branco (D13/DV-17)',
+    },
+    {
+      linha: 7,
+      tema: 'claro',
+      texto: '--color-eyebrow',
+      fundos: ['--color-bg'],
+      minimo: 4.5,
+      uso: 'link/eyebrow padrão sobre branco',
+    },
+    {
+      linha: 8,
+      tema: 'claro',
+      texto: '--color-eyebrow',
+      fundos: ['--color-bg-alt'],
+      minimo: 4.5,
+      uso: 'eyebrow sobre rosa névoa',
+    },
+    {
+      linha: 10,
+      tema: 'claro',
+      texto: '--color-eyebrow-on-tint',
+      fundos: ['--color-bg-tint', '--color-bg', '--color-bg-alt'],
+      minimo: 4.5,
+      uso: 'eyebrow/selos sobre tint, branco e névoa (D13)',
+    },
+    {
+      linha: 11,
+      tema: 'claro',
+      texto: '--color-on-primary',
+      fundos: ['--gradient-primary'],
+      minimo: 4.5,
+      uso: 'botão primário / pular para o conteúdo / 1ª etapa das trilhas (D13)',
+    },
+    {
+      linha: 13,
+      tema: 'claro',
+      texto: '--gradient-text',
+      fundos: ['--color-bg'],
+      minimo: 3,
+      uso: 'nome no H1 e valores da faixa (degradê, texto grande, D19)',
+    },
+    {
+      linha: 16,
+      tema: 'claro',
+      texto: '--color-focus',
+      fundos: ['--color-bg', '--color-bg-tint'],
+      minimo: 3,
+      uso: 'contorno de foco',
+    },
+    {
+      linha: 18,
+      tema: 'escuro',
+      texto: '--color-text',
+      fundos: ['--color-bg', '--color-bg-alt', '--color-surface', '--gradient-contact'],
+      minimo: 7,
+      uso: 'corpo/títulos/chips (escuro)',
+    },
+    {
+      linha: 19,
+      tema: 'escuro',
+      texto: '--color-text-secondary',
+      fundos: ['--color-bg', '--color-bg-alt', '--color-surface'],
+      minimo: 4.5,
+      uso: 'secundário (escuro)',
+    },
+    {
+      linha: 20,
+      tema: 'escuro',
+      texto: '--color-text-muted',
+      fundos: ['--color-bg', '--color-bg-alt', '--color-surface'],
+      minimo: 4.5,
+      uso: 'legendas e dica "Clique no YE" (escuro)',
+    },
+    {
+      linha: 21,
+      tema: 'escuro',
+      texto: '--color-link',
+      fundos: ['--color-bg', '--color-bg-alt', '--color-surface', '--gradient-contact'],
+      minimo: 4.5,
+      uso: 'links, item ativo/hover do menu (D14), eyebrow (escuro)',
+    },
+    {
+      linha: 22,
+      tema: 'escuro',
+      texto: '--color-accent',
+      fundos: ['--color-bg', '--color-bg-alt', '--color-surface'],
+      minimo: 3,
+      uso: 'destaque não textual (ícones, pulsos; escuro)',
+    },
+    {
+      linha: 23,
+      tema: 'escuro',
+      texto: '--color-on-primary',
+      fundos: ['--gradient-primary'],
+      minimo: 4.5,
+      uso: 'botão primário e 1ª etapa (escuro)',
+    },
+    {
+      linha: 24,
+      tema: 'escuro',
+      texto: '--color-focus',
+      fundos: ['--color-bg'],
+      minimo: 3,
+      uso: 'contorno de foco (escuro)',
+    },
+    {
+      linha: 25,
+      tema: 'escuro',
+      texto: '--color-border-hover',
+      fundos: ['--color-bg'],
+      minimo: 3,
+      uso: 'borda do botão secundário (escuro, DV-1) — ✅ sem isenção',
+    },
+    {
+      linha: 28,
+      tema: 'claro',
+      texto: '--color-text',
+      fundos: ['--color-chip-bg', '--color-chip-bg-hover'],
+      minimo: 4.5,
+      uso: 'texto do chip, normal e hover (claro, D17)',
+    },
+    {
+      linha: 28,
+      tema: 'escuro',
+      texto: '--color-text',
+      fundos: ['--color-chip-bg'],
+      minimo: 4.5,
+      uso: 'texto do chip (escuro, D17)',
+    },
+  ];
+
+  it.each(PARES_ESPERADOS)(
+    'linha $linha ($tema): $texto sobre $fundos ≥ $minimo:1 ($uso)',
+    ({ linha, tema, texto, fundos, minimo }) => {
+      const mapa = tema === 'claro' ? CLARO : ESCURO;
+      const textos = cores(mapa, texto);
+      const fundosResolvidos = fundos.flatMap((f) => cores(mapa, f));
+      const razao = piorRazao(textos, fundosResolvidos);
+      console.info(
+        `[Q-15] linha ${linha} (${tema}) ${texto}/${fundos.join('+')} = ${fmt(razao)}:1 (mín. ${fmt(minimo)})`,
+      );
+      expect(razao).toBeGreaterThanOrEqual(minimo);
+    },
+  );
+
+  interface LinhaProibida {
+    linha: number;
+    texto: string;
+    fundos: string[];
+    minimo: number;
+    uso: string;
+  }
+
+  const PARES_PROIBIDOS: LinhaProibida[] = [
+    {
+      linha: 5,
+      texto: '--color-text-muted',
+      fundos: ['--color-bg-alt', '--color-bg-tint'],
+      minimo: 4.5,
+      uso: '#8C6A7A fora do branco: proibido (usar --color-text-secondary)',
+    },
+    {
+      linha: 9,
+      texto: '--color-eyebrow',
+      fundos: ['--color-bg-tint'],
+      minimo: 4.5,
+      uso: '--color-eyebrow sobre --color-bg-tint: proibido (usar --color-eyebrow-on-tint)',
+    },
+  ];
+
+  it.each(PARES_PROIBIDOS)(
+    'linha $linha: $texto sobre $fundos reprova < $minimo:1 — combinação proibida ($uso)',
+    ({ linha, texto, fundos, minimo }) => {
+      const textos = cores(CLARO, texto);
+      const fundosResolvidos = fundos.flatMap((f) => cores(CLARO, f));
+      const razao = piorRazao(textos, fundosResolvidos);
+      console.info(
+        `[Q-15] linha ${linha} (proibida) ${texto}/${fundos.join('+')} = ${fmt(razao)}:1`,
+      );
+      expect(razao).toBeLessThan(minimo);
+    },
+  );
+
+  // ---- Linhas isentas/decorativas (12, 14, 15, 17, 26, 27): guarda de regressão do valor medido ----
+
+  it('linha 12: --color-on-brand sobre --gradient-brand (monograma) — isenção WCAG 1.4.3, mesmo valor nos 2 temas', () => {
+    const textoClaro = cores(CLARO, '--color-on-brand');
+    const fundoClaro = cores(CLARO, '--gradient-brand');
+    const textoEscuro = cores(ESCURO, '--color-on-brand');
+    const fundoEscuro = cores(ESCURO, '--gradient-brand');
+    const razaoClaro = piorRazao(textoClaro, fundoClaro);
+    const razaoEscuro = piorRazao(textoEscuro, fundoEscuro);
+    console.info(
+      `[Q-15] linha 12 (isenção, logotipo) claro=${fmt(razaoClaro)}:1 escuro=${fmt(razaoEscuro)}:1`,
+    );
+    expect(razaoClaro).toBeCloseTo(3.68, 1);
+    expect(razaoEscuro).toBeCloseTo(3.68, 1);
+  });
+
+  it('linha 14: --color-deco sobre --color-bg-tint (seta "→" da Frase) — decorativa, opção do cp/S-06', () => {
+    const razao = piorRazao(cores(CLARO, '--color-deco'), cores(CLARO, '--color-bg-tint'));
+    console.info(`[Q-15] linha 14 (cp/S-06: seta aria-hidden, decorativa) = ${fmt(razao)}:1`);
+    expect(razao).toBeCloseTo(2.13, 1);
+  });
+
+  it('linha 15: --color-secondary-border sobre --color-bg/--color-bg-tint (claro) — aceita por D13 (texto identifica o botão)', () => {
+    const razaoBranco = piorRazao(
+      cores(CLARO, '--color-secondary-border'),
+      cores(CLARO, '--color-bg'),
+    );
+    const razaoTint = piorRazao(
+      cores(CLARO, '--color-secondary-border'),
+      cores(CLARO, '--color-bg-tint'),
+    );
+    console.info(
+      `[Q-15] linha 15 (isenção D13) branco=${fmt(razaoBranco)}:1 tint=${fmt(razaoTint)}:1`,
+    );
+    expect(razaoBranco).toBeCloseTo(2.38, 1);
+    expect(razaoTint).toBeCloseTo(2.13, 1);
+  });
+
+  it('linha 17: --color-border sobre --color-bg (claro) — borda decorativa, não essencial', () => {
+    const razao = piorRazao(cores(CLARO, '--color-border'), cores(CLARO, '--color-bg'));
+    console.info(`[Q-15] linha 17 (decorativa) = ${fmt(razao)}:1`);
+    expect(razao).toBeCloseTo(1.34, 1);
+  });
+
+  it('linha 26: --color-border sobre --color-bg (escuro) — borda decorativa, não essencial', () => {
+    const razao = piorRazao(cores(ESCURO, '--color-border'), cores(ESCURO, '--color-bg'));
+    console.info(`[Q-15] linha 26 (decorativa) = ${fmt(razao)}:1`);
+    expect(razao).toBeCloseTo(1.33, 1);
+  });
+
+  it('linha 27: --color-deco sobre --color-bg (claro) — contorno tracejado do selo "Em estudo" (DV-4), texto da linha 10 identifica', () => {
+    const razao = piorRazao(cores(CLARO, '--color-deco'), cores(CLARO, '--color-bg'));
+    console.info(`[Q-15] linha 27 (decorativa) = ${fmt(razao)}:1`);
+    expect(razao).toBeCloseTo(2.38, 1);
+  });
+
+  it('prova de mutação (revertida no checkpoint): trocar --color-eyebrow-on-tint por #C93A77 reprovaria a linha 10', () => {
+    // Não altera o arquivo de verdade: só recalcula com o hex errado para provar que o teste pegaria o erro.
+    const razaoErrada = contrastRatio('#C93A77', cores(CLARO, '--color-bg-tint')[0] as string);
+    expect(razaoErrada).toBeLessThan(4.5);
+    const razaoCorreta = piorRazao(
+      cores(CLARO, '--color-eyebrow-on-tint'),
+      cores(CLARO, '--color-bg-tint'),
+    );
+    expect(razaoCorreta).toBeGreaterThanOrEqual(4.5);
   });
 });
