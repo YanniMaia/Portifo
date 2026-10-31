@@ -88,6 +88,7 @@
 .link {
   display: inline-flex;
   align-items: center;
+  min-width: var(--touch-min);
   min-height: var(--touch-min);
   color: var(--color-text-secondary);
   font-family: var(--font-body);
