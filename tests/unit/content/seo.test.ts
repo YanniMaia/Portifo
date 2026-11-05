@@ -81,7 +81,7 @@ describe('index.html: bloco SEO igual ao que seo.ts gera (rode scripts/build-seo
   });
 
   it('URLs absolutas a partir de SITE_URL; ícones com caminho da raiz (o Vite põe o BASE_PATH)', () => {
-    expect(SITE_URL).toBe('https://yannimaia.github.io/Portifolio/');
+    expect(SITE_URL).toBe('https://portfolio-yanni-elyssa.vercel.app/');
     expect(doc.querySelector('link[rel="canonical"]')?.getAttribute('href')).toBe(SITE_URL);
     expect(doc.querySelector('meta[property="og:url"]')?.getAttribute('content')).toBe(SITE_URL);
     expect(doc.querySelector('meta[property="og:image"]')?.getAttribute('content')).toBe(

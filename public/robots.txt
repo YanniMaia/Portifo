@@ -1,3 +1,3 @@
 User-agent: *
 Allow: /
-Sitemap: https://yannimaia.github.io/Portifolio/sitemap.xml
+Sitemap: https://portfolio-yanni-elyssa.vercel.app/sitemap.xml
